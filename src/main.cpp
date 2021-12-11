@@ -181,6 +181,7 @@ int main(int argc, const char *argv[])
                size(ftxui::WIDTH, ftxui::EQUAL, 40);
     });
 
+
     // Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
     auto reprezentare_grafica = Renderer([&] {
         return window(text("Arbore Binar - Reprezentare Grafica"),//
