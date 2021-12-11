@@ -7,7 +7,6 @@ include(FetchContent)
 set(FETCHCONTENT_UPDATES_DISCONNECTED TRUE)
 FetchContent_Declare(ftxui
         GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui
-        # Specify a GIT_TAG here.
         )
 
 FetchContent_GetProperties(ftxui)
@@ -27,5 +26,5 @@ target_include_directories(app_arbore_binar PRIVATE src)
 target_link_libraries(app_arbore_binar
         PRIVATE ftxui::screen
         PRIVATE ftxui::dom
-        PRIVATE ftxui::component # Not needed for this example.
+        PRIVATE ftxui::component
         )
