@@ -101,7 +101,6 @@ int main(int argc, const char *argv[])
             Button(
                     "[Copil drept]", [&] { adancime = 2; },
                     &optiune_buton_salv_copil_drept),
-
     });
     // sfarsit sectiune
 
@@ -164,7 +163,7 @@ int main(int argc, const char *argv[])
                             hbox(text(val_copil_drept.empty() ? "* Nu exista copil drept " : "Copil drept: " + val_copil_drept)),
                             hbox(text(" ")),
                             separator(),
-                            hbox({butoane_salvare_copii->Render()}) | center})) |
+                            hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight) : butoane_salvare_copii->Render()}) | center})) |
                size(ftxui::WIDTH, ftxui::EQUAL, 40);
     });
 
