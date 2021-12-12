@@ -200,22 +200,22 @@ int main(int argc, const char *argv[])
                                                     "1343", "1455", "1523", "1643", "1753", "1823423", "1943", "2053"};
 
 
-    Elements elemente_traversare;
+    Elements elemente_parcurse;
 
-    for (auto &elem: elemente_parcurse_placeholder)
+    elemente_parcurse.push_back((text(elemente_parcurse_placeholder.front()) | border));
+
+    for (int i = 1; i < elemente_parcurse_placeholder.size(); i++)
     {
-        elemente_traversare.push_back(elem == elemente_parcurse_placeholder.front() ? (text(elem) | border)
-                                                                                    :
-                                      hbox({text("→") | center, text(elem) | border})
-        );
-    }
+        elemente_parcurse.push_back(hbox({text("→") | center, text(elemente_parcurse_placeholder[i]) | border}));
+    };
 
     vector<Element> stanga;
     vector<Element> dreapta;
-    vector<Element>::iterator iterator_fractie(elemente_traversare.begin() + elemente_traversare.size() / 1.85);
-    if (elemente_traversare.size() >= 17)
+    vector<Element>::iterator iterator_fractie(elemente_parcurse.begin() + elemente_parcurse.size() / 1.85);
+    
+    if (elemente_parcurse.size() >= 17)
     {
-        for (auto it = elemente_traversare.begin(); it != elemente_traversare.end(); ++it)
+        for (auto it = elemente_parcurse.begin(); it != elemente_parcurse.end(); ++it)
         {
             if (std::distance(it, iterator_fractie) > 0)
             {
@@ -226,6 +226,17 @@ int main(int argc, const char *argv[])
             }
         }
     }
+
+    auto container_tab_traversare = window(text("Meniu Parcurgere"),
+                                           vbox(vbox({hbox(text(" ")),
+                                                      hbox(text("Traversare selectata: " +
+                                                                elemente_meniu_travers[selectat])),
+                                                      hbox(text(" ")),
+                                                      separator(),
+                                                      hbox(
+                                                              hbox(text("Elemente traversate: ")) | center,
+                                                              hbox(elemente_parcurse))})));
+
     // Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
     auto reprezentare_grafica = Renderer(meniu_traversari, [&]
     {
@@ -243,8 +254,8 @@ int main(int argc, const char *argv[])
                                                hbox({hbox({hbox({vbox({hbox(text(" ")),
                                                                        hbox({text("Ordine noduri parcurse: ")
                                                                             }) | center,
-                                                                       elemente_traversare.size() <= 16 ?
-                                                                       hbox(elemente_traversare) | center :
+                                                                       elemente_parcurse.size() <= 16 ?
+                                                                       hbox(elemente_parcurse) | center :
                                                                        hbox(stanga) | center,
                                                                        hbox(dreapta) | center
                                                                       }) | size(WIDTH, EQUAL, 150)
