@@ -13,6 +13,7 @@
       </extensions>
     </Objective-C-extensions>
     <codeStyleSettings language="ObjectiveC">
+      <option name="RIGHT_MARGIN" value="160" />
       <option name="BRACE_STYLE" value="2" />
       <option name="CLASS_BRACE_STYLE" value="2" />
     </codeStyleSettings>

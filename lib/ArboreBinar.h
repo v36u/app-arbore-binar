@@ -36,6 +36,8 @@ private:
 
     void DeplasareInapoi();
 
+    void RouterSalvareNod(const string &, const string *, const string *, const bool *);
+
 public:
     ArboreBinar();
 
@@ -48,7 +50,7 @@ public:
     void SalvareNod(const string &, const string &, const bool &);
 
     void SalvareNod(const string &, const string &, const string &);
-    
+
 };
 
 
