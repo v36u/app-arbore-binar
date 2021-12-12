@@ -14,11 +14,12 @@ private:
         Celula *_dreapta;
     };
     typedef Celula *Nod;
-
     Nod _radacina;
+
 public:
     ArboreBinar();
     ~ArboreBinar();
+    string GetRadacina();
 };
 
 
