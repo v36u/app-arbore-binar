@@ -212,13 +212,13 @@ int main(int argc, const char *argv[])
     auto randare_principala = Renderer(container_principal, [&] {
         Element document = randare_adancime_0->Render();
 
-        if (adancime == 1)
+        if (adancime == 1 && !val_nod.empty())
         {
             document = dbox({
                     document,
                     randare_adancime_1_copil_st->Render() | clear_under | center,
             });
-        } else if (adancime == 2)
+        } else if (adancime == 2 && !val_nod.empty())
         {
             document = dbox({
                     document,
