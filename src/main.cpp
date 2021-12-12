@@ -34,7 +34,7 @@ int main(int argc, const char *argv[])
 
     auto buton_salvare_nod = Container::Horizontal({
                                                            Button("[Salveaza si adauga nod]", [&]
-                                                                  { /* urmeaza sa adaugam logica aici */ },
+                                                                  { /* TODO: urmeaza sa adaugam logica aici */ },
                                                                   &optiune_buton_salv_nod),
                                                    });
 
@@ -212,7 +212,7 @@ int main(int argc, const char *argv[])
     vector<Element> stanga;
     vector<Element> dreapta;
     vector<Element>::iterator iterator_fractie(elemente_parcurse.begin() + elemente_parcurse.size() / 1.85);
-    
+
     if (elemente_parcurse.size() >= 17)
     {
         for (auto it = elemente_parcurse.begin(); it != elemente_parcurse.end(); ++it)
