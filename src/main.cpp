@@ -20,7 +20,7 @@ int main(int argc, const char *argv[])
 {
     auto screen = ScreenInteractive::Fullscreen();
     // Am declarat variabilele in care se vor stoca valorile aferente nodului curent
-    string val_nod, val_copil_stang, val_copil_drept;
+    string val_nod{}, val_copil_stang{}, val_copil_drept{};
 
     // Aici am creat componenta care stocheaza valoarea introdusa de la tastatura a nodului curent (in input)
     Component input_val_nod = Input(&val_nod, "editati valoarea nodului");
