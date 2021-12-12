@@ -5,6 +5,9 @@
 
 using std::string;
 
+// Convenții:
+// 1) Directie: false = stânga, true = dreapta
+
 class ArboreBinar
 {
 private:
@@ -15,11 +18,23 @@ private:
     };
     typedef Celula *Nod;
     Nod _radacina;
+    Nod _nod_curent;
+    bool _directie;
+
+    Nod CreareNod(const string&);
+    Nod CreareNod(const string&, const string&, const bool&);
+    Nod CreareNod(const string&, const string&, const string&);
+
+    Nod GasireTataNodCurent(const Nod&);
+    void DeplasareInapoi();
 
 public:
     ArboreBinar();
     ~ArboreBinar();
     string GetRadacina();
+    void SalvareNod(const string&);
+    void SalvareNod(const string&, const string&, const bool&);
+    void SalvareNod(const string&, const string&, const string&);
 };
 
 
