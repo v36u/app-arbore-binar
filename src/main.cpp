@@ -142,7 +142,7 @@ int main(int argc, const char *argv[])
                             hbox(text("Nod Crt.: "), input_val_nod->Render()),
                             hbox(text(" ")),
                             separator(),
-                            hbox({buton_salvare_nod->Render()}) | center})) |
+                            hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight) : buton_salvare_nod->Render()}) | center})) |
                size(ftxui::WIDTH, ftxui::EQUAL, 40);
     });
 
@@ -157,7 +157,7 @@ int main(int argc, const char *argv[])
                             hbox(text(val_copil_stang.empty() && val_copil_drept.empty()
                                               ? "* Nodul curent nu are copii (frunza)"
                                               : "")) |
-                                    color(Color::RedLight),
+                                    color(Color::GreenLight),
                             hbox(text(val_copil_stang.empty() ? "* Nu exista copil stang " : "Copil stang: " + val_copil_stang)),
 
                             hbox(text(val_copil_drept.empty() ? "* Nu exista copil drept " : "Copil drept: " + val_copil_drept)),
