@@ -180,15 +180,29 @@ int main(int argc, const char *argv[])
                size(ftxui::WIDTH, ftxui::EQUAL, 40);
     });
 
+    vector<string> elemente_parcurse_placeholder = {"1000", "2000", "3000", "1000", "4000", "43456", "123", "1000", "2000", "3000", "1000", "4000", "43456", "123", "1000", "2000", "3000", "1000", "4000", "43456", "123"};
+    Elements elemente_traversare;
+    for (auto &elem : elemente_parcurse_placeholder)
+    {
 
+        elemente_traversare.push_back(vbox(text(elem)) | border);
+    }
+
+    auto container_tab_traversare = window(text("Meniu Parcurgere"),
+                                           vbox(vbox({hbox(text(" ")),
+                                                      hbox(text("Traversare selectata: " + elemente_meniu_travers[selectat])),
+                                                      hbox(text(" ")),
+                                                      separator(),
+                                                      hbox(
+                                                              hbox(text("Elemente traversate: ")) | center,
+                                                              hbox(elemente_traversare))})));
     // Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
     auto reprezentare_grafica = Renderer([&] {
         return window(text("Arbore Binar - Reprezentare Grafica"),//
-                      vbox({
-
-
-                      })) |
-               flex;
+                      vbox({hbox({}),
+                            filler(),
+                            filler(),
+                            hbox({container_tab_traversare})}));
     });
 
     // Sectiune care se ocupa cu randarea intregului nivel de adancime 0 (Principal)
@@ -200,7 +214,8 @@ int main(int argc, const char *argv[])
                                  tab_detalii_nod->Render(),
                                  tab_editare_nod->Render(),
                                  tab_editare_copii->Render(),
-                                 tab_traversari->Render()})}),
+                                 tab_traversari->Render()}) |
+                           flex}),
                      hbox({reprezentare_grafica->Render()}) | flex});
     });
 
