@@ -52,7 +52,6 @@ Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
     return vector_final;
 }
 
-
 int main(int argc, const char *argv[])
 {
     auto screen = ScreenInteractive::Fullscreen();
@@ -233,7 +232,7 @@ int main(int argc, const char *argv[])
 
     auto meniu_traversari = Menu(&elemente_meniu_travers, &selectat, &optiuni_meniu);
 
-    vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "123"};
+    vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "123", "300", "123", "300", "123", "300", "123", "300", "123", "300"};
 
 
     Elements elemente_parcurse;
@@ -244,19 +243,19 @@ int main(int argc, const char *argv[])
         elemente_parcurse.push_back(hbox({text("→") | center, text(elemente_parcurse_placeholder[i]) | border}));
     };
 
-    Elements vector_temp;
-    for (int i = 0; i < elemente_parcurse.size(); i++)
-    {
-        vector_temp.push_back(elemente_parcurse[i]);
-    }
+
     int nr_segmente = elemente_parcurse.size() / 12;
-    vector<vector<Element>> vector_out = ImpartireVector(vector_temp, nr_segmente);
+
 
     Elements vector_final;
 
     if (nr_segmente > 0)
     {
+        vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, nr_segmente);
         vector_final = AfisareElementeParcurseImpartite(vector_out);
+    } else
+    {
+        vector_final = elemente_parcurse;
     }
 
 
@@ -275,20 +274,21 @@ int main(int argc, const char *argv[])
                                                      hbox(text(" "))
                                                     }) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 42),
                                                separator(),
-                                               hbox({hbox({hbox(vector_final.size() ? vbox(vector_final) |
-                                                                                      size(ftxui::WIDTH,
-                                                                                           ftxui::GREATER_THAN,
-                                                                                           150)
-                                                                                    : vbox(hbox({hbox(text(" ")),
-                                                                                                 hbox({text(
-                                                                                                         "Ordine noduri parcurse: ")}) |
-                                                                                                 center,
-                                                                                                 hbox(elemente_parcurse)})
+                                               hbox({hbox({hbox(nr_segmente != 0 ? vbox(vector_final) |
+                                                                                   size(ftxui::WIDTH,
+                                                                                        ftxui::GREATER_THAN,
+                                                                                        150)
+                                                                                 : vbox({hbox(text(" ")),
+                                                                                         hbox({text(
+                                                                                                 "Ordine noduri parcurse: ")}) |
+                                                                                         center,
+                                                                                         hbox({vector_final}) |
+                                                                                         center
 
-                                                       ) |
-                                                                                      size(ftxui::WIDTH,
-                                                                                           ftxui::GREATER_THAN,
-                                                                                           150)
+                                                                                        }) |
+                                                                                   size(ftxui::WIDTH,
+                                                                                        ftxui::GREATER_THAN,
+                                                                                        150)
                                                )})
                                                     })
                                               })
