@@ -25,21 +25,20 @@ private:
     Nod _nod_curent;
 
     bool _directie;
+    bool _deplasat; // până găsesc o soluție mai elegantă
 
 // --- Metode ---
-    Nod CreareNod(const string &);
+    Nod CreareNod(string);
 
-    Nod CreareNod(const string &, const string &, const bool &);
+    Nod CreareNod(string, string, bool);
 
-    Nod CreareNod(const string &, const string &, const string &);
+    Nod CreareNod(string, string, string);
 
-    Nod GasireTataNodCurent(const Nod &);
+    void DeplasareInapoiNodCurent(Nod);
 
-    void DeplasareInapoi();
+    void RouterSalvareNod(string, string *, string *, bool *);
 
-    void RouterSalvareNod(const string &, const string *, const string *, const bool *);
-
-    void DezalocareArbore(const Nod &);
+    void DezalocareArbore(Nod);
 
 public:
 // --- Structuri ---
@@ -58,11 +57,7 @@ public:
 // --- Metode ---
     NodDto GetInformatiiNodCurent();
 
-    void SalvareNod(const string &);
-
-    void SalvareNod(const string &, const string &, const bool &);
-
-    void SalvareNod(const string &, const string &, const string &);
+    void SalvareNod(string, string, string);
 
 };
 

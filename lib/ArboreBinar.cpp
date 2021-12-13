@@ -5,6 +5,7 @@ ArboreBinar::ArboreBinar()
     this->_radacina = nullptr;
     this->_nod_curent = nullptr;
     this->_directie = false;
+    this->_deplasat = false;
 }
 
 ArboreBinar::~ArboreBinar()
@@ -13,7 +14,7 @@ ArboreBinar::~ArboreBinar()
 }
 
 ArboreBinar::Nod
-ArboreBinar::CreareNod(const string &p_informatie_nod)
+ArboreBinar::CreareNod(string p_informatie_nod)
 {
     if (p_informatie_nod.empty())
     {
@@ -27,7 +28,7 @@ ArboreBinar::CreareNod(const string &p_informatie_nod)
 }
 
 ArboreBinar::Nod
-ArboreBinar::CreareNod(const string &p_informatie_nod, const string &p_informatie_descendent, const bool &p_directie)
+ArboreBinar::CreareNod(string p_informatie_nod, string p_informatie_descendent, bool p_directie)
 {
     if (p_informatie_nod.empty())
     {
@@ -41,7 +42,7 @@ ArboreBinar::CreareNod(const string &p_informatie_nod, const string &p_informati
 }
 
 ArboreBinar::Nod
-ArboreBinar::CreareNod(const string &p_informatie_nod, const string &p_informatie_descendent_stang, const string &p_informatie_descendent_drept)
+ArboreBinar::CreareNod(string p_informatie_nod, string p_informatie_descendent_stang, string p_informatie_descendent_drept)
 {
     if (p_informatie_nod.empty())
     {
@@ -54,49 +55,36 @@ ArboreBinar::CreareNod(const string &p_informatie_nod, const string &p_informati
     };
 }
 
-ArboreBinar::Nod
-ArboreBinar::GasireTataNodCurent(const Nod &p_nod)
+void
+ArboreBinar::DeplasareInapoiNodCurent(Nod p_nod)
 {
     if (p_nod == nullptr)
-    {
-        return nullptr;
-    }
-
-    if (p_nod->_stanga == this->_nod_curent || p_nod->_dreapta == this->_nod_curent)
-    {
-        return p_nod;
-    }
-
-    if (p_nod->_stanga != nullptr)
-    {
-        return this->GasireTataNodCurent(p_nod->_stanga);
-    }
-
-    if (p_nod->_dreapta != nullptr)
-    {
-        return this->GasireTataNodCurent(p_nod->_dreapta);
-    }
-
-    return nullptr;
-}
-
-void
-ArboreBinar::DeplasareInapoi()
-{
-    if (this->_radacina == this->_nod_curent)
     {
         return;
     }
 
-    this->_nod_curent = this->GasireTataNodCurent(this->_radacina);
+    if (p_nod->_stanga == this->_nod_curent || p_nod->_dreapta == this->_nod_curent)
+    {
+        this->_nod_curent = p_nod;
+        return;
+    }
+
+    if (p_nod->_stanga != nullptr)
+    {
+        this->DeplasareInapoiNodCurent(p_nod->_stanga);
+    }
+
+    if (p_nod->_dreapta != nullptr)
+    {
+        this->DeplasareInapoiNodCurent(p_nod->_dreapta);
+    }
 }
 
+// TODO: Simplifică, Optimizează, Sparge (S.O.S.)
 void
-ArboreBinar::RouterSalvareNod(const string &p_informatie_nod,
-                              const string *p_informatie_descendent_1, const string *p_informatie_descendent_2,
-                              const bool *p_directie)
+ArboreBinar::RouterSalvareNod(string p_informatie_nod, string *p_informatie_descendent_1, string *p_informatie_descendent_2, bool *p_directie)
 {
-    const auto nod_nou =
+    auto nod_nou =
             p_informatie_descendent_1 != nullptr && p_informatie_descendent_2 != nullptr ?
             this->CreareNod(p_informatie_nod, *p_informatie_descendent_1, *p_informatie_descendent_2) :
             p_directie != nullptr ?
@@ -146,10 +134,13 @@ ArboreBinar::RouterSalvareNod(const string &p_informatie_nod,
             {
                 this->_nod_curent->_stanga = nod_nou;
             }
-            this->_nod_curent = this->_nod_curent->_stanga;
         } else
         {
             this->_directie = true;
+        }
+        if (this->_nod_curent->_stanga != nullptr)
+        {
+            this->_nod_curent = this->_nod_curent->_stanga;
         }
     } else
     {
@@ -182,24 +173,45 @@ ArboreBinar::RouterSalvareNod(const string &p_informatie_nod,
             {
                 this->_nod_curent->_dreapta = nod_nou;
             }
-            this->_nod_curent = this->_nod_curent->_dreapta;
+            this->_directie = false;
         } else
         {
-            this->DeplasareInapoi();
+            if (this->_nod_curent->_dreapta == nullptr)
+            {
+                this->DeplasareInapoiNodCurent(this->_radacina);
+                this->_deplasat = true;
+                this->_directie = true;
+            } else
+            {
+                this->_directie = false;
+            }
         }
-        this->_directie = false;
+        if (!this->_deplasat && this->_nod_curent->_dreapta != nullptr)
+        {
+            this->_nod_curent = this->_nod_curent->_dreapta;
+        }
     }
 
-    if (this->_nod_curent->_stanga != nullptr)
+    if (!this->_deplasat)
     {
-        this->_nod_curent = this->_nod_curent->_stanga;
-    } else if (this->_nod_curent->_dreapta != nullptr)
+        if (this->_nod_curent->_stanga != nullptr)
+        {
+            this->_nod_curent = this->_nod_curent->_stanga;
+        } else if (this->_nod_curent->_dreapta != nullptr)
+        {
+            this->_nod_curent = this->_nod_curent->_dreapta;
+        }
+    } else
     {
-        this->_nod_curent = this->_nod_curent->_dreapta;
+        this->_deplasat = false;
     }
+
+    delete p_informatie_descendent_1;
+    delete p_informatie_descendent_2;
+    delete p_directie;
 }
 
-void ArboreBinar::DezalocareArbore(const Nod &p_nod)
+void ArboreBinar::DezalocareArbore(Nod p_nod)
 {
     if (p_nod == nullptr)
     {
@@ -247,45 +259,28 @@ ArboreBinar::GetInformatiiNodCurent()
 }
 
 void
-ArboreBinar::SalvareNod(const string &p_informatie_nod)
-{
-    this->RouterSalvareNod(p_informatie_nod, nullptr, nullptr, nullptr);
-}
-
-void
-ArboreBinar::SalvareNod(const string &p_informatie_nod, const string &p_informatie_descendent, const bool &p_directie)
-{
-    if (p_informatie_descendent.empty())
-    {
-        this->SalvareNod(p_informatie_nod);
-        return;
-    }
-
-    this->RouterSalvareNod(p_informatie_nod, &p_informatie_descendent, nullptr, &p_directie);
-}
-
-void
-ArboreBinar::SalvareNod(const string &p_informatie_nod, const string &p_informatie_descendent_stang, const string &p_informatie_descendent_drept)
+ArboreBinar::SalvareNod(string p_informatie_nod, string p_informatie_descendent_stang, string p_informatie_descendent_drept)
 {
     const auto descendent_stang_fara_informatie = p_informatie_descendent_stang.empty();
     const auto descendent_drept_fara_informatie = p_informatie_descendent_drept.empty();
 
     if (descendent_stang_fara_informatie && descendent_drept_fara_informatie)
     {
-        this->SalvareNod(p_informatie_nod);
+        this->RouterSalvareNod(p_informatie_nod, nullptr, nullptr, nullptr);
+        return;
     }
 
     if (descendent_stang_fara_informatie)
     {
-        this->SalvareNod(p_informatie_nod, p_informatie_descendent_drept, true);
+        this->RouterSalvareNod(p_informatie_nod, nullptr, new string{p_informatie_descendent_stang}, new bool{false});
         return;
     }
 
     if (descendent_drept_fara_informatie)
     {
-        this->SalvareNod(p_informatie_nod, p_informatie_descendent_stang, false);
+        this->RouterSalvareNod(p_informatie_nod, new string{p_informatie_descendent_stang}, nullptr, new bool{true});
         return;
     }
 
-    this->RouterSalvareNod(p_informatie_nod, &p_informatie_descendent_stang, &p_informatie_descendent_stang, nullptr);
+    this->RouterSalvareNod(p_informatie_nod, new string{p_informatie_descendent_stang}, new string{p_informatie_descendent_drept}, nullptr);
 }
