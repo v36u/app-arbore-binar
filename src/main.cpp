@@ -37,7 +37,7 @@ vector<vector<T>> ImpartireVector(vector<T> el_parcurse, int nr_segmente)
     return vector_out;
 }
 
-Elements AfisareElementeParcurse(vector<vector<Element>> vector)
+Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
 {
     Elements vector_final;
     vector_final.push_back(hbox(text(" ")));
@@ -233,50 +233,29 @@ int main(int argc, const char *argv[])
 
     auto meniu_traversari = Menu(&elemente_meniu_travers, &selectat, &optiuni_meniu);
 
-    vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "400", "500", "600", "700", "800",
-                                                    "100", "200", "300", "400", "500", "600", "700", "800", "600",
-                                                    "700", "800", "100", "200", "300", "400", "500", "600", "700",
-                                                    "800", "600", "100", "200", "300", "400", "500", "600", "700",
-                                                    "800", "600", "100", "200", "300", "400", "500", "600", "700",
-                                                    "800", "600", "100", "200", "300", "400", "500", "600", "700",
-                                                    "800", "100", "200", "300", "400", "500", "600", "700", "800",
-                                                    "100", "200", "300", "400", "500", "600", "700", "800", "100",
-                                                    "200", "300", "400", "500", "600", "700", "800", "100", "200",
-                                                    "300", "400", "500", "600", "700", "800", "100", "200", "300",
-                                                    "400", "500", "600", "700", "800",};
+    vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "123"};
 
 
     Elements elemente_parcurse;
 
-    elemente_parcurse.push_back((text(elemente_parcurse_placeholder.front()) | border));
-
+    elemente_parcurse.push_back(hbox((text(elemente_parcurse_placeholder.front()) | border)));
     for (int i = 1; i < elemente_parcurse_placeholder.size(); i++)
     {
         elemente_parcurse.push_back(hbox({text("→") | center, text(elemente_parcurse_placeholder[i]) | border}));
     };
 
-//    vector<Element> stanga;
-//    vector<Element> dreapta;
-//    vector<Element>::iterator iterator_fractie(elemente_parcurse.begin() + elemente_parcurse.size() / 1.85);
-//
-//    if (elemente_parcurse.size() >= 17)
-//    {
-//        for (auto it = elemente_parcurse.begin(); it != elemente_parcurse.end(); ++it)
-//        {
-//            if (std::distance(it, iterator_fractie) > 0)
-//            {
-//                stanga.push_back(*it);
-//            } else
-//            {
-//                dreapta.push_back(*it);
-//            }
-//        }
-//    }
     int nr_segmente = elemente_parcurse.size() / 12;
     vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, nr_segmente);
 
-    ;
-    Elements vector_final = AfisareElementeParcurse(vector_out);
+    Elements vector_final;
+
+    if (nr_segmente > 0)
+    {
+        vector_final = AfisareElementeParcurseImpartite(vector_out);
+    }
+
+
+
     // Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
     auto reprezentare_grafica = Renderer(meniu_traversari, [&]
     {
@@ -291,8 +270,22 @@ int main(int argc, const char *argv[])
                                                      hbox(text(" "))
                                                     }) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 42),
                                                separator(),
-                                               hbox({hbox({hbox(vbox(vector_final) |
-                                                                size(ftxui::WIDTH, ftxui::GREATER_THAN, 150))})
+                                               hbox({hbox({hbox(vector_final.size() ? vbox(vector_final) |
+                                                                                      size(ftxui::WIDTH,
+                                                                                           ftxui::GREATER_THAN,
+                                                                                           150)
+                                                                                    : vbox(hbox({hbox(text(" ")),
+                                                                                                 hbox({text(
+                                                                                                         "Ordine noduri parcurse: ")}) |
+                                                                                                 center,
+                                                                                                 hbox(hbox(
+                                                                                                         elemente_parcurse))})
+
+                                                       ) |
+                                                                                      size(ftxui::WIDTH,
+                                                                                           ftxui::GREATER_THAN,
+                                                                                           150)
+                                               )})
                                                     })
                                               })
                                  )}
