@@ -1,7 +1,6 @@
 #include <algorithm>
-#include <iterator>
 #include <memory>  // pentru allocator, __shared_ptr_access
-#include <stdlib.h>// pentru EXIT_SUCCESS
+#include <cstdlib>// pentru EXIT_SUCCESS
 #include <string>  // pentru string, operator+ (supraincarcare), basic_string, to_string, char_traits
 #include <vector>  // pentru vector, __alloc_traits<>::value_type
 
@@ -17,7 +16,7 @@ using namespace ftxui;
 using namespace std;
 
 template<typename T>
-vector<vector<T>> ImpartireVector(vector<T> el_parcurse, int nr_segmente)
+vector<vector<T>> ImpartireVector(vector<T> el_parcurse, size_t nr_segmente)
 {
     vector<vector<T>> vector_out;
 
@@ -240,10 +239,10 @@ int main(int argc, const char *argv[])
     for (int i = 1; i < elemente_parcurse_placeholder.size(); i++)
     {
         elemente_parcurse.push_back(hbox({text("→") | center, text(elemente_parcurse_placeholder[i]) | border}));
-    };
+    }
 
 
-    int nr_segmente = elemente_parcurse.size() / 12;
+    size_t nr_segmente = elemente_parcurse.size() / 12;
 
     Elements vector_final;
 
