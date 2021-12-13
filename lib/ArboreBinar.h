@@ -11,7 +11,7 @@ using std::string;
 class ArboreBinar
 {
 private:
-// --- Membrii ---
+// --- Structuri ---
     struct Celula
     {
         string _informatie;
@@ -20,6 +20,7 @@ private:
     };
     typedef Celula *Nod;
 
+// --- Membrii ---
     Nod _radacina;
     Nod _nod_curent;
 
@@ -38,7 +39,10 @@ private:
 
     void RouterSalvareNod(const string &, const string *, const string *, const bool *);
 
+    void DezalocareArbore(const Nod &);
+
 public:
+// --- Structuri ---
     struct NodDto // data transfer object
     {
         string _informatie_nod;
@@ -46,10 +50,12 @@ public:
         string _informatie_descendent_drept;
     };
 
+// --- Constructori ---
     ArboreBinar();
 
     ~ArboreBinar();
 
+// --- Metode ---
     NodDto GetInformatiiNodCurent();
 
     void SalvareNod(const string &);

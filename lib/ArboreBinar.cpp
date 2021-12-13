@@ -9,7 +9,7 @@ ArboreBinar::ArboreBinar()
 
 ArboreBinar::~ArboreBinar()
 {
-    // TODO: Dezalocă toate nodurile și apoi și rădăcina
+    DezalocareArbore(this->_radacina);
 }
 
 ArboreBinar::Nod
@@ -108,18 +108,14 @@ ArboreBinar::RouterSalvareNod(const string &p_informatie_nod,
             ) :
             this->CreareNod(p_informatie_nod);
 
-    if (nod_nou != nullptr)
+    if (this->_radacina == nullptr)
     {
-        if (p_informatie_nod.empty())
+        if (nod_nou != nullptr)
         {
-            return;
+            this->_radacina = nod_nou;
+            this->_nod_curent = this->_radacina;
         }
-        this->_radacina = nod_nou;
-        this->_nod_curent = this->_radacina;
-        return;
-    }
-
-    if (!this->_directie)
+    } else if (!this->_directie)
     {
         if (nod_nou != nullptr)
         {
@@ -193,6 +189,34 @@ ArboreBinar::RouterSalvareNod(const string &p_informatie_nod,
         }
         this->_directie = false;
     }
+
+    if (this->_nod_curent->_stanga != nullptr)
+    {
+        this->_nod_curent = this->_nod_curent->_stanga;
+    } else if (this->_nod_curent->_dreapta != nullptr)
+    {
+        this->_nod_curent = this->_nod_curent->_dreapta;
+    }
+}
+
+void ArboreBinar::DezalocareArbore(const Nod &p_nod)
+{
+    if (p_nod == nullptr)
+    {
+        return;
+    }
+
+    if (p_nod->_stanga != nullptr)
+    {
+        this->DezalocareArbore(p_nod->_stanga);
+    }
+
+    if (p_nod->_dreapta != nullptr)
+    {
+        this->DezalocareArbore(p_nod->_dreapta);
+    }
+
+    delete p_nod;
 }
 
 ArboreBinar::NodDto
