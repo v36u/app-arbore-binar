@@ -39,11 +39,18 @@ private:
     void RouterSalvareNod(const string &, const string *, const string *, const bool *);
 
 public:
+    struct NodDto // data transfer object
+    {
+        string _informatie_nod;
+        string _informatie_descendent_stang;
+        string _informatie_descendent_drept;
+    };
+
     ArboreBinar();
 
     ~ArboreBinar();
 
-    string GetRadacina();
+    NodDto GetInformatiiNodCurent();
 
     void SalvareNod(const string &);
 

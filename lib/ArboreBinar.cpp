@@ -15,6 +15,10 @@ ArboreBinar::~ArboreBinar()
 ArboreBinar::Nod
 ArboreBinar::CreareNod(const string &p_informatie_nod)
 {
+    if (p_informatie_nod.empty())
+    {
+        return nullptr;
+    }
     return new Celula{
             ._informatie = p_informatie_nod,
             ._stanga = nullptr,
@@ -25,6 +29,10 @@ ArboreBinar::CreareNod(const string &p_informatie_nod)
 ArboreBinar::Nod
 ArboreBinar::CreareNod(const string &p_informatie_nod, const string &p_informatie_descendent, const bool &p_directie)
 {
+    if (p_informatie_nod.empty())
+    {
+        return nullptr;
+    }
     return new Celula{
             ._informatie = p_informatie_nod,
             ._stanga = !p_directie ? this->CreareNod(p_informatie_descendent) : nullptr,
@@ -35,6 +43,10 @@ ArboreBinar::CreareNod(const string &p_informatie_nod, const string &p_informati
 ArboreBinar::Nod
 ArboreBinar::CreareNod(const string &p_informatie_nod, const string &p_informatie_descendent_stang, const string &p_informatie_descendent_drept)
 {
+    if (p_informatie_nod.empty())
+    {
+        return nullptr;
+    }
     return new Celula{
             ._informatie = p_informatie_nod,
             ._stanga = this->CreareNod(p_informatie_descendent_stang),
@@ -84,7 +96,7 @@ ArboreBinar::RouterSalvareNod(const string &p_informatie_nod,
                               const string *p_informatie_descendent_1, const string *p_informatie_descendent_2,
                               const bool *p_directie)
 {
-    const Nod &nod_nou =
+    const auto nod_nou =
             p_informatie_descendent_1 != nullptr && p_informatie_descendent_2 != nullptr ?
             this->CreareNod(p_informatie_nod, *p_informatie_descendent_1, *p_informatie_descendent_2) :
             p_directie != nullptr ?
@@ -96,11 +108,10 @@ ArboreBinar::RouterSalvareNod(const string &p_informatie_nod,
             ) :
             this->CreareNod(p_informatie_nod);
 
-    if (this->_radacina == nullptr)
+    if (nod_nou != nullptr)
     {
         if (p_informatie_nod.empty())
         {
-            delete nod_nou;
             return;
         }
         this->_radacina = nod_nou;
@@ -110,12 +121,31 @@ ArboreBinar::RouterSalvareNod(const string &p_informatie_nod,
 
     if (!this->_directie)
     {
-        if (!p_informatie_nod.empty())
+        if (nod_nou != nullptr)
         {
             if (this->_nod_curent->_stanga != nullptr)
             {
-                this->_nod_curent->_stanga->_informatie = p_informatie_nod; // "3", "5", "7"
-                delete nod_nou;
+                this->_nod_curent->_stanga->_informatie = nod_nou->_informatie;
+                if (this->_nod_curent->_stanga->_stanga != nullptr)
+                {
+                    if (nod_nou->_stanga != nullptr)
+                    {
+                        this->_nod_curent->_stanga->_stanga->_informatie = nod_nou->_stanga->_informatie;
+                    }
+                } else
+                {
+                    this->_nod_curent->_stanga->_stanga = nod_nou->_stanga;
+                }
+                if (this->_nod_curent->_stanga->_dreapta != nullptr)
+                {
+                    if (nod_nou->_dreapta != nullptr)
+                    {
+                        this->_nod_curent->_stanga->_dreapta->_informatie = nod_nou->_dreapta->_informatie;
+                    }
+                } else
+                {
+                    this->_nod_curent->_stanga->_dreapta = nod_nou->_dreapta;
+                }
             } else
             {
                 this->_nod_curent->_stanga = nod_nou;
@@ -124,16 +154,34 @@ ArboreBinar::RouterSalvareNod(const string &p_informatie_nod,
         } else
         {
             this->_directie = true;
-            delete nod_nou;
         }
     } else
     {
-        if (!p_informatie_nod.empty())
+        if (nod_nou != nullptr)
         {
             if (this->_nod_curent->_dreapta != nullptr)
             {
-                this->_nod_curent->_dreapta->_informatie = p_informatie_nod;
-                delete nod_nou;
+                this->_nod_curent->_dreapta->_informatie = nod_nou->_informatie;
+                if (this->_nod_curent->_dreapta->_stanga != nullptr)
+                {
+                    if (nod_nou->_stanga != nullptr)
+                    {
+                        this->_nod_curent->_dreapta->_stanga->_informatie = nod_nou->_stanga->_informatie;
+                    }
+                } else
+                {
+                    this->_nod_curent->_dreapta->_stanga = nod_nou->_stanga;
+                }
+                if (this->_nod_curent->_dreapta->_dreapta != nullptr)
+                {
+                    if (nod_nou->_dreapta != nullptr)
+                    {
+                        this->_nod_curent->_dreapta->_dreapta->_informatie = nod_nou->_dreapta->_informatie;
+                    }
+                } else
+                {
+                    this->_nod_curent->_dreapta->_dreapta = nod_nou->_dreapta;
+                }
             } else
             {
                 this->_nod_curent->_dreapta = nod_nou;
@@ -142,21 +190,36 @@ ArboreBinar::RouterSalvareNod(const string &p_informatie_nod,
         } else
         {
             this->DeplasareInapoi();
-            delete nod_nou;
         }
         this->_directie = false;
     }
 }
 
-
-string
-ArboreBinar::GetRadacina()
+ArboreBinar::NodDto
+ArboreBinar::GetInformatiiNodCurent()
 {
-    if (this->_radacina == nullptr)
+    auto informatie_nod = string();
+    auto informatie_descendent_stang = string();
+    auto informatie_descendent_drept = string();
+
+    if (this->_nod_curent != nullptr)
     {
-        return "";
+        informatie_nod = this->_nod_curent->_informatie;
+        if (this->_nod_curent->_stanga != nullptr)
+        {
+            informatie_descendent_stang = this->_nod_curent->_stanga->_informatie;
+        }
+        if (this->_nod_curent->_dreapta != nullptr)
+        {
+            informatie_descendent_drept = this->_nod_curent->_dreapta->_informatie;
+        }
     }
-    return this->_radacina->_informatie;
+
+    return {
+            ._informatie_nod = informatie_nod,
+            ._informatie_descendent_stang = informatie_descendent_stang,
+            ._informatie_descendent_drept = informatie_descendent_drept
+    };
 }
 
 void
@@ -180,8 +243,8 @@ ArboreBinar::SalvareNod(const string &p_informatie_nod, const string &p_informat
 void
 ArboreBinar::SalvareNod(const string &p_informatie_nod, const string &p_informatie_descendent_stang, const string &p_informatie_descendent_drept)
 {
-    const bool descendent_stang_fara_informatie = p_informatie_descendent_stang.empty();
-    const bool descendent_drept_fara_informatie = p_informatie_descendent_drept.empty();
+    const auto descendent_stang_fara_informatie = p_informatie_descendent_stang.empty();
+    const auto descendent_drept_fara_informatie = p_informatie_descendent_drept.empty();
 
     if (descendent_stang_fara_informatie && descendent_drept_fara_informatie)
     {
