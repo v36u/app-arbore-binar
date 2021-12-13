@@ -41,8 +41,7 @@ Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
     vector_final.push_back(hbox(text(" ")));
     vector_final.push_back(hbox({text("Ordine noduri parcurse: ")}) | center);
 
-    vector_final.push_back(hbox(vector[0]) | center);
-    for (int i = 1; i < vector.size() - 1; i++)
+    for (int i = 0; i < vector.size() - 1; i++)
     {
         vector_final.push_back(hbox(vector[i], text("→") | center) | center);
     }
@@ -231,7 +230,8 @@ int main(int argc, const char *argv[])
     auto meniu_traversari = Menu(&elemente_meniu_travers, &selectat, &optiuni_meniu);
 
     vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "123", "300", "123", "300", "123", "300",
-                                                    "123", "300", "123", "300"};
+                                                    "123", "300", "123", "300", "100", "200", "300", "123", "300",
+                                                    "123", "300", "123", "300", "123", "300", "123", "300", "300"};
 
     Elements elemente_parcurse;
 
