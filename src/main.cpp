@@ -16,7 +16,6 @@
 using namespace ftxui;
 using namespace std;
 
-
 template<typename T>
 vector<vector<T>> ImpartireVector(vector<T> el_parcurse, int nr_segmente)
 {
@@ -232,8 +231,8 @@ int main(int argc, const char *argv[])
 
     auto meniu_traversari = Menu(&elemente_meniu_travers, &selectat, &optiuni_meniu);
 
-    vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "123", "300", "123", "300", "123", "300", "123", "300", "123", "300"};
-
+    vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "123", "300", "123", "300", "123", "300",
+                                                    "123", "300", "123", "300"};
 
     Elements elemente_parcurse;
 
@@ -246,7 +245,6 @@ int main(int argc, const char *argv[])
 
     int nr_segmente = elemente_parcurse.size() / 12;
 
-
     Elements vector_final;
 
     if (nr_segmente > 0)
@@ -257,8 +255,6 @@ int main(int argc, const char *argv[])
     {
         vector_final = elemente_parcurse;
     }
-
-
 
     // Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
     auto reprezentare_grafica = Renderer(meniu_traversari, [&]
@@ -288,8 +284,8 @@ int main(int argc, const char *argv[])
                                                                                         }) |
                                                                                    size(ftxui::WIDTH,
                                                                                         ftxui::GREATER_THAN,
-                                                                                        150)
-                                               )})
+                                                                                        150))
+                                                          })
                                                     })
                                               })
                                  )}
