@@ -16,6 +16,42 @@
 using namespace ftxui;
 using namespace std;
 
+
+template<typename T>
+vector<vector<T>> ImpartireVector(vector<T> el_parcurse, int nr_segmente)
+{
+    vector<vector<T>> vector_out;
+
+    int lungime = el_parcurse.size() / nr_segmente;
+    int rest = el_parcurse.size() % nr_segmente;
+
+    int inceput = 0;
+    int sfarsit = 0;
+
+    for (int i = 0; i < min<int>(nr_segmente, el_parcurse.size()); i++)
+    {
+        sfarsit += lungime + (rest-- > 0);
+        vector_out.push_back(vector<T>(el_parcurse.begin() + inceput, el_parcurse.begin() + sfarsit));
+        inceput = sfarsit;
+    }
+    return vector_out;
+}
+
+Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
+{
+    Elements vector_final;
+    vector_final.push_back(hbox(text(" ")));
+    vector_final.push_back(hbox({text("Ordine noduri parcurse: ")}) | center);
+
+    vector_final.push_back(hbox(vector[0]) | center);
+    for (int i = 1; i < vector.size() - 1; i++)
+    {
+        vector_final.push_back(hbox(vector[i], text("→") | center) | center);
+    }
+    vector_final.push_back(hbox(vector.back()) | center);
+    return vector_final;
+}
+
 int main(int argc, const char *argv[])
 {
     auto screen = ScreenInteractive::Fullscreen();
@@ -196,46 +232,33 @@ int main(int argc, const char *argv[])
 
     auto meniu_traversari = Menu(&elemente_meniu_travers, &selectat, &optiuni_meniu);
 
-    vector<string> elemente_parcurse_placeholder = {"3222", "4222", "7321", "8443", "955", "104343", "115343", "123423",
-                                                    "1343", "1455", "1523", "1643", "1753", "1823423", "1943", "2053"};
+    vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "123", "300", "123", "300", "123", "300", "123", "300", "123", "300"};
 
 
     Elements elemente_parcurse;
 
-    elemente_parcurse.push_back((text(elemente_parcurse_placeholder.front()) | border));
-
+    elemente_parcurse.push_back(hbox((text(elemente_parcurse_placeholder.front()) | border)));
     for (int i = 1; i < elemente_parcurse_placeholder.size(); i++)
     {
         elemente_parcurse.push_back(hbox({text("→") | center, text(elemente_parcurse_placeholder[i]) | border}));
     };
 
-    vector<Element> stanga;
-    vector<Element> dreapta;
-    vector<Element>::iterator iterator_fractie(elemente_parcurse.begin() + elemente_parcurse.size() / 1.85);
 
-    if (elemente_parcurse.size() >= 17)
+    int nr_segmente = elemente_parcurse.size() / 12;
+
+
+    Elements vector_final;
+
+    if (nr_segmente > 0)
     {
-        for (auto it = elemente_parcurse.begin(); it != elemente_parcurse.end(); ++it)
-        {
-            if (std::distance(it, iterator_fractie) > 0)
-            {
-                stanga.push_back(*it);
-            } else
-            {
-                dreapta.push_back(*it);
-            }
-        }
+        vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, nr_segmente);
+        vector_final = AfisareElementeParcurseImpartite(vector_out);
+    } else
+    {
+        vector_final = elemente_parcurse;
     }
 
-    auto container_tab_traversare = window(text("Meniu Parcurgere"),
-                                           vbox(vbox({hbox(text(" ")),
-                                                      hbox(text("Traversare selectata: " +
-                                                                elemente_meniu_travers[selectat])),
-                                                      hbox(text(" ")),
-                                                      separator(),
-                                                      hbox(
-                                                              hbox(text("Elemente traversate: ")) | center,
-                                                              hbox(elemente_parcurse))})));
+
 
     // Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
     auto reprezentare_grafica = Renderer(meniu_traversari, [&]
@@ -249,18 +272,24 @@ int main(int argc, const char *argv[])
                                                      hbox(vbox(text("Selectati parcurgerea: ")),
                                                           vbox({meniu_traversari->Render() | frame})),
                                                      hbox(text(" "))
-                                                    }) | size(ftxui::WIDTH, ftxui::EQUAL, 43),
+                                                    }) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 42),
                                                separator(),
-                                               hbox({hbox({hbox({vbox({hbox(text(" ")),
-                                                                       hbox({text("Ordine noduri parcurse: ")
-                                                                            }) | center,
-                                                                       elemente_parcurse.size() <= 16 ?
-                                                                       hbox(elemente_parcurse) | center :
-                                                                       hbox(stanga) | center,
-                                                                       hbox(dreapta) | center
-                                                                      }) | size(WIDTH, EQUAL, 150)
-                                                                }),
-                                                          })
+                                               hbox({hbox({hbox(nr_segmente != 0 ? vbox(vector_final) |
+                                                                                   size(ftxui::WIDTH,
+                                                                                        ftxui::GREATER_THAN,
+                                                                                        150)
+                                                                                 : vbox({hbox(text(" ")),
+                                                                                         hbox({text(
+                                                                                                 "Ordine noduri parcurse: ")}) |
+                                                                                         center,
+                                                                                         hbox({vector_final}) |
+                                                                                         center
+
+                                                                                        }) |
+                                                                                   size(ftxui::WIDTH,
+                                                                                        ftxui::GREATER_THAN,
+                                                                                        150)
+                                               )})
                                                     })
                                               })
                                  )}
