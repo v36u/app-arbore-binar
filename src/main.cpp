@@ -30,7 +30,7 @@ vector<vector<T>> ImpartireVector(vector<T> el_parcurse, int nr_segmente)
 
     for (int i = 0; i < min<int>(nr_segmente, el_parcurse.size()); i++)
     {
-        sfarsit += rest > 0 ? lungime + !!(rest--) : lungime;
+        sfarsit += lungime + (rest-- > 0);
         vector_out.push_back(vector<T>(el_parcurse.begin() + inceput, el_parcurse.begin() + sfarsit));
         inceput = sfarsit;
     }
@@ -43,10 +43,12 @@ Elements AfisareElementeParcurse(vector<vector<Element>> vector)
     vector_final.push_back(hbox(text(" ")));
     vector_final.push_back(hbox({text("Ordine noduri parcurse: ")}) | center);
 
-    for (int i = 0; i < vector.size(); i++)
+    vector_final.push_back(hbox(vector[0]) | center);
+    for (int i = 0; i < vector.size() - 1; i++)
     {
-        vector_final.push_back(hbox(vector[i]) | center);
+        vector_final.push_back(hbox(vector[i], text("→") | center) | center);
     }
+    vector_final.push_back(hbox(vector.back()) | center);
     return vector_final;
 }
 
