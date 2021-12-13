@@ -242,13 +242,13 @@ int main(int argc, const char *argv[])
     }
 
 
-    size_t nr_segmente = elemente_parcurse.size() / 12;
+    size_t parte_intreaga = elemente_parcurse.size() / 12;
 
     Elements vector_final;
 
-    if (nr_segmente > 0)
+    if (parte_intreaga)
     {
-        vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, nr_segmente);
+        vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, parte_intreaga);
         vector_final = AfisareElementeParcurseImpartite(vector_out);
     } else
     {
@@ -269,21 +269,21 @@ int main(int argc, const char *argv[])
                                                      hbox(text(" "))
                                                     }) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 42),
                                                separator(),
-                                               hbox({hbox({hbox(nr_segmente != 0 ? vbox(vector_final) |
-                                                                                   size(ftxui::WIDTH,
-                                                                                        ftxui::GREATER_THAN,
-                                                                                        150)
-                                                                                 : vbox({hbox(text(" ")),
-                                                                                         hbox({text(
-                                                                                                 "Ordine noduri parcurse: ")}) |
-                                                                                         center,
-                                                                                         hbox({vector_final}) |
-                                                                                         center
+                                               hbox({hbox({hbox(parte_intreaga ? vbox(vector_final) |
+                                                                                 size(ftxui::WIDTH,
+                                                                                      ftxui::GREATER_THAN,
+                                                                                      150)
+                                                                               : vbox({hbox(text(" ")),
+                                                                                       hbox({text(
+                                                                                               "Ordine noduri parcurse: ")}) |
+                                                                                       center,
+                                                                                       hbox({vector_final}) |
+                                                                                       center
 
-                                                                                        }) |
-                                                                                   size(ftxui::WIDTH,
-                                                                                        ftxui::GREATER_THAN,
-                                                                                        150))
+                                                                                      }) |
+                                                                                 size(ftxui::WIDTH,
+                                                                                      ftxui::GREATER_THAN,
+                                                                                      150))
                                                           })
                                                     })
                                               })
