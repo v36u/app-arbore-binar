@@ -244,8 +244,13 @@ int main(int argc, const char *argv[])
         elemente_parcurse.push_back(hbox({text("→") | center, text(elemente_parcurse_placeholder[i]) | border}));
     };
 
+    Elements vector_temp;
+    for (int i = 0; i < elemente_parcurse.size(); i++)
+    {
+        vector_temp.push_back(elemente_parcurse[i]);
+    }
     int nr_segmente = elemente_parcurse.size() / 12;
-    vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, nr_segmente);
+    vector<vector<Element>> vector_out = ImpartireVector(vector_temp, nr_segmente);
 
     Elements vector_final;
 
@@ -278,8 +283,7 @@ int main(int argc, const char *argv[])
                                                                                                  hbox({text(
                                                                                                          "Ordine noduri parcurse: ")}) |
                                                                                                  center,
-                                                                                                 hbox(hbox(
-                                                                                                         elemente_parcurse))})
+                                                                                                 hbox(elemente_parcurse)})
 
                                                        ) |
                                                                                       size(ftxui::WIDTH,
