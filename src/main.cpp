@@ -12,6 +12,8 @@
 #include "ftxui/dom/elements.hpp"                // pentru text, Element, operator| (supraincarcare), window, flex, vbox
 #include "ftxui/util/ref.hpp"                    // pentru clasa Ref
 
+#include "../lib/ArboreBinar.h"
+
 using namespace ftxui;
 using namespace std;
 
@@ -49,8 +51,55 @@ Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
     return vector_final;
 }
 
+void AfisareDetaliiNodCurent(ArboreBinar *p_arbore_test) // testing purposes
+{
+    auto informatii_nod_curent = p_arbore_test->GetInformatiiNodCurent();
+
+    auto informatie_nod = informatii_nod_curent._informatie_nod;
+    if (informatie_nod.empty())
+    {
+        cout << "\nNodul este gol.\n"; // asta ar trebui să se întâmple doar când nu există rădăcină
+        return;
+    }
+
+    auto informatie_stanga = informatii_nod_curent._informatie_descendent_stang;
+    if (informatie_stanga.empty())
+    {
+        informatie_stanga = "nullptr";
+    }
+
+    auto informatie_dreapta = informatii_nod_curent._informatie_descendent_drept;
+    if (informatie_dreapta.empty())
+    {
+        informatie_dreapta = "nullptr";
+    }
+
+    cout << '\n' << informatie_nod << ' ' << informatie_stanga << ' ' << informatie_dreapta << '\n';
+}
+
 int main(int argc, const char *argv[])
 {
+    auto arbore_testare = new ArboreBinar();
+
+    arbore_testare->SalvareNod("A", "B", "C");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("", "", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("", "", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("", "", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("A", "D", "E");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("", "", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("", "", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+
+    delete arbore_testare;
+
+    return EXIT_SUCCESS;
+
     auto screen = ScreenInteractive::Fullscreen();
     // Am declarat variabilele in care se vor stoca valorile aferente nodului curent
     string val_nod{}, val_copil_stang{}, val_copil_drept{};
