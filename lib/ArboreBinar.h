@@ -6,7 +6,7 @@
 using std::string;
 
 // Convenții:
-// 1) Directie: false = stânga, true = dreapta
+// 1) Directie: true = stânga, false = dreapta
 
 class ArboreBinar
 {
@@ -25,7 +25,6 @@ private:
     Nod _nod_curent;
 
     bool _directie;
-    bool _deplasat; // până găsesc o soluție mai elegantă
 
 // --- Metode ---
     Nod CreareNod(string);
@@ -39,6 +38,12 @@ private:
     void RouterSalvareNod(string, string *, string *, bool *);
 
     void DezalocareArbore(Nod);
+
+    Nod GetNodNouRouter(string, string *, string *, bool *);
+
+    bool MutaNodCurentDacaEstePosibil(bool, bool);
+
+    void MutaNodCurentAbiaAdaugat();
 
 public:
 // --- Structuri ---

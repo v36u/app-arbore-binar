@@ -95,6 +95,8 @@ int main(int argc, const char *argv[])
     AfisareDetaliiNodCurent(arbore_testare);
     arbore_testare->SalvareNod("", "", "");
     AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("", "", "");
+    AfisareDetaliiNodCurent(arbore_testare);
 
     delete arbore_testare;
 
