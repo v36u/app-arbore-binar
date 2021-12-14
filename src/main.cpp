@@ -231,7 +231,7 @@ int main(int argc, const char *argv[])
 
     vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "123", "300", "123", "300", "123", "300",
                                                     "123", "300", "123", "300", "100", "200", "300", "123", "300",
-                                                    "123", "300", "123", "300", "123", "300", "123", "300", "300"};
+                                                    "123", "300", "123", "123"};
 
     Elements elemente_parcurse;
 
@@ -242,11 +242,11 @@ int main(int argc, const char *argv[])
     }
 
 
-    size_t parte_intreaga = elemente_parcurse.size() / 12;
+    size_t parte_intreaga = elemente_parcurse.size() / 10;
 
     Elements vector_final;
 
-    if (parte_intreaga)
+    if (parte_intreaga > 1)
     {
         vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, parte_intreaga);
         vector_final = AfisareElementeParcurseImpartite(vector_out);
@@ -269,21 +269,21 @@ int main(int argc, const char *argv[])
                                                      hbox(text(" "))
                                                     }) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 42),
                                                separator(),
-                                               hbox({hbox({hbox(parte_intreaga ? vbox(vector_final) |
-                                                                                 size(ftxui::WIDTH,
-                                                                                      ftxui::GREATER_THAN,
-                                                                                      150)
-                                                                               : vbox({hbox(text(" ")),
-                                                                                       hbox({text(
-                                                                                               "Ordine noduri parcurse: ")}) |
-                                                                                       center,
-                                                                                       hbox({vector_final}) |
-                                                                                       center
+                                               hbox({hbox({hbox(parte_intreaga > 1 ? vbox(vector_final) |
+                                                                                     size(ftxui::WIDTH,
+                                                                                          ftxui::GREATER_THAN,
+                                                                                          150)
+                                                                                   : vbox({hbox(text(" ")),
+                                                                                           hbox({text(
+                                                                                                   "Ordine noduri parcurse: ")}) |
+                                                                                           center,
+                                                                                           hbox({vector_final}) |
+                                                                                           center
 
-                                                                                      }) |
-                                                                                 size(ftxui::WIDTH,
-                                                                                      ftxui::GREATER_THAN,
-                                                                                      150))
+                                                                                          }) |
+                                                                                     size(ftxui::WIDTH,
+                                                                                          ftxui::GREATER_THAN,
+                                                                                          150))
                                                           })
                                                     })
                                               })
