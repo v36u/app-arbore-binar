@@ -8,7 +8,7 @@ ArboreBinar::ArboreBinar()
 
 ArboreBinar::~ArboreBinar()
 {
-    DezalocareArbore(this->_radacina);
+    this->DezalocareArbore(this->_radacina);
 }
 
 ArboreBinar::Celula::Celula(string p_informatie) : Celula(p_informatie, nullptr, nullptr, E_Directie::Stanga)
@@ -57,18 +57,22 @@ ArboreBinar::RouterCreareNod(string p_informatie_nod, string *p_informatie_desce
     {
         return this->CreareNod(p_informatie_nod, *p_informatie_descendent_1, *p_informatie_descendent_2);
     }
+
     if (p_directie == nullptr)
     {
         return this->CreareNod(p_informatie_nod);
     }
+
     if (p_informatie_descendent_1 != nullptr)
     {
         return this->CreareNod(p_informatie_nod, *p_informatie_descendent_1, *p_directie);
     }
+
     if (p_informatie_descendent_2 != nullptr)
     {
         return this->CreareNod(p_informatie_nod, *p_informatie_descendent_2, *p_directie);
     }
+
     return this->CreareNod(p_informatie_nod);
 }
 
@@ -105,20 +109,24 @@ ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod 
     {
         return false;
     }
+
     if ((p_nod_1->_stanga == nullptr) != (p_nod_2->_stanga == nullptr))
     {
         return false;
     }
+
     if ((p_nod_1->_dreapta == nullptr) != (p_nod_2->_dreapta == nullptr))
     {
         return false;
     }
+
     if (p_nod_1 != nullptr) //=> p_nod_2 != nullptr
     {
         if (p_nod_1->_informatie != p_nod_2->_informatie)
         {
             return false;
         }
+
         if (p_nod_1->_stanga != nullptr) //=> p_nod_2->_stanga != nullptr
         {
             if (p_nod_1->_stanga->_informatie != p_nod_2->_stanga->_informatie)
@@ -126,6 +134,7 @@ ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod 
                 return false;
             }
         }
+
         if (p_nod_1->_dreapta != nullptr) //=> p_nod_2->_dreapta != nullptr
         {
             if (p_nod_1->_dreapta->_informatie != p_nod_2->_dreapta->_informatie)
@@ -134,6 +143,7 @@ ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod 
             }
         }
     }
+
     return true;
 }
 
@@ -155,7 +165,6 @@ ArboreBinar::DeplasareNodCurentSus(Nod p_nod)
     {
         this->DeplasareNodCurentSus(p_nod->_stanga);
     }
-
     if (p_nod->_dreapta != nullptr)
     {
         this->DeplasareNodCurentSus(p_nod->_dreapta);
@@ -175,6 +184,7 @@ ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
         }
         return false;
     }
+
     if (p_directie == E_Directie::Dreapta)
     {
 
@@ -192,19 +202,21 @@ ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
         }
         return false;
     }
+
     if (p_directie == E_Directie::Sus)
     {
         this->_nod_curent->_directie = E_Directie::Stanga;
         this->DeplasareNodCurentSus(this->_radacina);
         return true;
     }
+
     return false;
 }
 
 void
 ArboreBinar::SalvareNod(string p_informatie_nod, string *p_informatie_descendent_1, string *p_informatie_descendent_2, E_Directie *p_directie)
 {
-    auto nod_nou = RouterCreareNod(p_informatie_nod, p_informatie_descendent_1, p_informatie_descendent_2, p_directie);
+    auto nod_nou = this->RouterCreareNod(p_informatie_nod, p_informatie_descendent_1, p_informatie_descendent_2, p_directie);
 
     if (NoduriCuInformatiiEgale(this->_nod_curent, nod_nou))
     {
@@ -222,6 +234,7 @@ ArboreBinar::SalvareNod(string p_informatie_nod, string *p_informatie_descendent
         {
             this->_nod_curent = this->_radacina = nod_nou;
         }
+
         this->EditareNodCurentExistent(nod_nou);
 
         if (!this->DeplasareNodCurent(E_Directie::Stanga))
@@ -247,7 +260,6 @@ ArboreBinar::DezalocareArbore(Nod p_nod)
     {
         this->DezalocareArbore(p_nod->_stanga);
     }
-
     if (p_nod->_dreapta != nullptr)
     {
         this->DezalocareArbore(p_nod->_dreapta);
@@ -286,8 +298,8 @@ ArboreBinar::GetInformatiiNodCurent()
 void
 ArboreBinar::SalvareNod(string p_informatie_nod, string p_informatie_descendent_stang, string p_informatie_descendent_drept)
 {
-    const auto descendent_stang_fara_informatie = p_informatie_descendent_stang.empty();
-    const auto descendent_drept_fara_informatie = p_informatie_descendent_drept.empty();
+    auto descendent_stang_fara_informatie = p_informatie_descendent_stang.empty();
+    auto descendent_drept_fara_informatie = p_informatie_descendent_drept.empty();
 
     if (descendent_stang_fara_informatie && descendent_drept_fara_informatie)
     {

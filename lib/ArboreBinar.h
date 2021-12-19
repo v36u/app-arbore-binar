@@ -2,7 +2,6 @@
 #define PROIECT_FINAL_ARBOREBINAR_H
 
 #include <string>
-#include <stdexcept>
 
 using std::string;
 
@@ -34,25 +33,35 @@ private:
     Nod _radacina;
     Nod _nod_curent;
 
-    Nod CreareNod(string);
+    Nod
+    CreareNod(string);
 
-    Nod CreareNod(string, string, E_Directie);
+    Nod
+    CreareNod(string, string, E_Directie);
 
-    Nod CreareNod(string, string, string);
+    Nod
+    CreareNod(string, string, string);
 
-    Nod RouterCreareNod(string, string *, string *, E_Directie *);
+    Nod
+    RouterCreareNod(string, string *, string *, E_Directie *);
 
-    void EditareNodCurentExistent(Nod);
+    void
+    EditareNodCurentExistent(Nod);
 
-    bool NoduriCuInformatiiEgale(Nod, Nod);
+    bool
+    NoduriCuInformatiiEgale(Nod, Nod);
 
-    void DeplasareNodCurentSus(Nod);
+    void
+    DeplasareNodCurentSus(Nod);
 
-    bool DeplasareNodCurent(E_Directie);
+    bool
+    DeplasareNodCurent(E_Directie);
 
-    void SalvareNod(string, string *, string *, E_Directie *);
+    void
+    SalvareNod(string, string *, string *, E_Directie *);
 
-    void DezalocareArbore(Nod);
+    void
+    DezalocareArbore(Nod);
 
 public:
     struct NodDto // data transfer object
@@ -66,11 +75,12 @@ public:
 
     ~ArboreBinar();
 
-    NodDto GetInformatiiNodCurent();
+    NodDto
+    GetInformatiiNodCurent();
 
-    void SalvareNod(string, string, string);
+    void
+    SalvareNod(string, string, string);
 
 };
-
 
 #endif
