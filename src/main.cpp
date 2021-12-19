@@ -12,6 +12,8 @@
 #include "ftxui/dom/elements.hpp"                // pentru text, Element, operator| (supraincarcare), window, flex, vbox
 #include "ftxui/util/ref.hpp"                    // pentru clasa Ref
 
+#include "../lib/ArboreBinar.h"
+
 using namespace ftxui;
 using namespace std;
 
@@ -51,6 +53,8 @@ Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
 
 int main(int argc, const char *argv[])
 {
+    ArboreBinar arboreBinar;
+
     auto screen = ScreenInteractive::Fullscreen();
     // Am declarat variabilele in care se vor stoca valorile aferente nodului curent
     string val_nod{}, val_copil_stang{}, val_copil_drept{};
@@ -67,7 +71,14 @@ int main(int argc, const char *argv[])
 
     auto buton_salvare_nod = Container::Horizontal({
                                                            Button("[Salveaza si adauga nod]", [&]
-                                                                  { /* TODO: urmeaza sa adaugam logica aici */ },
+                                                                  {
+                                                                      arboreBinar.SalvareNod(val_nod, val_copil_stang, val_copil_drept);
+                                                                      auto informatii_nod_crt = arboreBinar.GetInformatiiNodCurent();
+                                                                      val_nod = informatii_nod_crt._informatie_nod;
+                                                                      val_copil_stang = informatii_nod_crt._informatie_descendent_stang;
+                                                                      val_copil_drept = informatii_nod_crt._informatie_descendent_drept;
+
+                                                                  },
                                                                   &optiune_buton_salv_nod),
                                                    });
 
