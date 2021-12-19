@@ -2,51 +2,59 @@
 #define PROIECT_FINAL_ARBOREBINAR_H
 
 #include <string>
+#include <stdexcept>
 
 using std::string;
-
-// Convenții:
-// 1) Directie: true = stânga, false = dreapta
 
 class ArboreBinar
 {
 private:
-// --- Structuri ---
-    struct Celula
+    enum E_Directie
     {
+        Stanga,
+        Dreapta,
+        Sus,
+    };
+
+    class Celula
+    {
+    public:
         string _informatie;
         Celula *_stanga;
         Celula *_dreapta;
+        E_Directie _directie;
+
+        Celula(string);
+
+        Celula(string, Celula *, Celula *, E_Directie);
     };
+
     typedef Celula *Nod;
 
-// --- Membrii ---
     Nod _radacina;
     Nod _nod_curent;
 
-    bool _directie;
-
-// --- Metode ---
     Nod CreareNod(string);
 
-    Nod CreareNod(string, string, bool);
+    Nod CreareNod(string, string, E_Directie);
 
     Nod CreareNod(string, string, string);
 
-    void DeplasareInapoiNodCurent(Nod);
+    Nod RouterCreareNod(string, string *, string *, E_Directie *);
 
-    void RouterSalvareNod(string, string *, string *, bool *);
+    void EditareNodCurentExistent(Nod);
+
+    bool NoduriCuInformatiiEgale(Nod, Nod);
+
+    void DeplasareNodCurentSus(Nod);
+
+    bool DeplasareNodCurent(E_Directie);
+
+    void SalvareNod(string, string *, string *, E_Directie *);
 
     void DezalocareArbore(Nod);
 
-    Nod GetNodNouRouter(string, string *, string *, bool *);
-
-    bool MutaNodCurentDacaEstePosibil(bool, bool);
-
-    void MutaNodCurentAbiaAdaugat();
-
 public:
-// --- Structuri ---
     struct NodDto // data transfer object
     {
         string _informatie_nod;
@@ -54,12 +62,10 @@ public:
         string _informatie_descendent_drept;
     };
 
-// --- Constructori ---
     ArboreBinar();
 
     ~ArboreBinar();
 
-// --- Metode ---
     NodDto GetInformatiiNodCurent();
 
     void SalvareNod(string, string, string);

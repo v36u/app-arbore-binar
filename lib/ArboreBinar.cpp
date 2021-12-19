@@ -4,7 +4,6 @@ ArboreBinar::ArboreBinar()
 {
     this->_radacina = nullptr;
     this->_nod_curent = nullptr;
-    this->_directie = true;
 }
 
 ArboreBinar::~ArboreBinar()
@@ -12,50 +11,134 @@ ArboreBinar::~ArboreBinar()
     DezalocareArbore(this->_radacina);
 }
 
-ArboreBinar::Nod
-ArboreBinar::CreareNod(string p_informatie_nod)
+ArboreBinar::Celula::Celula(string p_informatie) : Celula(p_informatie, nullptr, nullptr, E_Directie::Stanga)
+{}
+
+ArboreBinar::Celula::Celula(string p_informatie, Celula *p_descendent_stang, Celula *p_descendent_drept, E_Directie p_directie)
 {
-    if (p_informatie_nod.empty())
-    {
-        return nullptr;
-    }
-    return new Celula{
-            ._informatie = p_informatie_nod,
-            ._stanga = nullptr,
-            ._dreapta = nullptr
-    };
+    this->_stanga = p_descendent_stang;
+    this->_dreapta = p_descendent_drept;
+    this->_informatie = p_informatie;
+    this->_directie = p_directie;
 }
 
 ArboreBinar::Nod
-ArboreBinar::CreareNod(string p_informatie_nod, string p_informatie_descendent, bool p_directie)
+ArboreBinar::CreareNod(string p_informatie_nod)
 {
-    if (p_informatie_nod.empty())
-    {
-        return nullptr;
-    }
-    return new Celula{
-            ._informatie = p_informatie_nod,
-            ._stanga = !p_directie ? this->CreareNod(p_informatie_descendent) : nullptr,
-            ._dreapta = p_directie ? this->CreareNod(p_informatie_descendent) : nullptr
-    };
+    return new Celula(p_informatie_nod);
+}
+
+ArboreBinar::Nod
+ArboreBinar::CreareNod(string p_informatie_nod, string p_informatie_descendent, E_Directie p_directie)
+{
+    return
+            new Celula(p_informatie_nod,
+                       p_directie == E_Directie::Stanga ? this->CreareNod(p_informatie_descendent) : nullptr,
+                       p_directie == E_Directie::Dreapta ? this->CreareNod(p_informatie_descendent) : nullptr,
+                       this->_nod_curent != nullptr ? this->_nod_curent->_directie : E_Directie::Stanga
+            );
 }
 
 ArboreBinar::Nod
 ArboreBinar::CreareNod(string p_informatie_nod, string p_informatie_descendent_stang, string p_informatie_descendent_drept)
 {
-    if (p_informatie_nod.empty())
+    return
+            new Celula(p_informatie_nod,
+                       this->CreareNod(p_informatie_descendent_stang),
+                       this->CreareNod(p_informatie_descendent_drept),
+                       this->_nod_curent != nullptr ? this->_nod_curent->_directie : E_Directie::Stanga
+            );
+}
+
+ArboreBinar::Nod
+ArboreBinar::RouterCreareNod(string p_informatie_nod, string *p_informatie_descendent_1, string *p_informatie_descendent_2, E_Directie *p_directie)
+{
+    if (p_informatie_descendent_1 != nullptr && p_informatie_descendent_2 != nullptr)
     {
-        return nullptr;
+        return this->CreareNod(p_informatie_nod, *p_informatie_descendent_1, *p_informatie_descendent_2);
     }
-    return new Celula{
-            ._informatie = p_informatie_nod,
-            ._stanga = this->CreareNod(p_informatie_descendent_stang),
-            ._dreapta = this->CreareNod(p_informatie_descendent_drept)
-    };
+    if (p_directie == nullptr)
+    {
+        return this->CreareNod(p_informatie_nod);
+    }
+    if (p_informatie_descendent_1 != nullptr)
+    {
+        return this->CreareNod(p_informatie_nod, *p_informatie_descendent_1, *p_directie);
+    }
+    if (p_informatie_descendent_2 != nullptr)
+    {
+        return this->CreareNod(p_informatie_nod, *p_informatie_descendent_2, *p_directie);
+    }
+    return this->CreareNod(p_informatie_nod);
 }
 
 void
-ArboreBinar::DeplasareInapoiNodCurent(Nod p_nod)
+ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
+{
+    this->_nod_curent->_informatie = p_nod->_informatie;
+    if (p_nod->_stanga != nullptr)
+    {
+        if (this->_nod_curent->_stanga == nullptr)
+        {
+            this->_nod_curent->_stanga = p_nod->_stanga;
+        } else
+        {
+            this->_nod_curent->_stanga->_informatie = p_nod->_stanga->_informatie;
+        }
+    }
+    if (p_nod->_dreapta != nullptr)
+    {
+        if (this->_nod_curent->_dreapta == nullptr)
+        {
+            this->_nod_curent->_dreapta = p_nod->_dreapta;
+        } else
+        {
+            this->_nod_curent->_dreapta->_informatie = p_nod->_dreapta->_informatie;
+        }
+    }
+}
+
+bool
+ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod p_nod_2)
+{
+    if ((p_nod_1 == nullptr) != (p_nod_2 == nullptr))
+    {
+        return false;
+    }
+    if ((p_nod_1->_stanga == nullptr) != (p_nod_2->_stanga == nullptr))
+    {
+        return false;
+    }
+    if ((p_nod_1->_dreapta == nullptr) != (p_nod_2->_dreapta == nullptr))
+    {
+        return false;
+    }
+    if (p_nod_1 != nullptr) //=> p_nod_2 != nullptr
+    {
+        if (p_nod_1->_informatie != p_nod_2->_informatie)
+        {
+            return false;
+        }
+        if (p_nod_1->_stanga != nullptr) //=> p_nod_2->_stanga != nullptr
+        {
+            if (p_nod_1->_stanga->_informatie != p_nod_2->_stanga->_informatie)
+            {
+                return false;
+            }
+        }
+        if (p_nod_1->_dreapta != nullptr) //=> p_nod_2->_dreapta != nullptr
+        {
+            if (p_nod_1->_dreapta->_informatie != p_nod_2->_dreapta->_informatie)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void
+ArboreBinar::DeplasareNodCurentSus(Nod p_nod)
 {
     if (p_nod == nullptr)
     {
@@ -70,131 +153,80 @@ ArboreBinar::DeplasareInapoiNodCurent(Nod p_nod)
 
     if (p_nod->_stanga != nullptr)
     {
-        this->DeplasareInapoiNodCurent(p_nod->_stanga);
+        this->DeplasareNodCurentSus(p_nod->_stanga);
     }
 
     if (p_nod->_dreapta != nullptr)
     {
-        this->DeplasareInapoiNodCurent(p_nod->_dreapta);
+        this->DeplasareNodCurentSus(p_nod->_dreapta);
     }
 }
 
-ArboreBinar::Nod
-ArboreBinar::GetNodNouRouter(string p_informatie_nod, string *p_informatie_descendent_1, string *p_informatie_descendent_2, bool *p_directie)
+bool
+ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
 {
-    if (p_informatie_descendent_1 != nullptr && p_informatie_descendent_2 != nullptr)
+    if (p_directie == E_Directie::Stanga)
     {
-        return this->CreareNod(p_informatie_nod, *p_informatie_descendent_1, *p_informatie_descendent_2);
+        this->_nod_curent->_directie = E_Directie::Dreapta;
+        if (this->_nod_curent->_stanga != nullptr)
+        {
+            this->_nod_curent = this->_nod_curent->_stanga;
+            return true;
+        }
+        return false;
     }
-    if (!p_directie)
+    if (p_directie == E_Directie::Dreapta)
     {
-        return this->CreareNod(p_informatie_nod);
+
+        if (this->_nod_curent != this->_radacina)
+        {
+            this->_nod_curent->_directie = E_Directie::Sus;
+        } else
+        {
+            this->_nod_curent->_directie = E_Directie::Stanga;
+        }
+        if (this->_nod_curent->_dreapta != nullptr)
+        {
+            this->_nod_curent = this->_nod_curent->_dreapta;
+            return true;
+        }
+        return false;
     }
-    if (p_informatie_descendent_1 != nullptr)
+    if (p_directie == E_Directie::Sus)
     {
-        this->CreareNod(p_informatie_nod, *p_informatie_descendent_1, *p_directie);
+        this->_nod_curent->_directie = E_Directie::Stanga;
+        this->DeplasareNodCurentSus(this->_radacina);
+        return true;
     }
-    if (p_informatie_descendent_2 != nullptr)
-    {
-        this->CreareNod(p_informatie_nod, *p_informatie_descendent_2, *p_directie);
-    }
-    return this->CreareNod(p_informatie_nod);
+    return false;
 }
 
 void
-ArboreBinar::RouterSalvareNod(string p_informatie_nod, string *p_informatie_descendent_1, string *p_informatie_descendent_2, bool *p_directie)
+ArboreBinar::SalvareNod(string p_informatie_nod, string *p_informatie_descendent_1, string *p_informatie_descendent_2, E_Directie *p_directie)
 {
-    auto nod_nou = GetNodNouRouter(p_informatie_nod, p_informatie_descendent_1, p_informatie_descendent_2, p_directie);
+    auto nod_nou = RouterCreareNod(p_informatie_nod, p_informatie_descendent_1, p_informatie_descendent_2, p_directie);
 
-    if (this->_radacina == nullptr)
+    if (NoduriCuInformatiiEgale(this->_nod_curent, nod_nou))
     {
-        if (nod_nou != nullptr)
+        if (this->_nod_curent->_directie == E_Directie::Stanga && this->_nod_curent->_stanga == nullptr ||
+            this->_nod_curent->_directie == E_Directie::Dreapta && this->_nod_curent->_dreapta == nullptr)
         {
-            this->_radacina = nod_nou;
-            this->_nod_curent = this->_radacina;
-
-            bool mutare_executata = this->MutaNodCurentDacaEstePosibil(true, false);
-            if (!mutare_executata)
-            {
-                this->_directie = false;
-            }
-        }
-    } else if (this->_directie)
-    {
-        if (nod_nou != nullptr)
+            this->DeplasareNodCurent(E_Directie::Sus);
+        } else
         {
-            if (this->_nod_curent->_stanga != nullptr)
-            {
-                this->_nod_curent->_stanga->_informatie = nod_nou->_informatie;
-                if (this->_nod_curent->_stanga->_stanga != nullptr)
-                {
-                    if (nod_nou->_stanga != nullptr)
-                    {
-                        this->_nod_curent->_stanga->_stanga->_informatie = nod_nou->_stanga->_informatie;
-                    }
-                } else
-                {
-                    this->_nod_curent->_stanga->_stanga = nod_nou->_stanga;
-                }
-                if (this->_nod_curent->_stanga->_dreapta != nullptr)
-                {
-                    if (nod_nou->_dreapta != nullptr)
-                    {
-                        this->_nod_curent->_stanga->_dreapta->_informatie = nod_nou->_dreapta->_informatie;
-                    }
-                } else
-                {
-                    this->_nod_curent->_stanga->_dreapta = nod_nou->_dreapta;
-                }
-            } else
-            {
-                this->_nod_curent->_stanga = nod_nou;
-            }
-        }
-        bool mutare_executata = this->MutaNodCurentDacaEstePosibil(true, nod_nou != nullptr);
-        if (!mutare_executata)
-        {
-            this->_directie = false;
+            this->DeplasareNodCurent(this->_nod_curent->_directie);
         }
     } else
     {
-        if (nod_nou != nullptr)
+        if (this->_radacina == nullptr)
         {
-            if (this->_nod_curent->_dreapta != nullptr)
-            {
-                this->_nod_curent->_dreapta->_informatie = nod_nou->_informatie;
-                if (this->_nod_curent->_dreapta->_stanga != nullptr)
-                {
-                    if (nod_nou->_stanga != nullptr)
-                    {
-                        this->_nod_curent->_dreapta->_stanga->_informatie = nod_nou->_stanga->_informatie;
-                    }
-                } else
-                {
-                    this->_nod_curent->_dreapta->_stanga = nod_nou->_stanga;
-                }
-                if (this->_nod_curent->_dreapta->_dreapta != nullptr)
-                {
-                    if (nod_nou->_dreapta != nullptr)
-                    {
-                        this->_nod_curent->_dreapta->_dreapta->_informatie = nod_nou->_dreapta->_informatie;
-                    }
-                } else
-                {
-                    this->_nod_curent->_dreapta->_dreapta = nod_nou->_dreapta;
-                }
-            } else
-            {
-                this->_nod_curent->_dreapta = nod_nou;
-            }
+            this->_nod_curent = this->_radacina = nod_nou;
         }
-        bool mutare_executata = this->MutaNodCurentDacaEstePosibil(false, nod_nou != nullptr);
-        if (mutare_executata)
+        this->EditareNodCurentExistent(nod_nou);
+
+        if (!this->DeplasareNodCurent(E_Directie::Stanga))
         {
-            this->_directie = true;
-        } else
-        {
-            this->DeplasareInapoiNodCurent(this->_radacina);
+            this->DeplasareNodCurent(E_Directie::Dreapta);
         }
     }
 
@@ -222,41 +254,6 @@ ArboreBinar::DezalocareArbore(Nod p_nod)
     }
 
     delete p_nod;
-}
-
-bool
-ArboreBinar::MutaNodCurentDacaEstePosibil(bool p_directie, bool p_abia_adaugat)
-{
-    if (p_directie && this->_nod_curent->_stanga != nullptr)
-    {
-        this->_nod_curent = this->_nod_curent->_stanga;
-        if (p_abia_adaugat)
-        {
-            MutaNodCurentAbiaAdaugat();
-        }
-        return true;
-    }
-    if (!p_directie && this->_nod_curent->_dreapta != nullptr)
-    {
-        this->_nod_curent = this->_nod_curent->_dreapta;
-        if (p_abia_adaugat)
-        {
-            MutaNodCurentAbiaAdaugat();
-        }
-        return true;
-    }
-    return false;
-}
-
-void ArboreBinar::MutaNodCurentAbiaAdaugat()
-{
-    if (this->_nod_curent->_stanga != nullptr)
-    {
-        this->_nod_curent = this->_nod_curent->_stanga;
-    } else if (this->_nod_curent->_dreapta != nullptr)
-    {
-        this->_nod_curent = this->_nod_curent->_dreapta;
-    }
 }
 
 ArboreBinar::NodDto
@@ -294,21 +291,21 @@ ArboreBinar::SalvareNod(string p_informatie_nod, string p_informatie_descendent_
 
     if (descendent_stang_fara_informatie && descendent_drept_fara_informatie)
     {
-        this->RouterSalvareNod(p_informatie_nod, nullptr, nullptr, nullptr);
+        this->SalvareNod(p_informatie_nod, nullptr, nullptr, nullptr);
         return;
     }
 
     if (descendent_stang_fara_informatie)
     {
-        this->RouterSalvareNod(p_informatie_nod, nullptr, new string{p_informatie_descendent_stang}, new bool{true});
+        this->SalvareNod(p_informatie_nod, nullptr, new string{p_informatie_descendent_drept}, new E_Directie{this->Dreapta});
         return;
     }
 
     if (descendent_drept_fara_informatie)
     {
-        this->RouterSalvareNod(p_informatie_nod, new string{p_informatie_descendent_stang}, nullptr, new bool{false});
+        this->SalvareNod(p_informatie_nod, new string{p_informatie_descendent_stang}, nullptr, new E_Directie{this->Stanga});
         return;
     }
 
-    this->RouterSalvareNod(p_informatie_nod, new string{p_informatie_descendent_stang}, new string{p_informatie_descendent_drept}, nullptr);
+    this->SalvareNod(p_informatie_nod, new string{p_informatie_descendent_stang}, new string{p_informatie_descendent_drept}, nullptr);
 }
