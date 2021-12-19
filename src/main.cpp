@@ -282,10 +282,8 @@ int main(int argc, const char *argv[])
                     elemente_parcurse.push_back(hbox({text("→") | center, text(vector_noduri_parcurse[i]) | border}));
                 }
             }
-
-
+            
             parte_intreaga = elemente_parcurse.size() / 10;
-
 
             if (parte_intreaga > 1)
             {
