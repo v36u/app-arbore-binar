@@ -93,10 +93,54 @@ int main(int argc, const char *argv[])
     AfisareDetaliiNodCurent(arbore_testare);
     arbore_testare->SalvareNod("B", "D", "F");
     AfisareDetaliiNodCurent(arbore_testare);
-    arbore_testare->SalvareNod("F", "", "");
-    AfisareDetaliiNodCurent(arbore_testare);
-    arbore_testare->SalvareNod("B", "D", "F");
-    AfisareDetaliiNodCurent(arbore_testare);
+
+    auto preordine_de_la_radacina = arbore_testare->ParcurgerePreordineDeLaRadacina();
+    cout << endl << "Preordine de la radacina: ";
+    for (auto elem: preordine_de_la_radacina)
+    {
+        cout << elem << ' ';
+    }
+    cout << endl;
+
+    auto preordine_de_la_nodul_curent = arbore_testare->ParcurgerePreordineDeLaNodulCurent();
+    cout << endl << "Preordine de la nodul curent: ";
+    for (auto elem: preordine_de_la_nodul_curent)
+    {
+        cout << elem << ' ';
+    }
+    cout << endl;
+
+    auto inordine_de_la_radacina = arbore_testare->ParcurgereInordineDeLaRadacina();
+    cout << endl << "Inordine de la radacina: ";
+    for (auto elem: inordine_de_la_radacina)
+    {
+        cout << elem << ' ';
+    }
+    cout << endl;
+
+    auto inordine_de_la_nodul_curent = arbore_testare->ParcurgereInordineDeLaNodulCurent();
+    cout << endl << "Inordine de la nodul curent: ";
+    for (auto elem: inordine_de_la_nodul_curent)
+    {
+        cout << elem << ' ';
+    }
+    cout << endl;
+
+    auto postordine_de_la_radacina = arbore_testare->ParcurgerePostordineDeLaRadacina();
+    cout << endl << "Postordine de la radacina: ";
+    for (auto elem: postordine_de_la_radacina)
+    {
+        cout << elem << ' ';
+    }
+    cout << endl;
+
+    auto postordine_de_la_nodul_curent = arbore_testare->ParcurgerePostordineDeLaNodulCurent();
+    cout << endl << "Postordine de la nodul curent: ";
+    for (auto elem: postordine_de_la_nodul_curent)
+    {
+        cout << elem << ' ';
+    }
+    cout << endl;
 
     delete arbore_testare;
 

@@ -268,6 +268,60 @@ ArboreBinar::DezalocareArbore(Nod p_nod)
     delete p_nod;
 }
 
+vector<string>
+ArboreBinar::RSD(ArboreBinar::Nod p_nod)
+{
+    if (p_nod == nullptr)
+    {
+        return vector<string>();
+    }
+
+    vector<string> vector_stanga = this->RSD(p_nod->_stanga);
+    vector<string> vector_dreapta = this->RSD(p_nod->_dreapta);
+
+    vector<string> vector_rsd = vector({p_nod->_informatie});
+    vector_rsd.insert(vector_rsd.end(), vector_stanga.begin(), vector_stanga.end());
+    vector_rsd.insert(vector_rsd.end(), vector_dreapta.begin(), vector_dreapta.end());
+
+    return vector_rsd;
+}
+
+vector<string>
+ArboreBinar::SRD(ArboreBinar::Nod p_nod)
+{
+    if (p_nod == nullptr)
+    {
+        return vector<string>();
+    }
+
+    vector<string> vector_stanga = this->SRD(p_nod->_stanga);
+    vector<string> vector_dreapta = this->SRD(p_nod->_dreapta);
+
+    vector<string> vector_srd = vector(vector_stanga.begin(), vector_stanga.end());
+    vector_srd.push_back(p_nod->_informatie);
+    vector_srd.insert(vector_srd.end(), vector_dreapta.begin(), vector_dreapta.end());
+
+    return vector_srd;
+}
+
+vector<string>
+ArboreBinar::SDR(ArboreBinar::Nod p_nod)
+{
+    if (p_nod == nullptr)
+    {
+        return vector<string>();
+    }
+
+    vector<string> vector_stanga = this->SDR(p_nod->_stanga);
+    vector<string> vector_dreapta = this->SDR(p_nod->_dreapta);
+
+    vector<string> vector_sdr = vector(vector_stanga.begin(), vector_stanga.end());
+    vector_sdr.insert(vector_sdr.end(), vector_dreapta.begin(), vector_dreapta.end());
+    vector_sdr.push_back(p_nod->_informatie);
+
+    return vector_sdr;
+}
+
 ArboreBinar::NodDto
 ArboreBinar::GetInformatiiNodCurent()
 {
@@ -320,4 +374,40 @@ ArboreBinar::SalvareNod(string p_informatie_nod, string p_informatie_descendent_
     }
 
     this->SalvareNod(p_informatie_nod, new string{p_informatie_descendent_stang}, new string{p_informatie_descendent_drept}, nullptr);
+}
+
+vector<string>
+ArboreBinar::ParcurgerePreordineDeLaRadacina()
+{
+    return this->RSD(this->_radacina);
+}
+
+vector<string>
+ArboreBinar::ParcurgerePreordineDeLaNodulCurent()
+{
+    return this->RSD(this->_nod_curent);
+}
+
+vector<string>
+ArboreBinar::ParcurgereInordineDeLaRadacina()
+{
+    return this->SRD(this->_radacina);
+}
+
+vector<string>
+ArboreBinar::ParcurgereInordineDeLaNodulCurent()
+{
+    return this->SRD(this->_nod_curent);
+}
+
+vector<string>
+ArboreBinar::ParcurgerePostordineDeLaRadacina()
+{
+    return this->SDR(this->_radacina);
+}
+
+vector<string>
+ArboreBinar::ParcurgerePostordineDeLaNodulCurent()
+{
+    return this->SDR(this->_nod_curent);
 }

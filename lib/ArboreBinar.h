@@ -2,8 +2,10 @@
 #define PROIECT_FINAL_ARBOREBINAR_H
 
 #include <string>
+#include <vector>
 
 using std::string;
+using std::vector;
 
 class ArboreBinar
 {
@@ -63,6 +65,15 @@ private:
     void
     DezalocareArbore(Nod);
 
+    vector<string>
+    RSD(Nod); //=> Rădăcină, Stânga, Dreapta
+
+    vector<string>
+    SRD(Nod); //=> Stânga, Rădăcină, Dreapta
+
+    vector<string>
+    SDR(Nod); //=> Stânga, Dreapta, Rădăcină
+
 public:
     struct NodDto // data transfer object
     {
@@ -80,6 +91,24 @@ public:
 
     void
     SalvareNod(string, string, string);
+
+    vector<string>
+    ParcurgerePreordineDeLaRadacina();
+
+    vector<string>
+    ParcurgerePreordineDeLaNodulCurent();
+
+    vector<string>
+    ParcurgereInordineDeLaRadacina();
+
+    vector<string>
+    ParcurgereInordineDeLaNodulCurent();
+
+    vector<string>
+    ParcurgerePostordineDeLaRadacina();
+
+    vector<string>
+    ParcurgerePostordineDeLaNodulCurent();
 
 };
 
