@@ -53,7 +53,7 @@ Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
 
 int main(int argc, const char *argv[])
 {
-    ArboreBinar arboreBinar;
+    ArboreBinar arbore_binar;
 
     auto screen = ScreenInteractive::Fullscreen();
     // Am declarat variabilele in care se vor stoca valorile aferente nodului curent
@@ -72,12 +72,11 @@ int main(int argc, const char *argv[])
     auto buton_salvare_nod = Container::Horizontal({
                                                            Button("[Salveaza si adauga nod]", [&]
                                                                   {
-                                                                      arboreBinar.SalvareNod(val_nod, val_copil_stang, val_copil_drept);
-                                                                      auto informatii_nod_crt = arboreBinar.GetInformatiiNodCurent();
+                                                                      arbore_binar.SalvareNod(val_nod, val_copil_stang, val_copil_drept);
+                                                                      auto informatii_nod_crt = arbore_binar.GetInformatiiNodCurent();
                                                                       val_nod = informatii_nod_crt._informatie_nod;
                                                                       val_copil_stang = informatii_nod_crt._informatie_descendent_stang;
                                                                       val_copil_drept = informatii_nod_crt._informatie_descendent_drept;
-
                                                                   },
                                                                   &optiune_buton_salv_nod),
                                                    });
@@ -230,55 +229,85 @@ int main(int argc, const char *argv[])
     });
 
     // Sectiune care se ocupa cu randarea meniului cu traversari
-    int selectat = 0;
+    int parcurgere_selectata = 0;
     MenuOption optiuni_meniu;
     optiuni_meniu.style_selected = color(Color::CadetBlue);
     optiuni_meniu.style_focused = bgcolor(Color::CadetBlue);
     optiuni_meniu.style_selected_focused = bgcolor(Color::CadetBlue);
 
-    vector<string> elemente_meniu_travers = {"Preordine", "Inordine", "Postordine", "In adancime"};
+    vector<string> elemente_meniu_parcurgeri = {"Preordine", "Inordine", "Postordine", "In adancime"};
 
-    auto meniu_traversari = Menu(&elemente_meniu_travers, &selectat, &optiuni_meniu);
-
-    vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "123", "300", "123", "300", "123", "300",
-                                                    "123", "300", "123", "300", "100", "200", "300", "123", "300",
-                                                    "123", "300", "123", "123"};
-
-    Elements elemente_parcurse;
-
-    elemente_parcurse.push_back(hbox((text(elemente_parcurse_placeholder.front()) | border)));
-    for (int i = 1; i < elemente_parcurse_placeholder.size(); i++)
-    {
-        elemente_parcurse.push_back(hbox({text("→") | center, text(elemente_parcurse_placeholder[i]) | border}));
-    }
+    auto meniu_traversari = Menu(&elemente_meniu_parcurgeri, &parcurgere_selectata, &optiuni_meniu);
 
 
-    size_t parte_intreaga = elemente_parcurse.size() / 10;
 
-    Elements vector_final;
-
-    if (parte_intreaga > 1)
-    {
-        vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, parte_intreaga);
-        vector_final = AfisareElementeParcurseImpartite(vector_out);
-    } else
-    {
-        vector_final = elemente_parcurse;
-    }
 
     // Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
     auto reprezentare_grafica = Renderer(meniu_traversari, [&]
     {
+        auto informatii_nod = arbore_binar.GetInformatiiNodCurent();
+        vector<string> vector_noduri_parcurse{};
+        if (parcurgere_selectata == 0 && !informatii_nod._informatie_nod.empty())
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
+        } else if (parcurgere_selectata == 1 && !informatii_nod._informatie_nod.empty())
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
+        } else if (parcurgere_selectata == 2 && !informatii_nod._informatie_nod.empty())
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
+        } else
+        {
+            vector_noduri_parcurse = {"eroare"};
+        }
+
+
+        Elements elemente_parcurse, vector_final;
+        size_t parte_intreaga{};
+        if (!informatii_nod._informatie_nod.empty() && !vector_noduri_parcurse.empty())
+        {
+            if (vector_noduri_parcurse.front().compare(informatii_nod._informatie_nod) == 0)
+                elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front()) | border | color(Color::BlueLight))));
+            else
+            {
+                elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front()) | border)));
+            }
+
+            for (int i = 1; i < vector_noduri_parcurse.size(); i++)
+            {
+                if (vector_noduri_parcurse[i].compare(informatii_nod._informatie_nod) == 0)
+                    elemente_parcurse.push_back(hbox({text("→") | center, text(vector_noduri_parcurse[i]) | border | color(Color::BlueLight)}));
+                else
+                {
+                    elemente_parcurse.push_back(hbox({text("→") | center, text(vector_noduri_parcurse[i]) | border}));
+                }
+            }
+
+
+            parte_intreaga = elemente_parcurse.size() / 10;
+
+
+            if (parte_intreaga > 1)
+            {
+                vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, parte_intreaga);
+                vector_final = AfisareElementeParcurseImpartite(vector_out);
+            } else
+            {
+                vector_final = elemente_parcurse;
+            }
+        }
+
         return window(text("Arbore Binar - Reprezentare Grafica"),//
                       vbox({hbox({}),
                             filler(),
                             filler(),
+                            !informatii_nod._informatie_nod.empty() ?
                             hbox({window(text("Meniu Parcurgere"),
                                          hbox({vbox({hbox(text(" ")),
                                                      hbox(vbox(text("Selectati parcurgerea: ")),
                                                           vbox({meniu_traversari->Render() | frame})),
                                                      hbox(text(" "))
-                                                    }) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 42),
+                                                    }) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 54),
                                                separator(),
                                                hbox({hbox({hbox(parte_intreaga > 1 ? vbox(vector_final) |
                                                                                      size(ftxui::WIDTH,
@@ -299,7 +328,10 @@ int main(int argc, const char *argv[])
                                                     })
                                               })
                                  )}
-                            )}
+                            ) : hbox({}) |
+                                size(ftxui::WIDTH,
+                                     ftxui::GREATER_THAN,
+                                     150)}
                       ));
     });
 
