@@ -220,13 +220,12 @@ ArboreBinar::SalvareNod(string p_informatie_nod, string *p_informatie_descendent
 
     if (NoduriCuInformatiiEgale(this->_nod_curent, nod_nou))
     {
-        if (this->_nod_curent->_directie == E_Directie::Stanga && this->_nod_curent->_stanga == nullptr ||
-            this->_nod_curent->_directie == E_Directie::Dreapta && this->_nod_curent->_dreapta == nullptr)
+        if (!this->DeplasareNodCurent(this->_nod_curent->_directie))
         {
-            this->DeplasareNodCurent(E_Directie::Sus);
-        } else
-        {
-            this->DeplasareNodCurent(this->_nod_curent->_directie);
+            if (!this->DeplasareNodCurent(this->_nod_curent->_directie))
+            {
+                this->DeplasareNodCurent(this->_nod_curent->_directie);
+            }
         }
     } else
     {
