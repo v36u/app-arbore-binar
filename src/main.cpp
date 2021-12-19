@@ -83,8 +83,6 @@ int main(int argc, const char *argv[])
 
     arbore_testare->SalvareNod("A", "B", "C");
     AfisareDetaliiNodCurent(arbore_testare);
-    arbore_testare->SalvareNod("B", "", "");
-    AfisareDetaliiNodCurent(arbore_testare);
     arbore_testare->SalvareNod("B", "D", "F");
     AfisareDetaliiNodCurent(arbore_testare);
     arbore_testare->SalvareNod("D", "E", "");
@@ -92,6 +90,10 @@ int main(int argc, const char *argv[])
     arbore_testare->SalvareNod("E", "", "");
     AfisareDetaliiNodCurent(arbore_testare);
     arbore_testare->SalvareNod("D", "E", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("B", "D", "F");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("F", "", "");
     AfisareDetaliiNodCurent(arbore_testare);
     arbore_testare->SalvareNod("B", "D", "F");
     AfisareDetaliiNodCurent(arbore_testare);
