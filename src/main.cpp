@@ -175,7 +175,7 @@ int main(int argc, const char *argv[])
                                                       vbox({
                                                                    hbox(text(" ")),
                                                                    hbox(text(val_nod.empty() ? "Nod curent: - " :
-                                                                             "Nod curent: " + val_nod)),
+                                                                             "Nod curent: "), text(val_nod) | color(Color::GreenLight)),
                                                                    hbox(text(
                                                                            val_copil_stang.empty() ? "Copil stang: - " :
                                                                            "Copil stang: " + val_copil_stang)),
