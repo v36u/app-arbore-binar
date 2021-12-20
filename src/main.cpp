@@ -274,7 +274,7 @@ int main(int argc, const char *argv[])
         if (!informatii_nod._informatie_nod.empty() && !vector_noduri_parcurse.empty())
         {
             if (vector_noduri_parcurse.front().compare(informatii_nod._informatie_nod) == 0)
-                elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front()) | border | color(Color::BlueLight))));
+                elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front()) | border | color(Color::GreenLight))));
             else
             {
                 elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front()) | border)));
@@ -283,7 +283,7 @@ int main(int argc, const char *argv[])
             for (int i = 1; i < vector_noduri_parcurse.size(); i++)
             {
                 if (vector_noduri_parcurse[i].compare(informatii_nod._informatie_nod) == 0)
-                    elemente_parcurse.push_back(hbox({text("→") | center, text(vector_noduri_parcurse[i]) | border | color(Color::BlueLight)}));
+                    elemente_parcurse.push_back(hbox({text("→") | center, text(vector_noduri_parcurse[i]) | border | color(Color::GreenLight)}));
                 else
                 {
                     elemente_parcurse.push_back(hbox({text("→") | center, text(vector_noduri_parcurse[i]) | border}));
