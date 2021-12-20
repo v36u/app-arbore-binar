@@ -190,18 +190,18 @@ int main(int argc, const char *argv[])
                                         ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
                                     });
     // Sectiune care se ocupa cu randarea ferestrei de Editare si Adaugare Nod Curent
-    auto tab_editare_nod = Renderer(proprietati_nod, [&]
-    {
-        return window(text("Editare si Adaugare Nod Curent"),//
-                      vbox({hbox(text(" ")),
-                            hbox(text("Nod Crt.: "), input_val_nod->Render()),
-                            hbox(text(" ")),
-                            separator(),
-                            hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
-                                                  : buton_salvare_nod->Render()}) | center
-                           })
-        ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
-    });
+//    auto tab_editare_nod = Renderer(proprietati_nod, [&]
+//    {
+//        return window(text("Editare si Adaugare Nod Curent"),//
+//                      vbox({hbox(text(" ")),
+//                            hbox(text("Nod Crt.: "), input_val_nod->Render()),
+//                            hbox(text(" ")),
+//                            separator(),
+//                            hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
+//                                                  : buton_salvare_nod->Render()}) | center
+//                           })
+//        ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
+//    });
 
     // Aici se definesc proprietatile care vor fi "pasate" in componenta de editare a copiilor nodului curent
     auto proprietati_copii = Container::Vertical({butoane_salvare_copii});
@@ -209,9 +209,15 @@ int main(int argc, const char *argv[])
     // Sectiune care se ocupa cu randarea ferestrei de Editare si Adaugare Copii Nod Curent
     auto tab_editare_copii = Renderer(proprietati_copii, [&]
     {
-        return window(text("Editare Copii Nod Curent"),//
+        return window(text("Editare Nod Curent"),//
                       vbox({hbox(text(" ")),
-                            hbox(text("Nod Crt. Selectat: " + val_nod)),
+                            hbox(text("Nod Crt.: "), input_val_nod->Render()),
+                            hbox(text(" ")),
+                            separator(),
+                            hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
+                                                  : buton_salvare_nod->Render()}) | center,
+
+                            separator(),
                             hbox(text(val_copil_stang.empty() && val_copil_drept.empty()
                                       ? "* Nodul curent nu are copii (frunza)"
                                       : "")) | color(Color::GreenLight),
@@ -282,7 +288,7 @@ int main(int argc, const char *argv[])
                     elemente_parcurse.push_back(hbox({text("→") | center, text(vector_noduri_parcurse[i]) | border}));
                 }
             }
-            
+
             parte_intreaga = elemente_parcurse.size() / 10;
 
             if (parte_intreaga > 1)
