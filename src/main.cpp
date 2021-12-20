@@ -154,10 +154,7 @@ int main(int argc, const char *argv[])
     // sfarsit sectiune
 
     // Aici se definesc proprietatile care vor fi "pasate" in componenta de editare a nodului
-    auto proprietati_nod = Container::Vertical({
-                                                       input_val_nod,
-                                                       buton_salvare_nod,
-                                               });
+
 
     // Sectiune care se ocupa cu randarea ferestrei Detalii Arbore
     auto tab_detalii_arbore = Renderer([&]
@@ -204,11 +201,15 @@ int main(int argc, const char *argv[])
 //    });
 
     // Aici se definesc proprietatile care vor fi "pasate" in componenta de editare a copiilor nodului curent
-    auto proprietati_copii = Container::Vertical({butoane_salvare_copii});
-
+    auto proprietati_nod = Container::Vertical({
+                                                       input_val_nod,
+                                                       buton_salvare_nod,
+                                                       butoane_salvare_copii
+                                               });
     // Sectiune care se ocupa cu randarea ferestrei de Editare si Adaugare Copii Nod Curent
-    auto tab_editare_copii = Renderer(proprietati_copii, [&]
+    auto tab_editare_copii = Renderer(proprietati_nod, [&]
     {
+
         return window(text("Editare Nod Curent"),//
                       vbox({hbox(text(" ")),
                             hbox(text("Nod Crt.: "), input_val_nod->Render()),
@@ -341,13 +342,12 @@ int main(int argc, const char *argv[])
 
     // Sectiune care se ocupa cu randarea intregului nivel de adancime 0 (Principal)
     auto container_adancime_0 = Container::Vertical(
-            {tab_detalii_arbore, tab_detalii_nod, tab_editare_nod, tab_editare_copii,
+            {tab_detalii_arbore, tab_detalii_nod, tab_editare_copii,
              reprezentare_grafica});
     auto randare_adancime_0 = Renderer(container_adancime_0, [&]
     {
         return hbox({hbox({vbox({tab_detalii_arbore->Render(),
                                  tab_detalii_nod->Render(),
-                                 tab_editare_nod->Render(),
                                  tab_editare_copii->Render(),
                                 })
                           }),
