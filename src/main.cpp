@@ -12,8 +12,6 @@
 #include "ftxui/dom/elements.hpp"                // pentru text, Element, operator| (supraincarcare), window, flex, vbox
 #include "ftxui/util/ref.hpp"                    // pentru clasa Ref
 
-#include "../lib/ArboreBinar.h"
-
 using namespace ftxui;
 using namespace std;
 
@@ -51,82 +49,8 @@ Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
     return vector_final;
 }
 
-void AfisareDetaliiNodCurent(ArboreBinar *p_arbore_test) // testing purposes
-{
-    auto informatii_nod_curent = p_arbore_test->GetInformatiiNodCurent();
-
-    auto informatie_nod = informatii_nod_curent._informatie_nod;
-    if (informatie_nod.empty())
-    {
-        cout << "\nNodul este gol.\n"; // asta ar trebui să se întâmple doar când nu există rădăcină
-        return;
-    }
-
-    auto informatie_stanga = informatii_nod_curent._informatie_descendent_stang;
-    if (informatie_stanga.empty())
-    {
-        informatie_stanga = "nullptr";
-    }
-
-    auto informatie_dreapta = informatii_nod_curent._informatie_descendent_drept;
-    if (informatie_dreapta.empty())
-    {
-        informatie_dreapta = "nullptr";
-    }
-
-    cout << '\n' << informatie_nod << ' ' << informatie_stanga << ' ' << informatie_dreapta << '\n';
-}
-
-void ShowStats(ArboreBinar *p_arbore_test)
-{
-    auto stats = p_arbore_test->GetStatisticiArbore();
-    cout << "\nNumar noduri: " << stats._numar_noduri;
-    cout << "\nNumar frunze: " << stats._numar_frunze;
-    cout << "\nNumar niveluri: " << stats._numar_niveluri;
-    cout << endl;
-}
-
 int main(int argc, const char *argv[])
 {
-    auto arbore_testare = new ArboreBinar();
-
-    arbore_testare->SalvareNod("A", "B", "C");
-    AfisareDetaliiNodCurent(arbore_testare);
-    ShowStats(arbore_testare);
-    arbore_testare->SalvareNod("B", "D", "F");
-    AfisareDetaliiNodCurent(arbore_testare);
-    ShowStats(arbore_testare);
-    arbore_testare->SalvareNod("D", "E", "");
-    AfisareDetaliiNodCurent(arbore_testare);
-    ShowStats(arbore_testare);
-    arbore_testare->SalvareNod("E", "", "");
-    AfisareDetaliiNodCurent(arbore_testare);
-    ShowStats(arbore_testare);
-    arbore_testare->SalvareNod("D", "E", "");
-    AfisareDetaliiNodCurent(arbore_testare);
-    ShowStats(arbore_testare);
-    arbore_testare->SalvareNod("B", "D", "F");
-    AfisareDetaliiNodCurent(arbore_testare);
-    ShowStats(arbore_testare);
-
-    auto latime_de_la_radacina = arbore_testare->ParcurgereInLatimeDeLaRadacina();
-    cout << endl << "Latime de la radacina: ";
-    for (auto elem: latime_de_la_radacina)
-    {
-        cout << elem << ' ';
-    }
-    cout << endl;
-
-    auto latime_de_la_nodul_curent = arbore_testare->ParcurgereInLatimeDeLaNodulCurent();
-    cout << endl << "Latime de la nodul curent: ";
-    for (auto elem: latime_de_la_nodul_curent)
-    {
-        cout << elem << ' ';
-    }
-    cout << endl;
-
-    return EXIT_SUCCESS;
-
     auto screen = ScreenInteractive::Fullscreen();
     // Am declarat variabilele in care se vor stoca valorile aferente nodului curent
     string val_nod{}, val_copil_stang{}, val_copil_drept{};
