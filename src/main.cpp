@@ -352,10 +352,8 @@ int main(int argc, const char *argv[])
                 );
             else
             {
-                elemente_parcurse.push_back(hbox(
-                                                    (text(vector_noduri_parcurse.front())
-                                                    )
-                                            )
+                elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front())) | border
+                                                 | center)
                 );
             }
 
