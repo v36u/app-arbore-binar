@@ -263,6 +263,7 @@ int main(int argc, const char *argv[])
         return vbox({hbox(text(" ")),
                      hbox(vbox(text("Selectati parcurgerea: ")),
                           vbox({container_meniu_parcurgeri->Render()})),
+                     hbox(text(" ")),
                      separator()
                     });
     });
@@ -343,19 +344,31 @@ int main(int argc, const char *argv[])
         if (!informatii_nod._informatie_nod.empty() && !vector_noduri_parcurse.empty())
         {
             if (vector_noduri_parcurse.front().compare(informatii_nod._informatie_nod) == 0)
-                elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front()) | border | color(Color::GreenLight))));
+                elemente_parcurse.push_back(
+                        hbox(hbox(text(vector_noduri_parcurse.front()))
+                             | border
+                             | color(Color::GreenLight)
+                             | center)
+                );
             else
             {
-                elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front()) | border)));
+                elemente_parcurse.push_back(hbox(
+                                                    (text(vector_noduri_parcurse.front())
+                                                    )
+                                            )
+                );
             }
 
             for (int i = 1; i < vector_noduri_parcurse.size(); i++)
             {
                 if (vector_noduri_parcurse[i].compare(informatii_nod._informatie_nod) == 0)
-                    elemente_parcurse.push_back(hbox({text("→") | center, text(vector_noduri_parcurse[i]) | border | color(Color::GreenLight)}));
+                    elemente_parcurse.push_back(hbox({text("→") | center,
+                                                      hbox(text(vector_noduri_parcurse[i])) | border |
+                                                      color(Color::GreenLight) | center}));
                 else
                 {
-                    elemente_parcurse.push_back(hbox({text("→") | center, text(vector_noduri_parcurse[i]) | border}));
+                    elemente_parcurse.push_back(
+                            hbox({text("→") | center, hbox(text(vector_noduri_parcurse[i])) | border | center}));
                 }
             }
 
@@ -378,14 +391,11 @@ int main(int argc, const char *argv[])
                             !informatii_nod._informatie_nod.empty() ?
                             hbox({
                                          window(text("Meniu Parcurgere"),
-                                                hbox({meniu_final_parcurgeri->Render() | size(ftxui::WIDTH, ftxui::GREATER_THAN, 54),
+                                                hbox({meniu_final_parcurgeri->Render() | size(ftxui::WIDTH, ftxui::GREATER_THAN, 70),
                                                       separator(),
                                                       hbox({
                                                                    hbox({hbox(parte_intreaga > 1 ?
-                                                                              vbox(vector_final)
-                                                                              | size(ftxui::WIDTH,
-                                                                                     ftxui::GREATER_THAN,
-                                                                                     150)
+                                                                              vbox(vector_final) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 115)
                                                                                                  :
                                                                               vbox({hbox(text(" ")),
                                                                                     hbox({text(
@@ -394,19 +404,16 @@ int main(int argc, const char *argv[])
                                                                                     hbox({vector_final}) |
                                                                                     center
 
-                                                                                   })
-                                                                              | size(ftxui::WIDTH,
-                                                                                     ftxui::GREATER_THAN,
-                                                                                     150))
+                                                                                   }) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 135))
                                                                         })
                                                            })
                                                      })
                                          )}
                             )
-                                                                    : hbox({}) | size(ftxui::WIDTH,
-                                                                                      ftxui::GREATER_THAN,
-                                                                                      150)}
-                      ));
+                                                                    : hbox({})}
+                      )) | size(ftxui::WIDTH,
+                                ftxui::GREATER_THAN,
+                                185);
     });
 
 // Sectiune care se ocupa cu randarea intregului nivel de adancime 0 (Principal)
