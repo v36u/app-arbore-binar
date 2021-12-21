@@ -5,6 +5,7 @@
 #include <vector>
 
 using std::string;
+using std::to_string;
 using std::vector;
 
 class ArboreBinar
@@ -21,13 +22,14 @@ private:
     {
     public:
         string _informatie;
+        unsigned short _nivel;
         Celula *_stanga;
         Celula *_dreapta;
         E_Directie _directie;
 
-        Celula(string);
+        Celula(string, unsigned short);
 
-        Celula(string, Celula *, Celula *, E_Directie);
+        Celula(string, unsigned short, Celula *, Celula *, E_Directie);
     };
 
     typedef Celula *Nod;
@@ -35,17 +37,24 @@ private:
     Nod _radacina;
     Nod _nod_curent;
 
-    Nod
-    CreareNod(string);
+    unsigned short _numar_noduri;
+    unsigned short _numar_frunze;
+    unsigned short _numar_niveluri;
 
     Nod
-    CreareNod(string, string, E_Directie);
+    CreareNod(string, unsigned short);
 
     Nod
-    CreareNod(string, string, string);
+    CreareNod(string, unsigned short, string, E_Directie);
 
     Nod
-    RouterCreareNod(string, string *, string *, E_Directie *);
+    CreareNod(string, unsigned short, string, string);
+
+    Nod
+    RouterCreareNod(string, unsigned short, string *, string *, E_Directie *);
+
+    bool
+    EsteFrunza(Nod);
 
     void
     EditareNodCurentExistent(Nod);
@@ -75,11 +84,18 @@ private:
     SDR(Nod); //=> Stânga, Dreapta, Rădăcină
 
 public:
-    struct NodDto // data transfer object
+    struct NodDto
     {
         string _informatie_nod;
         string _informatie_descendent_stang;
         string _informatie_descendent_drept;
+    };
+
+    struct StatisticiDto
+    {
+        string _numar_noduri;
+        string _numar_frunze;
+        string _numar_niveluri;
     };
 
     ArboreBinar();
@@ -88,6 +104,9 @@ public:
 
     NodDto
     GetInformatiiNodCurent();
+
+    StatisticiDto
+    GetStatisticiArbore();
 
     void
     SalvareNod(string, string, string);

@@ -4,6 +4,10 @@ ArboreBinar::ArboreBinar()
 {
     this->_radacina = nullptr;
     this->_nod_curent = nullptr;
+
+    this->_numar_noduri = 0;
+    this->_numar_frunze = 0;
+    this->_numar_niveluri = 0;
 }
 
 ArboreBinar::~ArboreBinar()
@@ -11,94 +15,163 @@ ArboreBinar::~ArboreBinar()
     this->DezalocareArbore(this->_radacina);
 }
 
-ArboreBinar::Celula::Celula(string p_informatie) : Celula(p_informatie, nullptr, nullptr, E_Directie::Stanga)
+ArboreBinar::Celula::Celula(string p_informatie, unsigned short p_nivel)
+        : Celula(p_informatie, p_nivel, nullptr, nullptr, E_Directie::Stanga)
 {}
 
-ArboreBinar::Celula::Celula(string p_informatie, Celula *p_descendent_stang, Celula *p_descendent_drept, E_Directie p_directie)
+ArboreBinar::Celula::Celula
+        (string p_informatie,
+         unsigned short p_nivel,
+         Celula *p_descendent_stang,
+         Celula *p_descendent_drept,
+         E_Directie p_directie)
 {
+    this->_informatie = p_informatie;
+    this->_nivel = p_nivel;
     this->_stanga = p_descendent_stang;
     this->_dreapta = p_descendent_drept;
-    this->_informatie = p_informatie;
     this->_directie = p_directie;
 }
 
 ArboreBinar::Nod
-ArboreBinar::CreareNod(string p_informatie_nod)
+ArboreBinar::CreareNod(string p_informatie_nod, unsigned short p_nivel)
 {
-    return new Celula(p_informatie_nod);
+    return new Celula(p_informatie_nod, p_nivel);
 }
 
 ArboreBinar::Nod
-ArboreBinar::CreareNod(string p_informatie_nod, string p_informatie_descendent, E_Directie p_directie)
+ArboreBinar::CreareNod
+        (string p_informatie_nod,
+         unsigned short p_nivel,
+         string p_informatie_descendent,
+         E_Directie p_directie)
 {
     return
             new Celula(p_informatie_nod,
-                       p_directie == E_Directie::Stanga ? this->CreareNod(p_informatie_descendent) : nullptr,
-                       p_directie == E_Directie::Dreapta ? this->CreareNod(p_informatie_descendent) : nullptr,
-                       this->_nod_curent != nullptr ? this->_nod_curent->_directie : E_Directie::Stanga
+
+                       p_nivel,
+
+                       p_directie == E_Directie::Stanga
+                       ? this->CreareNod(p_informatie_descendent, p_nivel + 1)
+                       : nullptr,
+
+                       p_directie == E_Directie::Dreapta
+                       ? this->CreareNod(p_informatie_descendent, p_nivel + 1)
+                       : nullptr,
+
+                       this->_nod_curent != nullptr
+                       ? this->_nod_curent->_directie
+                       : E_Directie::Stanga
             );
 }
 
 ArboreBinar::Nod
-ArboreBinar::CreareNod(string p_informatie_nod, string p_informatie_descendent_stang, string p_informatie_descendent_drept)
+ArboreBinar::CreareNod
+        (string p_informatie_nod,
+         unsigned short p_nivel,
+         string p_informatie_descendent_stang,
+         string p_informatie_descendent_drept)
 {
     return
             new Celula(p_informatie_nod,
-                       this->CreareNod(p_informatie_descendent_stang),
-                       this->CreareNod(p_informatie_descendent_drept),
-                       this->_nod_curent != nullptr ? this->_nod_curent->_directie : E_Directie::Stanga
+
+                       p_nivel,
+
+                       this->CreareNod(p_informatie_descendent_stang, p_nivel + 1),
+
+                       this->CreareNod(p_informatie_descendent_drept, p_nivel + 1),
+
+                       this->_nod_curent != nullptr
+                       ? this->_nod_curent->_directie
+                       : E_Directie::Stanga
             );
 }
 
 ArboreBinar::Nod
-ArboreBinar::RouterCreareNod(string p_informatie_nod, string *p_informatie_descendent_1, string *p_informatie_descendent_2, E_Directie *p_directie)
+ArboreBinar::RouterCreareNod
+        (string p_informatie_nod,
+         unsigned short p_nivel,
+         string *p_informatie_descendent_1,
+         string *p_informatie_descendent_2,
+         E_Directie *p_directie)
 {
     if (p_informatie_descendent_1 != nullptr && p_informatie_descendent_2 != nullptr)
     {
-        return this->CreareNod(p_informatie_nod, *p_informatie_descendent_1, *p_informatie_descendent_2);
+        return this->CreareNod(p_informatie_nod, p_nivel, *p_informatie_descendent_1, *p_informatie_descendent_2);
     }
 
     if (p_directie == nullptr)
     {
-        return this->CreareNod(p_informatie_nod);
+        return this->CreareNod(p_informatie_nod, p_nivel);
     }
 
     if (p_informatie_descendent_1 != nullptr)
     {
-        return this->CreareNod(p_informatie_nod, *p_informatie_descendent_1, *p_directie);
+        return this->CreareNod(p_informatie_nod, p_nivel, *p_informatie_descendent_1, *p_directie);
     }
 
     if (p_informatie_descendent_2 != nullptr)
     {
-        return this->CreareNod(p_informatie_nod, *p_informatie_descendent_2, *p_directie);
+        return this->CreareNod(p_informatie_nod, p_nivel, *p_informatie_descendent_2, *p_directie);
     }
 
-    return this->CreareNod(p_informatie_nod);
+    return this->CreareNod(p_informatie_nod, p_nivel);
+}
+
+bool
+ArboreBinar::EsteFrunza(ArboreBinar::Nod p_nod)
+{
+    return p_nod->_stanga == nullptr && p_nod->_dreapta == nullptr;
 }
 
 void
 ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
 {
     this->_nod_curent->_informatie = p_nod->_informatie;
+
     if (p_nod->_stanga != nullptr)
     {
         if (this->_nod_curent->_stanga == nullptr)
         {
             this->_nod_curent->_stanga = p_nod->_stanga;
+            this->_numar_noduri++;
+            if (this->_nod_curent->_dreapta != nullptr)
+            {
+                this->_numar_frunze++;
+            }
+            if (this->_nod_curent->_stanga->_nivel > this->_numar_niveluri)
+            {
+                this->_numar_niveluri = this->_nod_curent->_stanga->_nivel;
+            }
         } else
         {
             this->_nod_curent->_stanga->_informatie = p_nod->_stanga->_informatie;
         }
     }
+
     if (p_nod->_dreapta != nullptr)
     {
         if (this->_nod_curent->_dreapta == nullptr)
         {
             this->_nod_curent->_dreapta = p_nod->_dreapta;
+            this->_numar_noduri++;
+            if (this->_nod_curent->_stanga != nullptr)
+            {
+                this->_numar_frunze++;
+            }
+            if (this->_nod_curent->_dreapta->_nivel > this->_numar_niveluri)
+            {
+                this->_numar_niveluri = this->_nod_curent->_dreapta->_nivel;
+            }
         } else
         {
             this->_nod_curent->_dreapta->_informatie = p_nod->_dreapta->_informatie;
         }
+    }
+
+    if (!this->DeplasareNodCurent(E_Directie::Stanga))
+    {
+        this->DeplasareNodCurent(E_Directie::Dreapta);
     }
 }
 
@@ -108,6 +181,14 @@ ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod 
     if ((p_nod_1 == nullptr) != (p_nod_2 == nullptr))
     {
         return false;
+    } else if (p_nod_1 == nullptr) //=> p_nod_2 != nullptr
+    {
+        return false; // un nullptr nu ar trebui să fie considerat egal cu alt nullptr
+    }
+
+    if (p_nod_1->_informatie != p_nod_2->_informatie)
+    {
+        return false;
     }
 
     if ((p_nod_1->_stanga == nullptr) != (p_nod_2->_stanga == nullptr))
@@ -115,32 +196,24 @@ ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod 
         return false;
     }
 
+    if (p_nod_1->_stanga != nullptr) //=> p_nod_2->_stanga != nullptr
+    {
+        if (p_nod_1->_stanga->_informatie != p_nod_2->_stanga->_informatie)
+        {
+            return false;
+        }
+    }
+
     if ((p_nod_1->_dreapta == nullptr) != (p_nod_2->_dreapta == nullptr))
     {
         return false;
     }
 
-    if (p_nod_1 != nullptr) //=> p_nod_2 != nullptr
+    if (p_nod_1->_dreapta != nullptr) //=> p_nod_2->_dreapta != nullptr
     {
-        if (p_nod_1->_informatie != p_nod_2->_informatie)
+        if (p_nod_1->_dreapta->_informatie != p_nod_2->_dreapta->_informatie)
         {
             return false;
-        }
-
-        if (p_nod_1->_stanga != nullptr) //=> p_nod_2->_stanga != nullptr
-        {
-            if (p_nod_1->_stanga->_informatie != p_nod_2->_stanga->_informatie)
-            {
-                return false;
-            }
-        }
-
-        if (p_nod_1->_dreapta != nullptr) //=> p_nod_2->_dreapta != nullptr
-        {
-            if (p_nod_1->_dreapta->_informatie != p_nod_2->_dreapta->_informatie)
-            {
-                return false;
-            }
         }
     }
 
@@ -187,7 +260,6 @@ ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
 
     if (p_directie == E_Directie::Dreapta)
     {
-
         if (this->_nod_curent != this->_radacina)
         {
             this->_nod_curent->_directie = E_Directie::Sus;
@@ -214,32 +286,40 @@ ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
 }
 
 void
-ArboreBinar::SalvareNod(string p_informatie_nod, string *p_informatie_descendent_1, string *p_informatie_descendent_2, E_Directie *p_directie)
+ArboreBinar::SalvareNod
+        (string p_informatie_nod,
+         string *p_informatie_descendent_1,
+         string *p_informatie_descendent_2,
+         E_Directie *p_directie)
 {
-    auto nod_nou = this->RouterCreareNod(p_informatie_nod, p_informatie_descendent_1, p_informatie_descendent_2, p_directie);
+    auto nod_nou =
+            this->RouterCreareNod
+                    (p_informatie_nod,
+
+                     this->_nod_curent != nullptr
+                     ? this->_nod_curent->_nivel + 1
+                     : 1,
+
+                     p_informatie_descendent_1,
+
+                     p_informatie_descendent_2,
+
+                     p_directie);
 
     if (NoduriCuInformatiiEgale(this->_nod_curent, nod_nou))
     {
-        if (!this->DeplasareNodCurent(this->_nod_curent->_directie))
-        {
-            if (!this->DeplasareNodCurent(this->_nod_curent->_directie))
-            {
-                this->DeplasareNodCurent(this->_nod_curent->_directie);
-            }
-        }
+        while (!this->DeplasareNodCurent(this->_nod_curent->_directie))
+        { /* Maxim 3 iterații, deoarece DeplasareNodCurent(E_Directie::Sus) va fi mereu true. */}
+        delete nod_nou;
     } else
     {
         if (this->_radacina == nullptr)
         {
             this->_nod_curent = this->_radacina = nod_nou;
+            this->_numar_noduri = 1;
+            this->_numar_frunze = 1;
         }
-
         this->EditareNodCurentExistent(nod_nou);
-
-        if (!this->DeplasareNodCurent(E_Directie::Stanga))
-        {
-            this->DeplasareNodCurent(E_Directie::Dreapta);
-        }
     }
 
     delete p_informatie_descendent_1;
@@ -348,8 +428,21 @@ ArboreBinar::GetInformatiiNodCurent()
     };
 }
 
+ArboreBinar::StatisticiDto
+ArboreBinar::GetStatisticiArbore()
+{
+    return {
+            ._numar_noduri = to_string(this->_numar_noduri),
+            ._numar_frunze = to_string(this->_numar_frunze),
+            ._numar_niveluri = to_string(this->_numar_niveluri)
+    };
+}
+
 void
-ArboreBinar::SalvareNod(string p_informatie_nod, string p_informatie_descendent_stang, string p_informatie_descendent_drept)
+ArboreBinar::SalvareNod
+        (string p_informatie_nod,
+         string p_informatie_descendent_stang,
+         string p_informatie_descendent_drept)
 {
     auto descendent_stang_fara_informatie = p_informatie_descendent_stang.empty();
     auto descendent_drept_fara_informatie = p_informatie_descendent_drept.empty();
