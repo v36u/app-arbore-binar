@@ -83,6 +83,9 @@ private:
     vector<string>
     SDR(Nod); //=> Stânga, Dreapta, Rădăcină
 
+    vector<string>
+    ParcurgereInLatime(Nod);
+
 public:
     struct NodDto
     {
@@ -128,6 +131,12 @@ public:
 
     vector<string>
     ParcurgerePostordineDeLaNodulCurent();
+
+    vector<string>
+    ParcurgereInLatimeDeLaRadacina();
+
+    vector<string>
+    ParcurgereInLatimeDeLaNodulCurent();
 
 };
 

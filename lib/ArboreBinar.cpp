@@ -238,6 +238,7 @@ ArboreBinar::DeplasareNodCurentSus(Nod p_nod)
     {
         this->DeplasareNodCurentSus(p_nod->_stanga);
     }
+
     if (p_nod->_dreapta != nullptr)
     {
         this->DeplasareNodCurentSus(p_nod->_dreapta);
@@ -306,7 +307,7 @@ ArboreBinar::SalvareNod
 
                      p_directie);
 
-    if (NoduriCuInformatiiEgale(this->_nod_curent, nod_nou))
+    if (this->NoduriCuInformatiiEgale(this->_nod_curent, nod_nou))
     {
         while (!this->DeplasareNodCurent(this->_nod_curent->_directie))
         { /* Maxim 3 iterații, deoarece DeplasareNodCurent(E_Directie::Sus) va fi mereu true. */}
@@ -318,6 +319,7 @@ ArboreBinar::SalvareNod
             this->_nod_curent = this->_radacina = nod_nou;
             this->_numar_noduri = 1;
             this->_numar_frunze = 1;
+            this->_numar_niveluri = 1;
         }
         this->EditareNodCurentExistent(nod_nou);
     }
@@ -399,6 +401,34 @@ ArboreBinar::SDR(ArboreBinar::Nod p_nod)
     vector_sdr.push_back(p_nod->_informatie);
 
     return vector_sdr;
+}
+
+vector<string>
+ArboreBinar::ParcurgereInLatime(ArboreBinar::Nod p_nod)
+{
+    vector<string> parcurgere;
+    vector<Nod> urmatoarele_noduri({p_nod});
+
+    while (!urmatoarele_noduri.empty())
+    {
+        auto urmatorul_nod = urmatoarele_noduri.front();
+
+        parcurgere.push_back(urmatorul_nod->_informatie);
+
+        if (urmatorul_nod->_stanga != nullptr)
+        {
+            urmatoarele_noduri.push_back(urmatorul_nod->_stanga);
+        }
+
+        if (urmatorul_nod->_dreapta != nullptr)
+        {
+            urmatoarele_noduri.push_back(urmatorul_nod->_dreapta);
+        }
+
+        urmatoarele_noduri.erase(urmatoarele_noduri.begin());
+    }
+
+    return parcurgere;
 }
 
 ArboreBinar::NodDto
@@ -502,4 +532,16 @@ vector<string>
 ArboreBinar::ParcurgerePostordineDeLaNodulCurent()
 {
     return this->SDR(this->_nod_curent);
+}
+
+vector<string>
+ArboreBinar::ParcurgereInLatimeDeLaRadacina()
+{
+    return this->ParcurgereInLatime(this->_radacina);
+}
+
+vector<string>
+ArboreBinar::ParcurgereInLatimeDeLaNodulCurent()
+{
+    return this->ParcurgereInLatime(this->_nod_curent);
 }
