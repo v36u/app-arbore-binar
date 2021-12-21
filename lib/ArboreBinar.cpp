@@ -287,6 +287,26 @@ ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
 }
 
 void
+ArboreBinar::InitializareCazRadacinaGoala(Nod p_nod)
+{
+    this->_nod_curent = this->_radacina = p_nod;
+    this->_numar_noduri = 1;
+    this->_numar_frunze = 1;
+    this->_numar_niveluri = 1;
+
+    if (this->_nod_curent->_stanga != nullptr || this->_nod_curent->_dreapta != nullptr)
+    {
+        this->_numar_noduri = 2;
+        this->_numar_niveluri = 2;
+        if (this->_nod_curent->_stanga != nullptr && this->_nod_curent->_dreapta != nullptr)
+        {
+            this->_numar_noduri = 3;
+            this->_numar_frunze = 2;
+        }
+    }
+}
+
+void
 ArboreBinar::SalvareNod
         (string p_informatie_nod,
          string *p_informatie_descendent_1,
@@ -298,7 +318,7 @@ ArboreBinar::SalvareNod
                     (p_informatie_nod,
 
                      this->_nod_curent != nullptr
-                     ? this->_nod_curent->_nivel + 1
+                     ? this->_nod_curent->_nivel
                      : 1,
 
                      p_informatie_descendent_1,
@@ -316,10 +336,7 @@ ArboreBinar::SalvareNod
     {
         if (this->_radacina == nullptr)
         {
-            this->_nod_curent = this->_radacina = nod_nou;
-            this->_numar_noduri = 1;
-            this->_numar_frunze = 1;
-            this->_numar_niveluri = 1;
+            this->InitializareCazRadacinaGoala(nod_nou);
         }
         this->EditareNodCurentExistent(nod_nou);
     }

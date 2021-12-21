@@ -69,6 +69,9 @@ private:
     DeplasareNodCurent(E_Directie);
 
     void
+    InitializareCazRadacinaGoala(Nod);
+
+    void
     SalvareNod(string, string *, string *, E_Directie *);
 
     void
