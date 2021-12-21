@@ -325,7 +325,7 @@ int main(int argc, const char *argv[])
             vector_noduri_parcurse = {"eroare"};
         } else if (parcurgere_selectata == 0 && !informatii_nod._informatie_nod.empty() && stare_2.marcat)
         {
-            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
+            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
 
         } else if (parcurgere_selectata == 1 && !informatii_nod._informatie_nod.empty() && stare_2.marcat)
         {
