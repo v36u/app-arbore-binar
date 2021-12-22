@@ -41,6 +41,20 @@ private:
         string _informatie_nod;
     };
 
+    struct InformatiiNodDto
+    {
+        NodDto _nod_curent;
+        string _informatie_descendent_stang;
+        string _informatie_descendent_drept;
+    };
+
+    struct StatisticiDto
+    {
+        string _numar_noduri;
+        string _numar_frunze;
+        string _numar_niveluri;
+    };
+
     Nod _radacina;
     Nod _nod_curent;
 
@@ -99,20 +113,6 @@ private:
     ParcurgereInLatime(Nod);
 
 public:
-    struct InformatiiNodDto
-    {
-        NodDto _nod_curent;
-        string _informatie_descendent_stang;
-        string _informatie_descendent_drept;
-    };
-
-    struct StatisticiDto
-    {
-        string _numar_noduri;
-        string _numar_frunze;
-        string _numar_niveluri;
-    };
-
     ArboreBinar();
 
     ~ArboreBinar();
