@@ -311,7 +311,7 @@ int main(int argc, const char *argv[])
             vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
         } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
         {
-            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();;
+            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();
         } else if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
         {
             vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
@@ -378,11 +378,13 @@ int main(int argc, const char *argv[])
                             !informatii_nod._nod_curent._informatie_nod.empty() ?
                             hbox({
                                          window(text("Meniu Parcurgere"),
-                                                hbox({meniu_final_parcurgeri->Render() | size(ftxui::WIDTH, ftxui::GREATER_THAN, 70),
+                                                hbox({meniu_final_parcurgeri->Render()
+                                                      | size(ftxui::WIDTH, ftxui::GREATER_THAN, 70),
                                                       separator(),
                                                       hbox({
                                                                    hbox({hbox(parte_intreaga > 1 ?
-                                                                              vbox(vector_final) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 115)
+                                                                              vbox(vector_final)
+                                                                              | size(ftxui::WIDTH, ftxui::GREATER_THAN, 115)
                                                                                                  :
                                                                               vbox({hbox(text(" ")),
                                                                                     hbox({text(
@@ -391,16 +393,18 @@ int main(int argc, const char *argv[])
                                                                                     hbox({vector_final}) |
                                                                                     center
 
-                                                                                   }) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 135))
+                                                                                   })
+                                                                              | size(ftxui::WIDTH, ftxui::GREATER_THAN, 135))
                                                                         })
                                                            })
                                                      })
                                          )}
                             )
                                                                                 : hbox({})}
-                      )) | size(ftxui::WIDTH,
-                                ftxui::GREATER_THAN,
-                                185);
+                      ))
+               | size(ftxui::WIDTH,
+                      ftxui::GREATER_THAN,
+                      185);
     });
 
 // Sectiune care se ocupa cu randarea intregului nivel de adancime 0 (Principal)
