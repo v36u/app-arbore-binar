@@ -252,7 +252,7 @@ int main(int argc, const char *argv[])
     CheckboxState stare_1{};
     CheckboxState stare_2{};
     bool schimbat = false;
-    vector<string> elemente_meniu_parcurgeri = {"Preordine", "Inordine", "Postordine", "Pe Niveluri"};
+    vector<string> elemente_meniu_parcurgeri = {"Preordine", "Inordine", "Postordine", "In Latime"};
 
 
     auto container_meniu_parcurgeri = Container::Vertical({});
