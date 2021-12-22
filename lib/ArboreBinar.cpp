@@ -574,3 +574,9 @@ ArboreBinar::ParcurgereInLatimeDeLaNodulCurent()
 {
     return this->ParcurgereInLatime(this->_nod_curent);
 }
+
+vector<ArboreBinar::NodDto>
+ArboreBinar::GetNodDtoInitVect()
+{
+    return vector<NodDto>();
+}

@@ -150,6 +150,9 @@ public:
     vector<NodDto>
     ParcurgereInLatimeDeLaNodulCurent();
 
+    vector<NodDto>
+    GetNodDtoInitVect();
+
 };
 
 #endif
