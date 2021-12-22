@@ -21,21 +21,30 @@ private:
     class Celula
     {
     public:
+        unsigned int _id;
         string _informatie;
         unsigned short _nivel;
         Celula *_stanga;
         Celula *_dreapta;
         E_Directie _directie;
 
-        Celula(string, unsigned short);
+        Celula(string, unsigned int, unsigned short);
 
-        Celula(string, unsigned short, Celula *, Celula *, E_Directie);
+        Celula(string, unsigned int, unsigned short, Celula *, Celula *, E_Directie);
     };
 
     typedef Celula *Nod;
 
+    struct NodDto
+    {
+        unsigned int _id_nod;
+        string _informatie_nod;
+    };
+
     Nod _radacina;
     Nod _nod_curent;
+
+    unsigned int _id_curent;
 
     unsigned short _numar_noduri;
     unsigned short _numar_frunze;
@@ -77,22 +86,22 @@ private:
     void
     DezalocareArbore(Nod);
 
-    vector<string>
+    vector<NodDto>
     RSD(Nod); //=> Rădăcină, Stânga, Dreapta
 
-    vector<string>
+    vector<NodDto>
     SRD(Nod); //=> Stânga, Rădăcină, Dreapta
 
-    vector<string>
+    vector<NodDto>
     SDR(Nod); //=> Stânga, Dreapta, Rădăcină
 
-    vector<string>
+    vector<NodDto>
     ParcurgereInLatime(Nod);
 
 public:
-    struct NodDto
+    struct InformatiiNodDto
     {
-        string _informatie_nod;
+        NodDto _nod_curent;
         string _informatie_descendent_stang;
         string _informatie_descendent_drept;
     };
@@ -108,7 +117,7 @@ public:
 
     ~ArboreBinar();
 
-    NodDto
+    InformatiiNodDto
     GetInformatiiNodCurent();
 
     StatisticiDto
@@ -117,28 +126,28 @@ public:
     void
     SalvareNod(string, string, string);
 
-    vector<string>
+    vector<NodDto>
     ParcurgerePreordineDeLaRadacina();
 
-    vector<string>
+    vector<NodDto>
     ParcurgerePreordineDeLaNodulCurent();
 
-    vector<string>
+    vector<NodDto>
     ParcurgereInordineDeLaRadacina();
 
-    vector<string>
+    vector<NodDto>
     ParcurgereInordineDeLaNodulCurent();
 
-    vector<string>
+    vector<NodDto>
     ParcurgerePostordineDeLaRadacina();
 
-    vector<string>
+    vector<NodDto>
     ParcurgerePostordineDeLaNodulCurent();
 
-    vector<string>
+    vector<NodDto>
     ParcurgereInLatimeDeLaRadacina();
 
-    vector<string>
+    vector<NodDto>
     ParcurgereInLatimeDeLaNodulCurent();
 
 };

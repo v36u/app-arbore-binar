@@ -5,6 +5,8 @@ ArboreBinar::ArboreBinar()
     this->_radacina = nullptr;
     this->_nod_curent = nullptr;
 
+    this->_id_curent = 0;
+
     this->_numar_noduri = 0;
     this->_numar_frunze = 0;
     this->_numar_niveluri = 0;
@@ -15,17 +17,19 @@ ArboreBinar::~ArboreBinar()
     this->DezalocareArbore(this->_radacina);
 }
 
-ArboreBinar::Celula::Celula(string p_informatie, unsigned short p_nivel)
-        : Celula(p_informatie, p_nivel, nullptr, nullptr, E_Directie::Stanga)
+ArboreBinar::Celula::Celula(string p_informatie, unsigned int p_id, unsigned short p_nivel)
+        : Celula(p_informatie, p_id, p_nivel, nullptr, nullptr, E_Directie::Stanga)
 {}
 
 ArboreBinar::Celula::Celula
         (string p_informatie,
+         unsigned int p_id,
          unsigned short p_nivel,
          Celula *p_descendent_stang,
          Celula *p_descendent_drept,
          E_Directie p_directie)
 {
+    this->_id = p_id;
     this->_informatie = p_informatie;
     this->_nivel = p_nivel;
     this->_stanga = p_descendent_stang;
@@ -36,7 +40,7 @@ ArboreBinar::Celula::Celula
 ArboreBinar::Nod
 ArboreBinar::CreareNod(string p_informatie_nod, unsigned short p_nivel)
 {
-    return new Celula(p_informatie_nod, p_nivel);
+    return new Celula(p_informatie_nod, this->_id_curent++, p_nivel);
 }
 
 ArboreBinar::Nod
@@ -48,6 +52,8 @@ ArboreBinar::CreareNod
 {
     return
             new Celula(p_informatie_nod,
+
+                       this->_id_curent++,
 
                        p_nivel,
 
@@ -74,6 +80,8 @@ ArboreBinar::CreareNod
 {
     return
             new Celula(p_informatie_nod,
+
+                       this->_id_curent++,
 
                        p_nivel,
 
@@ -366,71 +374,71 @@ ArboreBinar::DezalocareArbore(Nod p_nod)
     delete p_nod;
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::RSD(ArboreBinar::Nod p_nod)
 {
     if (p_nod == nullptr)
     {
-        return vector<string>();
+        return vector<ArboreBinar::NodDto>();
     }
 
-    vector<string> vector_stanga = this->RSD(p_nod->_stanga);
-    vector<string> vector_dreapta = this->RSD(p_nod->_dreapta);
+    vector<ArboreBinar::NodDto> vector_stanga = this->RSD(p_nod->_stanga);
+    vector<ArboreBinar::NodDto> vector_dreapta = this->RSD(p_nod->_dreapta);
 
-    vector<string> vector_rsd = vector({p_nod->_informatie});
+    vector<ArboreBinar::NodDto> vector_rsd = vector<ArboreBinar::NodDto>({{._id_nod = p_nod->_id, ._informatie_nod = p_nod->_informatie}});
     vector_rsd.insert(vector_rsd.end(), vector_stanga.begin(), vector_stanga.end());
     vector_rsd.insert(vector_rsd.end(), vector_dreapta.begin(), vector_dreapta.end());
 
     return vector_rsd;
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::SRD(ArboreBinar::Nod p_nod)
 {
     if (p_nod == nullptr)
     {
-        return vector<string>();
+        return vector<ArboreBinar::NodDto>();
     }
 
-    vector<string> vector_stanga = this->SRD(p_nod->_stanga);
-    vector<string> vector_dreapta = this->SRD(p_nod->_dreapta);
+    vector<ArboreBinar::NodDto> vector_stanga = this->SRD(p_nod->_stanga);
+    vector<ArboreBinar::NodDto> vector_dreapta = this->SRD(p_nod->_dreapta);
 
-    vector<string> vector_srd = vector(vector_stanga.begin(), vector_stanga.end());
-    vector_srd.push_back(p_nod->_informatie);
+    vector<ArboreBinar::NodDto> vector_srd = vector(vector_stanga.begin(), vector_stanga.end());
+    vector_srd.push_back({._id_nod = p_nod->_id, ._informatie_nod = p_nod->_informatie});
     vector_srd.insert(vector_srd.end(), vector_dreapta.begin(), vector_dreapta.end());
 
     return vector_srd;
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::SDR(ArboreBinar::Nod p_nod)
 {
     if (p_nod == nullptr)
     {
-        return vector<string>();
+        return vector<ArboreBinar::NodDto>();
     }
 
-    vector<string> vector_stanga = this->SDR(p_nod->_stanga);
-    vector<string> vector_dreapta = this->SDR(p_nod->_dreapta);
+    vector<ArboreBinar::NodDto> vector_stanga = this->SDR(p_nod->_stanga);
+    vector<ArboreBinar::NodDto> vector_dreapta = this->SDR(p_nod->_dreapta);
 
-    vector<string> vector_sdr = vector(vector_stanga.begin(), vector_stanga.end());
+    vector<ArboreBinar::NodDto> vector_sdr = vector(vector_stanga.begin(), vector_stanga.end());
     vector_sdr.insert(vector_sdr.end(), vector_dreapta.begin(), vector_dreapta.end());
-    vector_sdr.push_back(p_nod->_informatie);
+    vector_sdr.push_back({._id_nod = p_nod->_id, ._informatie_nod = p_nod->_informatie});
 
     return vector_sdr;
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::ParcurgereInLatime(ArboreBinar::Nod p_nod)
 {
-    vector<string> parcurgere;
+    vector<ArboreBinar::NodDto> parcurgere;
     vector<Nod> urmatoarele_noduri({p_nod});
 
     while (!urmatoarele_noduri.empty())
     {
         auto urmatorul_nod = urmatoarele_noduri.front();
 
-        parcurgere.push_back(urmatorul_nod->_informatie);
+        parcurgere.push_back({._id_nod = urmatorul_nod->_id, ._informatie_nod = urmatorul_nod->_informatie});
 
         if (urmatorul_nod->_stanga != nullptr)
         {
@@ -448,16 +456,17 @@ ArboreBinar::ParcurgereInLatime(ArboreBinar::Nod p_nod)
     return parcurgere;
 }
 
-ArboreBinar::NodDto
+ArboreBinar::InformatiiNodDto
 ArboreBinar::GetInformatiiNodCurent()
 {
-    auto informatie_nod = string();
+    unsigned int id_nod_curent = 0;
+    auto informatie_nod_curent = string();
     auto informatie_descendent_stang = string();
     auto informatie_descendent_drept = string();
 
     if (this->_nod_curent != nullptr)
     {
-        informatie_nod = this->_nod_curent->_informatie;
+        informatie_nod_curent = this->_nod_curent->_informatie;
         if (this->_nod_curent->_stanga != nullptr)
         {
             informatie_descendent_stang = this->_nod_curent->_stanga->_informatie;
@@ -469,7 +478,10 @@ ArboreBinar::GetInformatiiNodCurent()
     }
 
     return {
-            ._informatie_nod = informatie_nod,
+            ._nod_curent = {
+                    ._id_nod = id_nod_curent,
+                    ._informatie_nod = informatie_nod_curent,
+            },
             ._informatie_descendent_stang = informatie_descendent_stang,
             ._informatie_descendent_drept = informatie_descendent_drept
     };
@@ -515,49 +527,49 @@ ArboreBinar::SalvareNod
     this->SalvareNod(p_informatie_nod, new string{p_informatie_descendent_stang}, new string{p_informatie_descendent_drept}, nullptr);
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::ParcurgerePreordineDeLaRadacina()
 {
     return this->RSD(this->_radacina);
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::ParcurgerePreordineDeLaNodulCurent()
 {
     return this->RSD(this->_nod_curent);
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::ParcurgereInordineDeLaRadacina()
 {
     return this->SRD(this->_radacina);
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::ParcurgereInordineDeLaNodulCurent()
 {
     return this->SRD(this->_nod_curent);
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::ParcurgerePostordineDeLaRadacina()
 {
     return this->SDR(this->_radacina);
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::ParcurgerePostordineDeLaNodulCurent()
 {
     return this->SDR(this->_nod_curent);
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::ParcurgereInLatimeDeLaRadacina()
 {
     return this->ParcurgereInLatime(this->_radacina);
 }
 
-vector<string>
+vector<ArboreBinar::NodDto>
 ArboreBinar::ParcurgereInLatimeDeLaNodulCurent()
 {
     return this->ParcurgereInLatime(this->_nod_curent);
