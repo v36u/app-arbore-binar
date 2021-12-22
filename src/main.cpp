@@ -80,7 +80,7 @@ int main(int argc, const char *argv[])
                                                                   {
                                                                       arbore_binar.SalvareNod(val_nod, val_copil_stang, val_copil_drept);
                                                                       auto informatii_nod_crt = arbore_binar.GetInformatiiNodCurent();
-                                                                      val_nod = informatii_nod_crt._informatie_nod;
+                                                                      val_nod = informatii_nod_crt._nod_curent._informatie_nod;
                                                                       val_copil_stang = informatii_nod_crt._informatie_descendent_stang;
                                                                       val_copil_drept = informatii_nod_crt._informatie_descendent_drept;
                                                                   },
@@ -163,13 +163,15 @@ int main(int argc, const char *argv[])
 
 
     // Sectiune care se ocupa cu randarea ferestrei Detalii Arbore
+
     auto tab_detalii_arbore = Renderer([&]
                                        {
+                                           auto statistici = arbore_binar.GetStatisticiArbore();
                                            return window(text("Detalii Arbore"),//
                                                          vbox({hbox(text(" ")),
-                                                               hbox(text("Nr. niveluri: -")),
-                                                               hbox(text("Nr. noduri: -")),
-                                                               hbox(text("Nr. frunze: -")),
+                                                               hbox(text("Nr. niveluri: " + statistici._numar_niveluri)),
+                                                               hbox(text("Nr. noduri: " + statistici._numar_noduri)),
+                                                               hbox(text("Nr. frunze: " + statistici._numar_frunze)),
                                                                hbox(text(" "))
                                                               })
                                            ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
@@ -193,19 +195,6 @@ int main(int argc, const char *argv[])
                                         ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
                                     });
     // Sectiune care se ocupa cu randarea ferestrei de Editare si Adaugare Nod Curent
-//    auto tab_editare_nod = Renderer(proprietati_nod, [&]
-//    {
-//        return window(text("Editare si Adaugare Nod Curent"),//
-//                      vbox({hbox(text(" ")),
-//                            hbox(text("Nod Crt.: "), input_val_nod->Render()),
-//                            hbox(text(" ")),
-//                            separator(),
-//                            hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
-//                                                  : buton_salvare_nod->Render()}) | center
-//                           })
-//        ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
-//    });
-
     // Aici se definesc proprietatile care vor fi "pasate" in componenta de editare a copiilor nodului curent
     auto proprietati_nod = Container::Vertical({
                                                        input_val_nod,
@@ -309,64 +298,64 @@ int main(int argc, const char *argv[])
 
         auto informatii_nod = arbore_binar.GetInformatiiNodCurent();
 
-        vector<string> vector_noduri_parcurse{};
+        auto vector_noduri_parcurse = arbore_binar.GetNodDtoInitVect();
 
-        if (parcurgere_selectata == 0 && !informatii_nod._informatie_nod.empty() && stare_1.marcat)
+        if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
         {
             vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
-        } else if (parcurgere_selectata == 1 && !informatii_nod._informatie_nod.empty() && stare_1.marcat)
+        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
         {
             vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
-        } else if (parcurgere_selectata == 2 && !informatii_nod._informatie_nod.empty() && stare_1.marcat)
+        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
         {
             vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
-        } else if (parcurgere_selectata == 3 && !informatii_nod._informatie_nod.empty() && stare_1.marcat)
+        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
         {
-            vector_noduri_parcurse = {"eroare"};
-        } else if (parcurgere_selectata == 0 && !informatii_nod._informatie_nod.empty() && stare_2.marcat)
+            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();;
+        } else if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
         {
             vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
 
-        } else if (parcurgere_selectata == 1 && !informatii_nod._informatie_nod.empty() && stare_2.marcat)
+        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
         {
             vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
-        } else if (parcurgere_selectata == 2 && !informatii_nod._informatie_nod.empty() && stare_2.marcat)
+        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
         {
             vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaNodulCurent();
-        } else if (parcurgere_selectata == 3 && !informatii_nod._informatie_nod.empty() && stare_2.marcat)
+        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
         {
-            vector_noduri_parcurse = {"eroare"};
+            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaNodulCurent();
         }
 
 
         Elements elemente_parcurse, vector_final;
         size_t parte_intreaga{};
-        if (!informatii_nod._informatie_nod.empty() && !vector_noduri_parcurse.empty())
+        if (!informatii_nod._nod_curent._informatie_nod.empty() && !vector_noduri_parcurse.empty())
         {
-            if (vector_noduri_parcurse.front().compare(informatii_nod._informatie_nod) == 0)
+            if (vector_noduri_parcurse.front()._id_nod == informatii_nod._nod_curent._id_nod)
                 elemente_parcurse.push_back(
-                        hbox(hbox(text(vector_noduri_parcurse.front()))
+                        hbox(hbox(text(vector_noduri_parcurse.front()._informatie_nod))
                              | border
                              | color(Color::GreenLight)
                              | center)
                 );
             else
             {
-                elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front())) | border
+                elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front()._informatie_nod)) | border
                                                  | center)
                 );
             }
 
             for (int i = 1; i < vector_noduri_parcurse.size(); i++)
             {
-                if (vector_noduri_parcurse[i].compare(informatii_nod._informatie_nod) == 0)
+                if (vector_noduri_parcurse[i]._id_nod == informatii_nod._nod_curent._id_nod)
                     elemente_parcurse.push_back(hbox({text("→") | center,
-                                                      hbox(text(vector_noduri_parcurse[i])) | border |
+                                                      hbox(text(vector_noduri_parcurse[i]._informatie_nod)) | border |
                                                       color(Color::GreenLight) | center}));
                 else
                 {
                     elemente_parcurse.push_back(
-                            hbox({text("→") | center, hbox(text(vector_noduri_parcurse[i])) | border | center}));
+                            hbox({text("→") | center, hbox(text(vector_noduri_parcurse[i]._informatie_nod)) | border | center}));
                 }
             }
 
@@ -386,7 +375,7 @@ int main(int argc, const char *argv[])
                       vbox({hbox({}),
                             filler(),
                             filler(),
-                            !informatii_nod._informatie_nod.empty() ?
+                            !informatii_nod._nod_curent._informatie_nod.empty() ?
                             hbox({
                                          window(text("Meniu Parcurgere"),
                                                 hbox({meniu_final_parcurgeri->Render() | size(ftxui::WIDTH, ftxui::GREATER_THAN, 70),
@@ -408,7 +397,7 @@ int main(int argc, const char *argv[])
                                                      })
                                          )}
                             )
-                                                                    : hbox({})}
+                                                                                : hbox({})}
                       )) | size(ftxui::WIDTH,
                                 ftxui::GREATER_THAN,
                                 185);
