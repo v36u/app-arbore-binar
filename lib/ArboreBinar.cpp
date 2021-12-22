@@ -466,6 +466,7 @@ ArboreBinar::GetInformatiiNodCurent()
 
     if (this->_nod_curent != nullptr)
     {
+        id_nod_curent = this->_nod_curent->_id;
         informatie_nod_curent = this->_nod_curent->_informatie;
         if (this->_nod_curent->_stanga != nullptr)
         {
