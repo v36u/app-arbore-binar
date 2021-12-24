@@ -82,7 +82,6 @@ Elements ConversieStringMulti(string arbore, string delimiter)
     stringuri.push_back(text(arbore.substr(prev)));
 
     return stringuri;
-
 }
 
 int main(int argc, const char *argv[])
@@ -96,7 +95,6 @@ int main(int argc, const char *argv[])
     auto preluat = functie_convertita();
     auto arbore_reprezentat_grafic = preluat.cast<string>();
     Elements vector_linii_arbore = ConversieStringMulti(arbore_reprezentat_grafic, "\n");
-
 
     ArboreBinar arbore_binar;
 
@@ -277,8 +275,7 @@ int main(int argc, const char *argv[])
     optiuni_meniu.style_focused = bgcolor(Color::CadetBlue);
     optiuni_meniu.style_selected_focused = bgcolor(Color::CadetBlue);
 
-    CheckboxState stare_1{};
-    CheckboxState stare_2{};
+    vector<CheckboxState> stari{};
     bool schimbat = false;
     vector<string> elemente_meniu_parcurgeri = {"Preordine", "Inordine", "Postordine", "In Latime"};
 
@@ -298,8 +295,8 @@ int main(int argc, const char *argv[])
 
 
     auto container_checkboxuri = Container::Vertical({});
-    container_checkboxuri->Add(Checkbox("parcurgeti intreg arborele", &stare_1.marcat));
-    container_checkboxuri->Add(Checkbox("parcurgeti subarborele nodului curent", &stare_2.marcat));
+    container_checkboxuri->Add(Checkbox("parcurgeti intreg arborele", &stari[0].marcat));
+    container_checkboxuri->Add(Checkbox("parcurgeti subarborele nodului curent", &stari[1].marcat));
 
     auto meniu_checkboxuri = Renderer(container_checkboxuri, [&]
     {
@@ -316,55 +313,96 @@ int main(int argc, const char *argv[])
 // Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
     auto reprezentare_grafica = Renderer(meniu_final_parcurgeri, [&]
     {
-        if (stare_1.marcat && !schimbat)
+        if (stari[0].marcat && !schimbat)
         {
             schimbat = true;
             if (schimbat)
             {
-                stare_2.marcat = false;
+                stari[1].marcat = false;
             }
-        } else if (stare_2.marcat && schimbat)
+        } else if (stari[1].marcat && schimbat)
         {
             schimbat = false;
             if (!schimbat)
             {
-                stare_1.marcat = false;
+                stari[0].marcat = false;
             }
-        } else if (!stare_1.marcat && !stare_2.marcat)
+        } else if (!stari[0].marcat && !stari[1].marcat)
         {
-            stare_1.marcat = true;
+            stari[0].marcat = true;
         }
 
         auto informatii_nod = arbore_binar.GetInformatiiNodCurent();
 
         auto vector_noduri_parcurse = arbore_binar.GetNodDtoInitVect();
 
-        if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
-        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
-        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
-        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();
-        } else if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
+        if (!informatii_nod._nod_curent._informatie_nod.empty())
+            switch (parcurgere_selectata)
+            {
+                case 0:
+                {
+                    if (stari[0].marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
+                    if (stari[1].marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
+                    break;
+                }
+                case 1:
+                {
+                    if (stari[0].marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
+                    if (stari[1].marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
+                    break;
+                }
+                case 2:
+                {
+                    if (stari[0].marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
+                    if (stari[1].marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaNodulCurent();
+                    break;
+                }
+                case 3:
+                {
+                    if (stari[0].marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();
+                    if (stari[1].marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaNodulCurent();
+                    break;
+                }
+                default:
+                {
+                    throw std::logic_error("Eroare fatala!");
+                }
+            }
 
-        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
-        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaNodulCurent();
-        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaNodulCurent();
-        }
+//        if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
+//        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
+//        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
+//        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();
+//        } else if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
+//
+//        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
+//        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaNodulCurent();
+//        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaNodulCurent();
+//        }
 
 
         Elements elemente_parcurse, vector_final;
@@ -489,7 +527,6 @@ int main(int argc, const char *argv[])
 
 // Aici se face loop-ul bufferului de afisare pentru actualizarea in timp real
 
-    screen.
-            Loop(randare_principala);
+    screen.Loop(randare_principala);
     return EXIT_SUCCESS;
 }
