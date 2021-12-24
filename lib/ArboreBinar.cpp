@@ -218,7 +218,8 @@ ArboreBinar::DezalocareArbore(Nod p_nod)
     delete p_nod;
 }
 
-void ArboreBinar::DeplasareNodCurentUndeEstePosibil()
+void
+ArboreBinar::DeplasareNodCurentUndeEstePosibil()
 {
     while (!this->DeplasareNodCurent(this->_nod_curent->_directie) && this->_nod_curent->_directie != E_Directie::Stanga)
     { /* Maxim 3 iterații, deoarece DeplasareNodCurent(E_Directie::Sus) va fi mereu true. */}
@@ -227,43 +228,11 @@ void ArboreBinar::DeplasareNodCurentUndeEstePosibil()
 void
 ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
 {
-    if (p_nod->_informatie.empty())
-    {
-        if (this->_nod_curent == this->_radacina)
-        {
-            this->DezalocareArbore(this->_radacina);
-            this->_nod_curent = this->_radacina = nullptr;
-            return;
-        }
-
-        auto aux = this->_nod_curent;
-        this->DeplasareNodCurent(E_Directie::Sus);
-        auto directie_aux = E_Directie::Stanga;
-        if (this->_nod_curent->_dreapta == aux)
-        {
-            directie_aux = E_Directie::Dreapta;
-        }
-
-        this->DezalocareArbore(aux);
-        if (directie_aux == E_Directie::Stanga)
-        {
-            this->_nod_curent->_stanga = nullptr;
-        } else if (directie_aux == E_Directie::Dreapta)
-        {
-            this->_nod_curent->_dreapta = nullptr;
-        }
-        return;
-    }
-
     this->_nod_curent->_informatie = p_nod->_informatie;
 
     if (p_nod->_stanga != nullptr)
     {
-        if (p_nod->_stanga->_informatie.empty())
-        {
-            this->DezalocareArbore(this->_nod_curent->_stanga);
-            this->_nod_curent->_stanga = nullptr;
-        } else if (this->_nod_curent->_stanga == nullptr)
+        if (this->_nod_curent->_stanga == nullptr)
         {
             this->_nod_curent->_stanga = p_nod->_stanga;
             this->_numar_noduri++;
@@ -283,11 +252,7 @@ ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
 
     if (p_nod->_dreapta != nullptr)
     {
-        if (p_nod->_dreapta->_informatie.empty())
-        {
-            this->DezalocareArbore(this->_nod_curent->_dreapta);
-            this->_nod_curent->_dreapta = nullptr;
-        } else if (this->_nod_curent->_dreapta == nullptr)
+        if (this->_nod_curent->_dreapta == nullptr)
         {
             this->_nod_curent->_dreapta = p_nod->_dreapta;
             this->_numar_noduri++;
@@ -494,6 +459,13 @@ ArboreBinar::ParcurgereInLatime(ArboreBinar::Nod p_nod)
     return parcurgere;
 }
 
+void
+ArboreBinar::StergereRadacina()
+{
+    this->DezalocareArbore(this->_radacina);
+    this->_nod_curent = this->_radacina = nullptr;
+}
+
 ArboreBinar::InformatiiNodDto
 ArboreBinar::GetInformatiiNodCurent()
 {
@@ -618,4 +590,37 @@ vector<ArboreBinar::NodDto>
 ArboreBinar::GetNodDtoInitVect()
 {
     return vector<NodDto>();
+}
+
+void
+ArboreBinar::StergereSubArboreAlNoduluiCurent()
+{
+    if (this->_nod_curent == this->_radacina)
+    {
+        this->StergereRadacina();
+        return;
+    }
+
+    auto aux = this->_nod_curent;
+    this->DeplasareNodCurent(E_Directie::Sus);
+    auto directie_aux = E_Directie::Stanga;
+    if (this->_nod_curent->_dreapta == aux)
+    {
+        directie_aux = E_Directie::Dreapta;
+    }
+
+    this->DezalocareArbore(aux);
+    if (directie_aux == E_Directie::Stanga)
+    {
+        this->_nod_curent->_stanga = nullptr;
+    } else if (directie_aux == E_Directie::Dreapta)
+    {
+        this->_nod_curent->_dreapta = nullptr;
+    }
+}
+
+void
+ArboreBinar::ResetareArbore()
+{
+    this->StergereRadacina();
 }
