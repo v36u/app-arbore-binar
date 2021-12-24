@@ -1,8 +1,11 @@
+
+#include <windows.h>
 #include <algorithm>
 #include <memory>  // pentru allocator, __shared_ptr_access
 #include <cstdlib>// pentru EXIT_SUCCESS
 #include <string>  // pentru string, operator+ (supraincarcare), basic_string, to_string, char_traits
 #include <vector>  // pentru vector, __alloc_traits<>::value_type
+#include <stdio.h>
 
 #include "ftxui/component/captured_mouse.hpp"    // pentru ftxui
 #include "ftxui/component/component.hpp"         // pentru clasele Menu, Renderer, Horizontal, Vertical
@@ -11,11 +14,17 @@
 #include "ftxui/component/screen_interactive.hpp"// pentru clasele Component, ScreenInteractive
 #include "ftxui/dom/elements.hpp"                // pentru text, Element, operator| (supraincarcare), window, flex, vbox
 #include "ftxui/util/ref.hpp"                    // pentru clasa Ref
+#include <Python.h>
+#include "pybind11/embed.h"
+
+namespace py = pybind11;
+using namespace py::literals;
 
 #include "../lib/ArboreBinar.h"
 
 using namespace ftxui;
 using namespace std;
+
 
 template<typename T>
 vector<vector<T>> ImpartireVector(vector<T> el_parcurse, size_t nr_segmente)
@@ -57,8 +66,36 @@ struct CheckboxState
     bool marcat;
 };
 
+Elements ConversieStringMulti(string arbore, string delimiter)
+{
+    Elements stringuri;
+
+    std::string::size_type pos = 0;
+    std::string::size_type prev = 0;
+    while ((pos = arbore.find(delimiter, prev)) != std::string::npos)
+    {
+        stringuri.push_back(text(arbore.substr(prev, pos - prev)));
+        prev = pos + 1;
+    }
+
+    // To get the last substring (or only, if delimiter is not found)
+    stringuri.push_back(text(arbore.substr(prev)));
+
+    return stringuri;
+}
+
 int main(int argc, const char *argv[])
 {
+    SetConsoleOutputCP(65001);
+    pybind11::scoped_interpreter guard{};
+
+    auto sys = py::module::import("sys");
+    auto modul_test = py::module::import("afisare_arbore");
+    auto functie_convertita = modul_test.attr("main");
+    auto preluat = functie_convertita();
+    auto arbore_reprezentat_grafic = preluat.cast<string>();
+    Elements vector_linii_arbore = ConversieStringMulti(arbore_reprezentat_grafic, "\n");
+
     ArboreBinar arbore_binar;
 
     auto screen = ScreenInteractive::Fullscreen();
@@ -300,32 +337,73 @@ int main(int argc, const char *argv[])
 
         auto vector_noduri_parcurse = arbore_binar.GetNodDtoInitVect();
 
-        if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
-        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
-        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
-        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();
-        } else if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
+        if (!informatii_nod._nod_curent._informatie_nod.empty())
+            switch (parcurgere_selectata)
+            {
+                case 0:
+                {
+                    if (stare_1.marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
+                    else if (stare_2.marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
+                    break;
+                }
+                case 1:
+                {
+                    if (stare_1.marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
+                    else if (stare_2.marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
+                    break;
+                }
+                case 2:
+                {
+                    if (stare_1.marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
+                    else if (stare_2.marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaNodulCurent();
+                    break;
+                }
+                case 3:
+                {
+                    if (stare_1.marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();
+                    else if (stare_2.marcat)
+                        vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaNodulCurent();
+                    break;
+                }
+                default:
+                {
+                    throw std::logic_error("Eroare fatala!");
+                }
+            }
 
-        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
-        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaNodulCurent();
-        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
-        {
-            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaNodulCurent();
-        }
+//        if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[0].marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
+//        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[0].marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
+//        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[0].marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
+//        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[0].marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();
+//        } else if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[1].marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
+//
+//        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[1].marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
+//        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[1].marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaNodulCurent();
+//        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[1].marcat)
+//        {
+//            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaNodulCurent();
+//        }
 
 
         Elements elemente_parcurse, vector_final;
@@ -372,35 +450,37 @@ int main(int argc, const char *argv[])
         }
 
         return window(text("Arbore Binar - Reprezentare Grafica"),
-                      vbox({hbox({}),
-                            filler(),
-                            filler(),
-                            !informatii_nod._nod_curent._informatie_nod.empty() ?
-                            hbox({
-                                         window(text("Meniu Parcurgere"),
-                                                hbox({meniu_final_parcurgeri->Render()
-                                                      | size(ftxui::WIDTH, ftxui::GREATER_THAN, 70),
-                                                      separator(),
-                                                      hbox({
-                                                                   hbox({hbox(parte_intreaga > 1 ?
-                                                                              vbox(vector_final)
-                                                                              | size(ftxui::WIDTH, ftxui::GREATER_THAN, 115)
-                                                                                                 :
-                                                                              vbox({hbox(text(" ")),
-                                                                                    hbox({text(
-                                                                                            "Ordine noduri parcurse: ")}) |
-                                                                                    center,
-                                                                                    hbox({vector_final}) |
-                                                                                    center
+                      vbox({
 
-                                                                                   })
-                                                                              | size(ftxui::WIDTH, ftxui::GREATER_THAN, 135))
-                                                                        })
-                                                           })
-                                                     })
-                                         )}
-                            )
-                                                                                : hbox({})}
+                                   filler(),
+                                   vbox(vector_linii_arbore) | center,
+                                   filler(),
+                                   !informatii_nod._nod_curent._informatie_nod.empty() ?
+                                   hbox({
+                                                window(text("Meniu Parcurgere"),
+                                                       hbox({meniu_final_parcurgeri->Render()
+                                                             | size(ftxui::WIDTH, ftxui::GREATER_THAN, 70),
+                                                             separator(),
+                                                             hbox({
+                                                                          hbox({hbox(parte_intreaga > 1 ?
+                                                                                     vbox(vector_final)
+                                                                                     | size(ftxui::WIDTH, ftxui::GREATER_THAN, 115)
+                                                                                                        :
+                                                                                     vbox({hbox(text(" ")),
+                                                                                           hbox({text(
+                                                                                                   "Ordine noduri parcurse: ")}) |
+                                                                                           center,
+                                                                                           hbox({vector_final}) |
+                                                                                           center
+
+                                                                                          })
+                                                                                     | size(ftxui::WIDTH, ftxui::GREATER_THAN, 135))
+                                                                               })
+                                                                  })
+                                                            })
+                                                )}
+                                   )
+                                                                                       : hbox({})}
                       ))
                | size(ftxui::WIDTH,
                       ftxui::GREATER_THAN,
@@ -448,7 +528,6 @@ int main(int argc, const char *argv[])
 
 // Aici se face loop-ul bufferului de afisare pentru actualizarea in timp real
 
-    screen.
-            Loop(randare_principala);
+    screen.Loop(randare_principala);
     return EXIT_SUCCESS;
 }
