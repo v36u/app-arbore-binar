@@ -80,25 +80,28 @@ private:
     EsteFrunza(Nod);
 
     void
-    EditareNodCurentExistent(Nod);
-
-    bool
-    NoduriCuInformatiiEgale(Nod, Nod);
-
-    void
     DeplasareNodCurentSus(Nod);
 
     bool
     DeplasareNodCurent(E_Directie);
 
     void
+    DeplasareNodCurentUndeEstePosibil();
+
+    void
+    DezalocareArbore(Nod);
+
+    void
+    EditareNodCurentExistent(Nod);
+
+    bool
+    NoduriCuInformatiiEgale(Nod, Nod);
+
+    void
     InitializareCazRadacinaGoala(Nod);
 
     void
     SalvareNod(string, string *, string *, E_Directie *);
-
-    void
-    DezalocareArbore(Nod);
 
     vector<NodDto>
     RSD(Nod); //=> Rădăcină, Stânga, Dreapta
