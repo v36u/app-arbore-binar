@@ -220,7 +220,7 @@ ArboreBinar::DezalocareArbore(Nod p_nod)
 
 void ArboreBinar::DeplasareNodCurentUndeEstePosibil()
 {
-    while (!this->DeplasareNodCurent(this->_nod_curent->_directie))
+    while (!this->DeplasareNodCurent(this->_nod_curent->_directie) && this->_nod_curent->_directie != E_Directie::Stanga)
     { /* Maxim 3 iterații, deoarece DeplasareNodCurent(E_Directie::Sus) va fi mereu true. */}
 }
 
@@ -283,7 +283,7 @@ ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
 
     if (p_nod->_dreapta != nullptr)
     {
-        if (p_nod->_stanga->_informatie.empty())
+        if (p_nod->_dreapta->_informatie.empty())
         {
             this->DezalocareArbore(this->_nod_curent->_dreapta);
             this->_nod_curent->_dreapta = nullptr;
