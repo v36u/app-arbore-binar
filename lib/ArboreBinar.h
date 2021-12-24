@@ -115,6 +115,9 @@ private:
     vector<NodDto>
     ParcurgereInLatime(Nod);
 
+    void
+    StergereRadacina();
+
 public:
     ArboreBinar();
 
@@ -156,6 +159,11 @@ public:
     vector<NodDto>
     GetNodDtoInitVect();
 
+    void
+    StergereSubArboreAlNoduluiCurent();
+
+    void
+    ResetareArbore();
 };
 
 #endif
