@@ -12,6 +12,8 @@
 #include "ftxui/dom/elements.hpp"                // pentru text, Element, operator| (supraincarcare), window, flex, vbox
 #include "ftxui/util/ref.hpp"                    // pentru clasa Ref
 
+#include "../lib/ArboreBinar.h"
+
 using namespace ftxui;
 using namespace std;
 
@@ -49,8 +51,16 @@ Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
     return vector_final;
 }
 
+// Struct folosit pentru comutarea dintre optiunile de Parcurgere Subarbore Nod Curent si Parcurgere Arbore(intreg)
+struct CheckboxState
+{
+    bool marcat;
+};
+
 int main(int argc, const char *argv[])
 {
+    ArboreBinar arbore_binar;
+
     auto screen = ScreenInteractive::Fullscreen();
     // Am declarat variabilele in care se vor stoca valorile aferente nodului curent
     string val_nod{}, val_copil_stang{}, val_copil_drept{};
@@ -67,7 +77,13 @@ int main(int argc, const char *argv[])
 
     auto buton_salvare_nod = Container::Horizontal({
                                                            Button("[Salveaza si adauga nod]", [&]
-                                                                  { /* TODO: urmeaza sa adaugam logica aici */ },
+                                                                  {
+                                                                      arbore_binar.SalvareNod(val_nod, val_copil_stang, val_copil_drept);
+                                                                      auto informatii_nod_crt = arbore_binar.GetInformatiiNodCurent();
+                                                                      val_nod = informatii_nod_crt._nod_curent._informatie_nod;
+                                                                      val_copil_stang = informatii_nod_crt._informatie_descendent_stang;
+                                                                      val_copil_drept = informatii_nod_crt._informatie_descendent_drept;
+                                                                  },
                                                                   &optiune_buton_salv_nod),
                                                    });
 
@@ -144,19 +160,18 @@ int main(int argc, const char *argv[])
     // sfarsit sectiune
 
     // Aici se definesc proprietatile care vor fi "pasate" in componenta de editare a nodului
-    auto proprietati_nod = Container::Vertical({
-                                                       input_val_nod,
-                                                       buton_salvare_nod,
-                                               });
+
 
     // Sectiune care se ocupa cu randarea ferestrei Detalii Arbore
+
     auto tab_detalii_arbore = Renderer([&]
                                        {
+                                           auto statistici = arbore_binar.GetStatisticiArbore();
                                            return window(text("Detalii Arbore"),//
                                                          vbox({hbox(text(" ")),
-                                                               hbox(text("Nr. niveluri: -")),
-                                                               hbox(text("Nr. noduri: -")),
-                                                               hbox(text("Nr. frunze: -")),
+                                                               hbox(text("Nr. niveluri: " + statistici._numar_niveluri)),
+                                                               hbox(text("Nr. noduri: " + statistici._numar_noduri)),
+                                                               hbox(text("Nr. frunze: " + statistici._numar_frunze)),
                                                                hbox(text(" "))
                                                               })
                                            ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
@@ -168,7 +183,7 @@ int main(int argc, const char *argv[])
                                                       vbox({
                                                                    hbox(text(" ")),
                                                                    hbox(text(val_nod.empty() ? "Nod curent: - " :
-                                                                             "Nod curent: " + val_nod)),
+                                                                             "Nod curent: "), text(val_nod) | color(Color::GreenLight)),
                                                                    hbox(text(
                                                                            val_copil_stang.empty() ? "Copil stang: - " :
                                                                            "Copil stang: " + val_copil_stang)),
@@ -180,127 +195,226 @@ int main(int argc, const char *argv[])
                                         ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
                                     });
     // Sectiune care se ocupa cu randarea ferestrei de Editare si Adaugare Nod Curent
-    auto tab_editare_nod = Renderer(proprietati_nod, [&]
-    {
-        return window(text("Editare si Adaugare Nod Curent"),//
-                      vbox({hbox(text(" ")),
-                            hbox(text("Nod Crt.: "), input_val_nod->Render()),
-                            hbox(text(" ")),
-                            separator(),
-                            hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
-                                                  : buton_salvare_nod->Render()}) | center
-                           })
-        ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
-    });
-
     // Aici se definesc proprietatile care vor fi "pasate" in componenta de editare a copiilor nodului curent
-    auto proprietati_copii = Container::Vertical({butoane_salvare_copii});
-
+    auto proprietati_nod = Container::Vertical({
+                                                       input_val_nod,
+                                                       buton_salvare_nod,
+                                                       butoane_salvare_copii
+                                               });
     // Sectiune care se ocupa cu randarea ferestrei de Editare si Adaugare Copii Nod Curent
-    auto tab_editare_copii = Renderer(proprietati_copii, [&]
+    auto tab_editare_copii = Renderer(proprietati_nod, [&]
     {
-        return window(text("Editare Copii Nod Curent"),//
-                      vbox({hbox(text(" ")),
-                            hbox(text("Nod Crt. Selectat: " + val_nod)),
-                            hbox(text(val_copil_stang.empty() && val_copil_drept.empty()
-                                      ? "* Nodul curent nu are copii (frunza)"
-                                      : "")) | color(Color::GreenLight),
-                            hbox(text(val_copil_stang.empty() ? "* Nu exista copil stang " : "Copil stang: " +
-                                                                                             val_copil_stang)),
 
-                            hbox(text(val_copil_drept.empty() ? "* Nu exista copil drept " : "Copil drept: " +
-                                                                                             val_copil_drept)),
-                            hbox(text(" ")),
-                            separator(),
-                            hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
-                                                  : butoane_salvare_copii->Render()}) | center
+        return window(text("Editare Nod Curent"),//
+                      vbox({
+                                   hbox(text(" ")),
+                                   hbox(text("Nod Crt.: "), input_val_nod->Render()),
+                                   hbox(text(" ")),
+                                   separator(),
+                                   hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
+                                                         : buton_salvare_nod->Render()}) | center,
+
+                                   separator(),
+                                   hbox(text(val_copil_stang.empty() && val_copil_drept.empty()
+                                             ? "* Nodul curent nu are copii (frunza)"
+                                             : "")) | color(Color::GreenLight),
+                                   hbox(text(val_copil_stang.empty() ? "* Nu exista copil stang " : "Copil stang: " +
+                                                                                                    val_copil_stang)),
+
+                                   hbox(text(val_copil_drept.empty() ? "* Nu exista copil drept " : "Copil drept: " +
+                                                                                                    val_copil_drept)),
+                                   hbox(text(" ")),
+                                   separator(),
+                                   hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
+                                                         : butoane_salvare_copii->Render()}) | center
                            })
         ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
     });
 
     // Sectiune care se ocupa cu randarea meniului cu traversari
-    int selectat = 0;
+    int parcurgere_selectata = 0;
     MenuOption optiuni_meniu;
     optiuni_meniu.style_selected = color(Color::CadetBlue);
     optiuni_meniu.style_focused = bgcolor(Color::CadetBlue);
     optiuni_meniu.style_selected_focused = bgcolor(Color::CadetBlue);
 
-    vector<string> elemente_meniu_travers = {"Preordine", "Inordine", "Postordine", "In adancime"};
+    CheckboxState stare_1{};
+    CheckboxState stare_2{};
+    bool schimbat = false;
+    vector<string> elemente_meniu_parcurgeri = {"Preordine", "Inordine", "Postordine", "In Latime"};
 
-    auto meniu_traversari = Menu(&elemente_meniu_travers, &selectat, &optiuni_meniu);
 
-    vector<string> elemente_parcurse_placeholder = {"100", "200", "300", "123", "300", "123", "300", "123", "300",
-                                                    "123", "300", "123", "300", "100", "200", "300", "123", "300",
-                                                    "123", "300", "123", "123"};
+    auto container_meniu_parcurgeri = Container::Vertical({});
+    container_meniu_parcurgeri->Add(Menu(&elemente_meniu_parcurgeri, &parcurgere_selectata, &optiuni_meniu));
 
-    Elements elemente_parcurse;
-
-    elemente_parcurse.push_back(hbox((text(elemente_parcurse_placeholder.front()) | border)));
-    for (int i = 1; i < elemente_parcurse_placeholder.size(); i++)
+    auto optiuni_parcurgeri = Renderer(container_meniu_parcurgeri, [&]
     {
-        elemente_parcurse.push_back(hbox({text("→") | center, text(elemente_parcurse_placeholder[i]) | border}));
-    }
+        return vbox({hbox(text(" ")),
+                     hbox(vbox(text("Selectati parcurgerea: ")),
+                          vbox({container_meniu_parcurgeri->Render()})),
+                     hbox(text(" ")),
+                     separator()
+                    });
+    });
 
 
-    size_t parte_intreaga = elemente_parcurse.size() / 10;
+    auto container_checkboxuri = Container::Vertical({});
+    container_checkboxuri->Add(Checkbox("parcurgeti intreg arborele", &stare_1.marcat));
+    container_checkboxuri->Add(Checkbox("parcurgeti subarborele nodului curent", &stare_2.marcat));
 
-    Elements vector_final;
-
-    if (parte_intreaga > 1)
+    auto meniu_checkboxuri = Renderer(container_checkboxuri, [&]
     {
-        vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, parte_intreaga);
-        vector_final = AfisareElementeParcurseImpartite(vector_out);
-    } else
-    {
-        vector_final = elemente_parcurse;
-    }
+        return vbox(container_checkboxuri->Render() | frame |
+                    size(HEIGHT, LESS_THAN, 10));
+    });
 
-    // Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
-    auto reprezentare_grafica = Renderer(meniu_traversari, [&]
+    auto meniu_final_parcurgeri = Container::Vertical({
+                                                              optiuni_parcurgeri,
+                                                              meniu_checkboxuri
+                                                      });
+
+
+// Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
+    auto reprezentare_grafica = Renderer(meniu_final_parcurgeri, [&]
     {
-        return window(text("Arbore Binar - Reprezentare Grafica"),//
+        if (stare_1.marcat && !schimbat)
+        {
+            schimbat = true;
+            if (schimbat)
+            {
+                stare_2.marcat = false;
+            }
+        } else if (stare_2.marcat && schimbat)
+        {
+            schimbat = false;
+            if (!schimbat)
+            {
+                stare_1.marcat = false;
+            }
+        } else if (!stare_1.marcat && !stare_2.marcat)
+        {
+            stare_1.marcat = true;
+        }
+
+        auto informatii_nod = arbore_binar.GetInformatiiNodCurent();
+
+        auto vector_noduri_parcurse = arbore_binar.GetNodDtoInitVect();
+
+        if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
+        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
+        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
+        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_1.marcat)
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();
+        } else if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
+
+        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
+        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaNodulCurent();
+        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stare_2.marcat)
+        {
+            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaNodulCurent();
+        }
+
+
+        Elements elemente_parcurse, vector_final;
+        size_t parte_intreaga{};
+        if (!informatii_nod._nod_curent._informatie_nod.empty() && !vector_noduri_parcurse.empty())
+        {
+            if (vector_noduri_parcurse.front()._id_nod == informatii_nod._nod_curent._id_nod)
+                elemente_parcurse.push_back(
+                        hbox(hbox(text(vector_noduri_parcurse.front()._informatie_nod))
+                             | border
+                             | color(Color::GreenLight)
+                             | center)
+                );
+            else
+            {
+                elemente_parcurse.push_back(hbox((text(vector_noduri_parcurse.front()._informatie_nod)) | border
+                                                 | center)
+                );
+            }
+
+            for (int i = 1; i < vector_noduri_parcurse.size(); i++)
+            {
+                if (vector_noduri_parcurse[i]._id_nod == informatii_nod._nod_curent._id_nod)
+                    elemente_parcurse.push_back(hbox({text("→") | center,
+                                                      hbox(text(vector_noduri_parcurse[i]._informatie_nod)) | border |
+                                                      color(Color::GreenLight) | center}));
+                else
+                {
+                    elemente_parcurse.push_back(
+                            hbox({text("→") | center, hbox(text(vector_noduri_parcurse[i]._informatie_nod)) | border | center}));
+                }
+            }
+
+            parte_intreaga = elemente_parcurse.size() / 10;
+
+            if (parte_intreaga > 1)
+            {
+                vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, parte_intreaga);
+                vector_final = AfisareElementeParcurseImpartite(vector_out);
+            } else
+            {
+                vector_final = elemente_parcurse;
+            }
+        }
+
+        return window(text("Arbore Binar - Reprezentare Grafica"),
                       vbox({hbox({}),
                             filler(),
                             filler(),
-                            hbox({window(text("Meniu Parcurgere"),
-                                         hbox({vbox({hbox(text(" ")),
-                                                     hbox(vbox(text("Selectati parcurgerea: ")),
-                                                          vbox({meniu_traversari->Render() | frame})),
-                                                     hbox(text(" "))
-                                                    }) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 42),
-                                               separator(),
-                                               hbox({hbox({hbox(parte_intreaga > 1 ? vbox(vector_final) |
-                                                                                     size(ftxui::WIDTH,
-                                                                                          ftxui::GREATER_THAN,
-                                                                                          150)
-                                                                                   : vbox({hbox(text(" ")),
-                                                                                           hbox({text(
-                                                                                                   "Ordine noduri parcurse: ")}) |
-                                                                                           center,
-                                                                                           hbox({vector_final}) |
-                                                                                           center
+                            !informatii_nod._nod_curent._informatie_nod.empty() ?
+                            hbox({
+                                         window(text("Meniu Parcurgere"),
+                                                hbox({meniu_final_parcurgeri->Render()
+                                                      | size(ftxui::WIDTH, ftxui::GREATER_THAN, 70),
+                                                      separator(),
+                                                      hbox({
+                                                                   hbox({hbox(parte_intreaga > 1 ?
+                                                                              vbox(vector_final)
+                                                                              | size(ftxui::WIDTH, ftxui::GREATER_THAN, 115)
+                                                                                                 :
+                                                                              vbox({hbox(text(" ")),
+                                                                                    hbox({text(
+                                                                                            "Ordine noduri parcurse: ")}) |
+                                                                                    center,
+                                                                                    hbox({vector_final}) |
+                                                                                    center
 
-                                                                                          }) |
-                                                                                     size(ftxui::WIDTH,
-                                                                                          ftxui::GREATER_THAN,
-                                                                                          150))
-                                                          })
-                                                    })
-                                              })
-                                 )}
-                            )}
-                      ));
+                                                                                   })
+                                                                              | size(ftxui::WIDTH, ftxui::GREATER_THAN, 135))
+                                                                        })
+                                                           })
+                                                     })
+                                         )}
+                            )
+                                                                                : hbox({})}
+                      ))
+               | size(ftxui::WIDTH,
+                      ftxui::GREATER_THAN,
+                      185);
     });
 
-    // Sectiune care se ocupa cu randarea intregului nivel de adancime 0 (Principal)
+// Sectiune care se ocupa cu randarea intregului nivel de adancime 0 (Principal)
     auto container_adancime_0 = Container::Vertical(
-            {tab_detalii_arbore, tab_detalii_nod, tab_editare_nod, tab_editare_copii,
+            {tab_detalii_arbore, tab_detalii_nod, tab_editare_copii,
              reprezentare_grafica});
     auto randare_adancime_0 = Renderer(container_adancime_0, [&]
     {
         return hbox({hbox({vbox({tab_detalii_arbore->Render(),
                                  tab_detalii_nod->Render(),
-                                 tab_editare_nod->Render(),
                                  tab_editare_copii->Render(),
                                 })
                           }),
@@ -308,12 +422,12 @@ int main(int argc, const char *argv[])
                     });
     });
 
-    // Containerul principal tine toate elementele de pe toate nivelurile
+// Containerul principal tine toate elementele de pe toate nivelurile
     auto container_principal = Container::Tab({randare_adancime_0,
                                                randare_adancime_1_copil_st,
                                                randare_adancime_2_copil_dr
                                               }, &adancime);
-    // Sectiune in care se randeaza containerul principal
+// Sectiune in care se randeaza containerul principal
     auto randare_principala = Renderer(container_principal, [&]
     {
         Element document = randare_adancime_0->Render();
@@ -332,11 +446,9 @@ int main(int argc, const char *argv[])
         return document;
     });
 
-    cout << endl
-         << endl;
-    // Aici se face loop-ul bufferului de afisare pentru actualizarea in timp real
+// Aici se face loop-ul bufferului de afisare pentru actualizarea in timp real
 
-
-    screen.Loop(randare_principala);
+    screen.
+            Loop(randare_principala);
     return EXIT_SUCCESS;
 }
