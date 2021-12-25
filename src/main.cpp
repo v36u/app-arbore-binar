@@ -1,9 +1,5 @@
 #include "utilitare.h"
 
-namespace py = pybind11;
-using namespace py::literals;
-using namespace ftxui;
-using namespace std;
 
 int main(int argc, const char *argv[])
 {
