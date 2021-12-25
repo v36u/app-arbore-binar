@@ -27,16 +27,23 @@ using namespace py::literals;
 using namespace ftxui;
 using namespace std;
 
-vector<Elements> ImpartireVector(Elements el_parcurse, size_t nr_segmente);
+vector<Elements>
+ImpartireVector(Elements el_parcurse,
+                size_t nr_segmente);
 
-Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector);
+Elements
+AfisareElementeParcurseImpartite(vector<vector<Element>> vector);
 
-Elements ConversieStringMulti(string arbore, string delimiter);
+Elements
+ConversieStringMulti(string arbore, string delimiter);
 
-string GetCaleCatrePyLib();
+string
+GetCaleCatrePyLib();
 
-py::module_ GetPySys();
+py::module_
+GetPySys();
 
-string GetStringReprezentareGrafica();
+string
+GetStringReprezentareGrafica();
 
 #endif //APP_ARBORE_BINAR_UTILITARE_H

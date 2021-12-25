@@ -33,7 +33,7 @@ project(app_arbore_binar)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(app_arbore_binar src/main.cpp lib/ArboreBinar.cpp lib/ArboreBinar.h src/utilitare.cpp src/utilitare.h)
+add_executable(app_arbore_binar src/main.cpp lib/ArboreBinar.cpp lib/ArboreBinar.h src/utilitare.cpp src/utilitare.h src/componente.h src/componente.cpp src/globale.h)
 target_include_directories(app_arbore_binar PRIVATE src)
 target_link_libraries(app_arbore_binar
         PRIVATE ftxui::screen
