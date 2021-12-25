@@ -1,6 +1,5 @@
 #include "utilitare.h"
 
-
 int main(int argc, const char *argv[])
 {
     SetConsoleOutputCP(65001);
@@ -8,13 +7,12 @@ int main(int argc, const char *argv[])
     ArboreBinar arbore_binar;
 
     auto screen = ScreenInteractive::Fullscreen();
-    // Am declarat variabilele in care se vor stoca valorile aferente nodului curent
+
     string val_nod{}, val_copil_stang{}, val_copil_drept{};
 
-    // Aici am creat componenta care stocheaza valoarea introdusa de la tastatura a nodului curent (in input)
+
     Component input_val_nod = Input(&val_nod, "editati valoarea nodului");
 
-    // Sectiune in care se definesc proprietatile butonului de salvare din fereastra "Editare si Adaugare Nod Curent"
     auto optiune_buton_salv_nod = ButtonOption();
     optiune_buton_salv_nod.border = false;
 
@@ -30,18 +28,9 @@ int main(int argc, const char *argv[])
                                                             &optiune_buton_salv_nod),
                                                    });
 
-    // Sectiune in care se definesc meniurile de tip Pop-Up din sectiunea editare copii
-    // Variabila "adancime" - se refera la nivelul la care operam.
-    // 0 - reprezinta zona de dedesubt
-    // 1 - reprezinta nivelul cu meniul "Adaugare copil stanga"
-    // 2 - reprezinta nivelul cu meniul "Adaugare copil dreapta"
 
-    // Am setat "depth-ul" sau adancimea default ca fiind 0.
-    // Adica default-ul este afisarea ferestrelor principale.
     int adancime = 0;
 
-    // Sectiune care se ocupa de butonul de salvare a copilului stang
-    // Acest buton face posibila revenirea la adancimea 0 a programului
     auto optiune_buton_salv_copil_stang = ButtonOption();
     optiune_buton_salv_copil_stang.border = false;
     auto buton_salvare_copil_stang = Container::Horizontal({
@@ -49,10 +38,7 @@ int main(int argc, const char *argv[])
                                                                     { adancime = 0; },
                                                                     &optiune_buton_salv_copil_stang),
                                                            });
-    // sfarsit sectiune
 
-    // Sectiune care se ocupa de butonul de salvare a copilului drept
-    // Acest buton face posibila revenirea la adancimea 0 a programului
     auto optiune_buton_salv_copil_drept = ButtonOption();
     optiune_buton_salv_copil_drept.border = false;
     auto buton_salvare_copil_drept = Container::Horizontal({
@@ -60,9 +46,7 @@ int main(int argc, const char *argv[])
                                                                     { adancime = 0; },
                                                                     &optiune_buton_salv_copil_drept),
                                                            });
-    // sfarsit sectiune
 
-    // Sectiune care se ocupa cu randarea meniului Pop-Up de pe nivelul 1
     auto container_adancime_1_st = Container::Vertical({
                                                          Input(&val_copil_stang, "copil stang"),
                                                          buton_salvare_copil_stang,
@@ -73,9 +57,7 @@ int main(int argc, const char *argv[])
         return vbox({hbox(text("Introduceti valoare: ")),
                      container_adancime_1_st->Render() | center}) | border;
     });
-    // sfarsit sectiune
 
-    // Sectiune care se ocupa cu randarea meniului Pop-Up de pe nivelul 2
     auto container_adancime_2_dr = Container::Vertical({
                                                          Input(&val_copil_drept, "copil drept"),
                                                          buton_salvare_copil_drept,
@@ -87,9 +69,7 @@ int main(int argc, const char *argv[])
                      container_adancime_2_dr->Render() | center}) |
                border;
     });
-    // sfarsit sectiune
 
-    // Sectiune in care se definesc proprietatile butoanelor de salvare si adaugare ale copiilor nodului curent
     auto butoane_salvare_copii = Container::Horizontal({
                                                          Button(
                                                            "[Copil stang]", [&]
@@ -100,12 +80,6 @@ int main(int argc, const char *argv[])
                                                            { adancime = 2; },
                                                            &optiune_buton_salv_copil_drept),
                                                        });
-    // sfarsit sectiune
-
-    // Aici se definesc proprietatile care vor fi "pasate" in componenta de editare a nodului
-
-
-    // Sectiune care se ocupa cu randarea ferestrei Detalii Arbore
 
     auto tab_detalii_arbore = Renderer([&]
                                        {
@@ -119,7 +93,7 @@ int main(int argc, const char *argv[])
                                                               })
                                            ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
                                        });
-    // Sectiune care se ocupa cu randarea ferestrei Detalii Nod Curent
+
     auto tab_detalii_nod = Renderer([&]
                                     {
                                         return window(text("Detalii Nod Curent"),//
@@ -137,14 +111,13 @@ int main(int argc, const char *argv[])
                                                            })
                                         ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
                                     });
-    // Sectiune care se ocupa cu randarea ferestrei de Editare si Adaugare Nod Curent
-    // Aici se definesc proprietatile care vor fi "pasate" in componenta de editare a copiilor nodului curent
+
     auto proprietati_nod = Container::Vertical({
                                                  input_val_nod,
                                                  buton_salvare_nod,
                                                  butoane_salvare_copii
                                                });
-    // Sectiune care se ocupa cu randarea ferestrei de Editare si Adaugare Copii Nod Curent
+
     auto tab_editare_copii = Renderer(proprietati_nod, [&]
     {
 
@@ -174,7 +147,6 @@ int main(int argc, const char *argv[])
         ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
     });
 
-    // Sectiune care se ocupa cu randarea meniului cu traversari
     int parcurgere_selectata = 0;
     MenuOption optiuni_meniu;
     optiuni_meniu.style_selected = color(Color::CadetBlue);
@@ -200,7 +172,6 @@ int main(int argc, const char *argv[])
                     });
     });
 
-
     auto container_checkboxuri = Container::Vertical({});
     container_checkboxuri->Add(Checkbox("parcurgeti intreg arborele", &stare_1));
     container_checkboxuri->Add(Checkbox("parcurgeti subarborele nodului curent", &stare_2));
@@ -216,8 +187,6 @@ int main(int argc, const char *argv[])
                                                         meniu_checkboxuri
                                                       });
 
-
-// Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
     Elements vector_linii_arbore = ConversieStringMulti(GetStringReprezentareGrafica(), "\n");
     auto reprezentare_grafica = Renderer(meniu_final_parcurgeri, [&]
     {
@@ -287,6 +256,7 @@ int main(int argc, const char *argv[])
 
         Elements elemente_parcurse, vector_final;
         size_t parte_intreaga{};
+
         if (!informatii_nod._nod_curent._informatie_nod.empty() && !vector_noduri_parcurse.empty())
         {
             if (vector_noduri_parcurse.front()._id_nod == informatii_nod._nod_curent._id_nod)
@@ -366,7 +336,6 @@ int main(int argc, const char *argv[])
                       185);
     });
 
-// Sectiune care se ocupa cu randarea intregului nivel de adancime 0 (Principal)
     auto container_adancime_0 = Container::Vertical(
       {tab_detalii_arbore, tab_detalii_nod, tab_editare_copii,
        reprezentare_grafica});
@@ -381,12 +350,11 @@ int main(int argc, const char *argv[])
                     });
     });
 
-// Containerul principal tine toate elementele de pe toate nivelurile
     auto container_principal = Container::Tab({randare_adancime_0,
                                                randare_adancime_1_copil_st,
                                                randare_adancime_2_copil_dr
                                               }, &adancime);
-// Sectiune in care se randeaza containerul principal
+
     auto randare_principala = Renderer(container_principal, [&]
     {
         Element document = randare_adancime_0->Render();
@@ -404,8 +372,6 @@ int main(int argc, const char *argv[])
         }
         return document;
     });
-
-// Aici se face loop-ul bufferului de afisare pentru actualizarea in timp real
 
     screen.Loop(randare_principala);
     return EXIT_SUCCESS;
