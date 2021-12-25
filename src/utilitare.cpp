@@ -1,9 +1,11 @@
 #include "utilitare.h"
 
 
-vector <Elements> ImpartireVector(Elements el_parcurse, size_t nr_segmente)
+vector<Elements>
+ImpartireVector(Elements el_parcurse,
+                size_t nr_segmente)
 {
-    vector <Elements> vector_out;
+    vector<Elements> vector_out;
 
     int lungime = el_parcurse.size() / nr_segmente;
     int rest = el_parcurse.size() % nr_segmente;
@@ -14,13 +16,14 @@ vector <Elements> ImpartireVector(Elements el_parcurse, size_t nr_segmente)
     for (int i = 0; i < min<int>(nr_segmente, el_parcurse.size()); i++)
     {
         sfarsit += lungime + (rest-- > 0);
-        vector_out.push_back(Elements (el_parcurse.begin() + inceput, el_parcurse.begin() + sfarsit));
+        vector_out.push_back(Elements(el_parcurse.begin() + inceput, el_parcurse.begin() + sfarsit));
         inceput = sfarsit;
     }
     return vector_out;
 }
 
-Elements AfisareElementeParcurseImpartite(vector <vector<Element>> vector)
+Elements
+AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
 {
     Elements vector_final;
     vector_final.push_back(hbox(text(" ")));
@@ -34,7 +37,8 @@ Elements AfisareElementeParcurseImpartite(vector <vector<Element>> vector)
     return vector_final;
 }
 
-Elements ConversieStringMulti(string arbore, string delimiter)
+Elements
+ConversieStringMulti(string arbore, string delimiter)
 {
     Elements stringuri;
 
@@ -52,7 +56,8 @@ Elements ConversieStringMulti(string arbore, string delimiter)
     return stringuri;
 }
 
-string GetCaleCatrePyLib()
+string
+GetCaleCatrePyLib()
 {
     auto os = py::module::import("os");
     return os
@@ -63,7 +68,8 @@ string GetCaleCatrePyLib()
       .cast<string>();
 }
 
-py::module_ GetPySys()
+py::module_
+GetPySys()
 {
     auto sys = py::module::import("sys");
     sys
@@ -72,7 +78,8 @@ py::module_ GetPySys()
     return sys;
 }
 
-string GetStringReprezentareGrafica()
+string
+GetStringReprezentareGrafica()
 {
     pybind11::scoped_interpreter guard{};
     auto sys = GetPySys();
