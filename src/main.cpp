@@ -84,17 +84,39 @@ Elements ConversieStringMulti(string arbore, string delimiter)
     return stringuri;
 }
 
+string GetCaleCatrePyLib()
+{
+    auto os = py::module::import("os");
+    return os
+      .attr("path")
+      .attr("abspath")(os
+                         .attr("path")
+                         .attr("join")("..", "lib"))
+      .cast<string>();
+}
+
+py::module_ GetPySys()
+{
+    auto sys = py::module::import("sys");
+    sys
+      .attr("path")
+      .attr("append")(GetCaleCatrePyLib());
+    return sys;
+}
+
+string GetStringReprezentareGrafica()
+{
+    pybind11::scoped_interpreter guard{};
+    auto sys = GetPySys();
+    auto modul_test = py::module::import("afisare_arbore");
+    auto functie_convertita = modul_test.attr("get_string_reprezentare_grafica");
+    auto preluat = functie_convertita();
+    return preluat.cast<string>();
+}
+
 int main(int argc, const char *argv[])
 {
     SetConsoleOutputCP(65001);
-    pybind11::scoped_interpreter guard{};
-
-    auto sys = py::module::import("sys");
-    auto modul_test = py::module::import("afisare_arbore");
-    auto functie_convertita = modul_test.attr("main");
-    auto preluat = functie_convertita();
-    auto arbore_reprezentat_grafic = preluat.cast<string>();
-    Elements vector_linii_arbore = ConversieStringMulti(arbore_reprezentat_grafic, "\n");
 
     ArboreBinar arbore_binar;
 
@@ -113,15 +135,15 @@ int main(int argc, const char *argv[])
     optiune_buton_salv_nod.border = false;
 
     auto buton_salvare_nod = Container::Horizontal({
-                                                           Button("[Salveaza si adauga nod]", [&]
-                                                                  {
-                                                                      arbore_binar.SalvareNod(val_nod, val_copil_stang, val_copil_drept);
-                                                                      auto informatii_nod_crt = arbore_binar.GetInformatiiNodCurent();
-                                                                      val_nod = informatii_nod_crt._nod_curent._informatie_nod;
-                                                                      val_copil_stang = informatii_nod_crt._informatie_descendent_stang;
-                                                                      val_copil_drept = informatii_nod_crt._informatie_descendent_drept;
-                                                                  },
-                                                                  &optiune_buton_salv_nod),
+                                                     Button("[Salveaza si adauga nod]", [&]
+                                                            {
+                                                                arbore_binar.SalvareNod(val_nod, val_copil_stang, val_copil_drept);
+                                                                auto informatii_nod_crt = arbore_binar.GetInformatiiNodCurent();
+                                                                val_nod = informatii_nod_crt._nod_curent._informatie_nod;
+                                                                val_copil_stang = informatii_nod_crt._informatie_descendent_stang;
+                                                                val_copil_drept = informatii_nod_crt._informatie_descendent_drept;
+                                                            },
+                                                            &optiune_buton_salv_nod),
                                                    });
 
     // Sectiune in care se definesc meniurile de tip Pop-Up din sectiunea editare copii
@@ -139,9 +161,9 @@ int main(int argc, const char *argv[])
     auto optiune_buton_salv_copil_stang = ButtonOption();
     optiune_buton_salv_copil_stang.border = false;
     auto buton_salvare_copil_stang = Container::Horizontal({
-                                                                   Button("[Salveaza copil stang]", [&]
-                                                                          { adancime = 0; },
-                                                                          &optiune_buton_salv_copil_stang),
+                                                             Button("[Salveaza copil stang]", [&]
+                                                                    { adancime = 0; },
+                                                                    &optiune_buton_salv_copil_stang),
                                                            });
     // sfarsit sectiune
 
@@ -150,16 +172,16 @@ int main(int argc, const char *argv[])
     auto optiune_buton_salv_copil_drept = ButtonOption();
     optiune_buton_salv_copil_drept.border = false;
     auto buton_salvare_copil_drept = Container::Horizontal({
-                                                                   Button("[Salveaza copil drept]", [&]
-                                                                          { adancime = 0; },
-                                                                          &optiune_buton_salv_copil_drept),
+                                                             Button("[Salveaza copil drept]", [&]
+                                                                    { adancime = 0; },
+                                                                    &optiune_buton_salv_copil_drept),
                                                            });
     // sfarsit sectiune
 
     // Sectiune care se ocupa cu randarea meniului Pop-Up de pe nivelul 1
     auto container_adancime_1_st = Container::Vertical({
-                                                               Input(&val_copil_stang, "copil stang"),
-                                                               buton_salvare_copil_stang,
+                                                         Input(&val_copil_stang, "copil stang"),
+                                                         buton_salvare_copil_stang,
                                                        });
 
     auto randare_adancime_1_copil_st = Renderer(container_adancime_1_st, [&]
@@ -171,8 +193,8 @@ int main(int argc, const char *argv[])
 
     // Sectiune care se ocupa cu randarea meniului Pop-Up de pe nivelul 2
     auto container_adancime_2_dr = Container::Vertical({
-                                                               Input(&val_copil_drept, "copil drept"),
-                                                               buton_salvare_copil_drept,
+                                                         Input(&val_copil_drept, "copil drept"),
+                                                         buton_salvare_copil_drept,
                                                        });
 
     auto randare_adancime_2_copil_dr = Renderer(container_adancime_2_dr, [&]
@@ -185,14 +207,14 @@ int main(int argc, const char *argv[])
 
     // Sectiune in care se definesc proprietatile butoanelor de salvare si adaugare ale copiilor nodului curent
     auto butoane_salvare_copii = Container::Horizontal({
-                                                               Button(
-                                                                       "[Copil stang]", [&]
-                                                                       { adancime = 1; },
-                                                                       &optiune_buton_salv_copil_stang),
-                                                               Button(
-                                                                       "[Copil drept]", [&]
-                                                                       { adancime = 2; },
-                                                                       &optiune_buton_salv_copil_drept),
+                                                         Button(
+                                                           "[Copil stang]", [&]
+                                                           { adancime = 1; },
+                                                           &optiune_buton_salv_copil_stang),
+                                                         Button(
+                                                           "[Copil drept]", [&]
+                                                           { adancime = 2; },
+                                                           &optiune_buton_salv_copil_drept),
                                                        });
     // sfarsit sectiune
 
@@ -218,25 +240,25 @@ int main(int argc, const char *argv[])
                                     {
                                         return window(text("Detalii Nod Curent"),//
                                                       vbox({
-                                                                   hbox(text(" ")),
-                                                                   hbox(text(val_nod.empty() ? "Nod curent: - " :
-                                                                             "Nod curent: "), text(val_nod) | color(Color::GreenLight)),
-                                                                   hbox(text(
-                                                                           val_copil_stang.empty() ? "Copil stang: - " :
-                                                                           "Copil stang: " + val_copil_stang)),
-                                                                   hbox(text(
-                                                                           val_copil_drept.empty() ? "Copil drept: - " :
-                                                                           "Copil drept: " + val_copil_drept)),
-                                                                   hbox(text(" ")),
+                                                             hbox(text(" ")),
+                                                             hbox(text(val_nod.empty() ? "Nod curent: - " :
+                                                                       "Nod curent: "), text(val_nod) | color(Color::GreenLight)),
+                                                             hbox(text(
+                                                               val_copil_stang.empty() ? "Copil stang: - " :
+                                                               "Copil stang: " + val_copil_stang)),
+                                                             hbox(text(
+                                                               val_copil_drept.empty() ? "Copil drept: - " :
+                                                               "Copil drept: " + val_copil_drept)),
+                                                             hbox(text(" ")),
                                                            })
                                         ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
                                     });
     // Sectiune care se ocupa cu randarea ferestrei de Editare si Adaugare Nod Curent
     // Aici se definesc proprietatile care vor fi "pasate" in componenta de editare a copiilor nodului curent
     auto proprietati_nod = Container::Vertical({
-                                                       input_val_nod,
-                                                       buton_salvare_nod,
-                                                       butoane_salvare_copii
+                                                 input_val_nod,
+                                                 buton_salvare_nod,
+                                                 butoane_salvare_copii
                                                });
     // Sectiune care se ocupa cu randarea ferestrei de Editare si Adaugare Copii Nod Curent
     auto tab_editare_copii = Renderer(proprietati_nod, [&]
@@ -244,26 +266,26 @@ int main(int argc, const char *argv[])
 
         return window(text("Editare Nod Curent"),//
                       vbox({
-                                   hbox(text(" ")),
-                                   hbox(text("Nod Crt.: "), input_val_nod->Render()),
-                                   hbox(text(" ")),
-                                   separator(),
-                                   hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
-                                                         : buton_salvare_nod->Render()}) | center,
+                             hbox(text(" ")),
+                             hbox(text("Nod Crt.: "), input_val_nod->Render()),
+                             hbox(text(" ")),
+                             separator(),
+                             hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
+                                                   : buton_salvare_nod->Render()}) | center,
 
-                                   separator(),
-                                   hbox(text(val_copil_stang.empty() && val_copil_drept.empty()
-                                             ? "* Nodul curent nu are copii (frunza)"
-                                             : "")) | color(Color::GreenLight),
-                                   hbox(text(val_copil_stang.empty() ? "* Nu exista copil stang " : "Copil stang: " +
-                                                                                                    val_copil_stang)),
+                             separator(),
+                             hbox(text(val_copil_stang.empty() && val_copil_drept.empty()
+                                       ? "* Nodul curent nu are copii (frunza)"
+                                       : "")) | color(Color::GreenLight),
+                             hbox(text(val_copil_stang.empty() ? "* Nu exista copil stang " : "Copil stang: " +
+                                                                                              val_copil_stang)),
 
-                                   hbox(text(val_copil_drept.empty() ? "* Nu exista copil drept " : "Copil drept: " +
-                                                                                                    val_copil_drept)),
-                                   hbox(text(" ")),
-                                   separator(),
-                                   hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
-                                                         : butoane_salvare_copii->Render()}) | center
+                             hbox(text(val_copil_drept.empty() ? "* Nu exista copil drept " : "Copil drept: " +
+                                                                                              val_copil_drept)),
+                             hbox(text(" ")),
+                             separator(),
+                             hbox({val_nod.empty() ? text("* Completati campul \"Nod Crt.\"") | color(Color::RedLight)
+                                                   : butoane_salvare_copii->Render()}) | center
                            })
         ) | size(ftxui::WIDTH, ftxui::EQUAL, 40);
     });
@@ -306,12 +328,13 @@ int main(int argc, const char *argv[])
     });
 
     auto meniu_final_parcurgeri = Container::Vertical({
-                                                              optiuni_parcurgeri,
-                                                              meniu_checkboxuri
+                                                        optiuni_parcurgeri,
+                                                        meniu_checkboxuri
                                                       });
 
 
 // Sectiune care se ocupa cu randarea tab-ului de reprezentare grafica a arborelui binar
+    Elements vector_linii_arbore = ConversieStringMulti(GetStringReprezentareGrafica(), "\n");
     auto reprezentare_grafica = Renderer(meniu_final_parcurgeri, [&]
     {
         if (stare_1.marcat && !schimbat)
@@ -412,10 +435,10 @@ int main(int argc, const char *argv[])
         {
             if (vector_noduri_parcurse.front()._id_nod == informatii_nod._nod_curent._id_nod)
                 elemente_parcurse.push_back(
-                        hbox(hbox(text(vector_noduri_parcurse.front()._informatie_nod))
-                             | border
-                             | color(Color::GreenLight)
-                             | center)
+                  hbox(hbox(text(vector_noduri_parcurse.front()._informatie_nod))
+                       | border
+                       | color(Color::GreenLight)
+                       | center)
                 );
             else
             {
@@ -433,7 +456,7 @@ int main(int argc, const char *argv[])
                 else
                 {
                     elemente_parcurse.push_back(
-                            hbox({text("→") | center, hbox(text(vector_noduri_parcurse[i]._informatie_nod)) | border | center}));
+                      hbox({text("→") | center, hbox(text(vector_noduri_parcurse[i]._informatie_nod)) | border | center}));
                 }
             }
 
@@ -452,35 +475,35 @@ int main(int argc, const char *argv[])
         return window(text("Arbore Binar - Reprezentare Grafica"),
                       vbox({
 
-                                   filler(),
-                                   vbox(vector_linii_arbore) | center,
-                                   filler(),
-                                   !informatii_nod._nod_curent._informatie_nod.empty() ?
-                                   hbox({
-                                                window(text("Meniu Parcurgere"),
-                                                       hbox({meniu_final_parcurgeri->Render()
-                                                             | size(ftxui::WIDTH, ftxui::GREATER_THAN, 70),
-                                                             separator(),
-                                                             hbox({
-                                                                          hbox({hbox(parte_intreaga > 1 ?
-                                                                                     vbox(vector_final)
-                                                                                     | size(ftxui::WIDTH, ftxui::GREATER_THAN, 115)
-                                                                                                        :
-                                                                                     vbox({hbox(text(" ")),
-                                                                                           hbox({text(
-                                                                                                   "Ordine noduri parcurse: ")}) |
-                                                                                           center,
-                                                                                           hbox({vector_final}) |
-                                                                                           center
+                             filler(),
+                             vbox(vector_linii_arbore) | center,
+                             filler(),
+                             !informatii_nod._nod_curent._informatie_nod.empty() ?
+                             hbox({
+                                    window(text("Meniu Parcurgere"),
+                                           hbox({meniu_final_parcurgeri->Render()
+                                                 | size(ftxui::WIDTH, ftxui::GREATER_THAN, 70),
+                                                 separator(),
+                                                 hbox({
+                                                        hbox({hbox(parte_intreaga > 1 ?
+                                                                   vbox(vector_final)
+                                                                   | size(ftxui::WIDTH, ftxui::GREATER_THAN, 115)
+                                                                                      :
+                                                                   vbox({hbox(text(" ")),
+                                                                         hbox({text(
+                                                                           "Ordine noduri parcurse: ")}) |
+                                                                         center,
+                                                                         hbox({vector_final}) |
+                                                                         center
 
-                                                                                          })
-                                                                                     | size(ftxui::WIDTH, ftxui::GREATER_THAN, 135))
-                                                                               })
-                                                                  })
-                                                            })
-                                                )}
-                                   )
-                                                                                       : hbox({})}
+                                                                        })
+                                                                   | size(ftxui::WIDTH, ftxui::GREATER_THAN, 135))
+                                                             })
+                                                      })
+                                                })
+                                    )}
+                             )
+                                                                                 : hbox({})}
                       ))
                | size(ftxui::WIDTH,
                       ftxui::GREATER_THAN,
@@ -489,8 +512,8 @@ int main(int argc, const char *argv[])
 
 // Sectiune care se ocupa cu randarea intregului nivel de adancime 0 (Principal)
     auto container_adancime_0 = Container::Vertical(
-            {tab_detalii_arbore, tab_detalii_nod, tab_editare_copii,
-             reprezentare_grafica});
+      {tab_detalii_arbore, tab_detalii_nod, tab_editare_copii,
+       reprezentare_grafica});
     auto randare_adancime_0 = Renderer(container_adancime_0, [&]
     {
         return hbox({hbox({vbox({tab_detalii_arbore->Render(),
