@@ -18,16 +18,16 @@ ArboreBinar::~ArboreBinar()
 }
 
 ArboreBinar::Celula::Celula(string p_informatie, unsigned int p_id, unsigned short p_nivel)
-        : Celula(p_informatie, p_id, p_nivel, nullptr, nullptr, E_Directie::Stanga)
+  : Celula(p_informatie, p_id, p_nivel, nullptr, nullptr, E_Directie::Stanga)
 {}
 
 ArboreBinar::Celula::Celula
-        (string p_informatie,
-         unsigned int p_id,
-         unsigned short p_nivel,
-         Celula *p_descendent_stang,
-         Celula *p_descendent_drept,
-         E_Directie p_directie)
+  (string p_informatie,
+   unsigned int p_id,
+   unsigned short p_nivel,
+   Celula *p_descendent_stang,
+   Celula *p_descendent_drept,
+   E_Directie p_directie)
 {
     this->_id = p_id;
     this->_informatie = p_informatie;
@@ -45,63 +45,63 @@ ArboreBinar::CreareNod(string p_informatie_nod, unsigned short p_nivel)
 
 ArboreBinar::Nod
 ArboreBinar::CreareNod
-        (string p_informatie_nod,
-         unsigned short p_nivel,
-         string p_informatie_descendent,
-         E_Directie p_directie)
+  (string p_informatie_nod,
+   unsigned short p_nivel,
+   string p_informatie_descendent,
+   E_Directie p_directie)
 {
     return
-            new Celula(p_informatie_nod,
+      new Celula(p_informatie_nod,
 
-                       this->_id_curent++,
+                 this->_id_curent++,
 
-                       p_nivel,
+                 p_nivel,
 
-                       p_directie == E_Directie::Stanga
-                       ? this->CreareNod(p_informatie_descendent, p_nivel + 1)
-                       : nullptr,
+                 p_directie == E_Directie::Stanga
+                 ? this->CreareNod(p_informatie_descendent, p_nivel + 1)
+                 : nullptr,
 
-                       p_directie == E_Directie::Dreapta
-                       ? this->CreareNod(p_informatie_descendent, p_nivel + 1)
-                       : nullptr,
+                 p_directie == E_Directie::Dreapta
+                 ? this->CreareNod(p_informatie_descendent, p_nivel + 1)
+                 : nullptr,
 
-                       this->_nod_curent != nullptr
-                       ? this->_nod_curent->_directie
-                       : E_Directie::Stanga
-            );
+                 this->_nod_curent != nullptr
+                 ? this->_nod_curent->_directie
+                 : E_Directie::Stanga
+      );
 }
 
 ArboreBinar::Nod
 ArboreBinar::CreareNod
-        (string p_informatie_nod,
-         unsigned short p_nivel,
-         string p_informatie_descendent_stang,
-         string p_informatie_descendent_drept)
+  (string p_informatie_nod,
+   unsigned short p_nivel,
+   string p_informatie_descendent_stang,
+   string p_informatie_descendent_drept)
 {
     return
-            new Celula(p_informatie_nod,
+      new Celula(p_informatie_nod,
 
-                       this->_id_curent++,
+                 this->_id_curent++,
 
-                       p_nivel,
+                 p_nivel,
 
-                       this->CreareNod(p_informatie_descendent_stang, p_nivel + 1),
+                 this->CreareNod(p_informatie_descendent_stang, p_nivel + 1),
 
-                       this->CreareNod(p_informatie_descendent_drept, p_nivel + 1),
+                 this->CreareNod(p_informatie_descendent_drept, p_nivel + 1),
 
-                       this->_nod_curent != nullptr
-                       ? this->_nod_curent->_directie
-                       : E_Directie::Stanga
-            );
+                 this->_nod_curent != nullptr
+                 ? this->_nod_curent->_directie
+                 : E_Directie::Stanga
+      );
 }
 
 ArboreBinar::Nod
 ArboreBinar::RouterCreareNod
-        (string p_informatie_nod,
-         unsigned short p_nivel,
-         string *p_informatie_descendent_1,
-         string *p_informatie_descendent_2,
-         E_Directie *p_directie)
+  (string p_informatie_nod,
+   unsigned short p_nivel,
+   string *p_informatie_descendent_1,
+   string *p_informatie_descendent_2,
+   E_Directie *p_directie)
 {
     if (p_informatie_descendent_1 != nullptr && p_informatie_descendent_2 != nullptr)
     {
@@ -340,24 +340,24 @@ ArboreBinar::InitializareCazRadacinaGoala(Nod p_nod)
 
 void
 ArboreBinar::SalvareNod
-        (string p_informatie_nod,
-         string *p_informatie_descendent_1,
-         string *p_informatie_descendent_2,
-         E_Directie *p_directie)
+  (string p_informatie_nod,
+   string *p_informatie_descendent_1,
+   string *p_informatie_descendent_2,
+   E_Directie *p_directie)
 {
     auto nod_nou =
-            this->RouterCreareNod
-                    (p_informatie_nod,
+      this->RouterCreareNod
+        (p_informatie_nod,
 
-                     this->_nod_curent != nullptr
-                     ? this->_nod_curent->_nivel
-                     : 1,
+         this->_nod_curent != nullptr
+         ? this->_nod_curent->_nivel
+         : 1,
 
-                     p_informatie_descendent_1,
+         p_informatie_descendent_1,
 
-                     p_informatie_descendent_2,
+         p_informatie_descendent_2,
 
-                     p_directie);
+         p_directie);
 
     if (this->NoduriCuInformatiiEgale(this->_nod_curent, nod_nou))
     {
@@ -489,12 +489,12 @@ ArboreBinar::GetInformatiiNodCurent()
     }
 
     return {
-            ._nod_curent = {
-                    ._id_nod = id_nod_curent,
-                    ._informatie_nod = informatie_nod_curent,
-            },
-            ._informatie_descendent_stang = informatie_descendent_stang,
-            ._informatie_descendent_drept = informatie_descendent_drept
+      ._nod_curent = {
+        ._id_nod = id_nod_curent,
+        ._informatie_nod = informatie_nod_curent,
+      },
+      ._informatie_descendent_stang = informatie_descendent_stang,
+      ._informatie_descendent_drept = informatie_descendent_drept
     };
 }
 
@@ -502,17 +502,17 @@ ArboreBinar::StatisticiDto
 ArboreBinar::GetStatisticiArbore()
 {
     return {
-            ._numar_noduri = to_string(this->_numar_noduri),
-            ._numar_frunze = to_string(this->_numar_frunze),
-            ._numar_niveluri = to_string(this->_numar_niveluri)
+      ._numar_noduri = to_string(this->_numar_noduri),
+      ._numar_frunze = to_string(this->_numar_frunze),
+      ._numar_niveluri = to_string(this->_numar_niveluri)
     };
 }
 
 void
 ArboreBinar::SalvareNod
-        (string p_informatie_nod,
-         string p_informatie_descendent_stang,
-         string p_informatie_descendent_drept)
+  (string p_informatie_nod,
+   string p_informatie_descendent_stang,
+   string p_informatie_descendent_drept)
 {
     auto descendent_stang_fara_informatie = p_informatie_descendent_stang.empty();
     auto descendent_drept_fara_informatie = p_informatie_descendent_drept.empty();

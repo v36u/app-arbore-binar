@@ -155,10 +155,13 @@ def drawTree2(blnCompact):
     )
 
 
-# TEST ----------------------------------------------------
-# main :: IO ()
-def main():
-    # tree :: Tree String
+# DATE DE LA C++ ----------------------------------------------------
+def set_date():
+    pass
+
+
+# DATE PENTRU C++ ----------------------------------------------------
+def get_string_reprezentare_grafica():
     tree2 = Node('Alpha')([
         Node('Beta')([
             Node('Epsilon')([]),
@@ -300,4 +303,5 @@ def root(t):
 
 # MAIN ---
 if __name__ == '__main__':
-    main()
+    set_date()
+    get_string_reprezentare_grafica()

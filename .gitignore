@@ -32,10 +32,12 @@
 *.app
 
 # CMake
-cmake/*
-cmake-build-debug/*
-!cmake-build-debug/afisare_arbore.py
+cmake/
+cmake-build-debug/
 
 # Other configs
 .idea/app_arbore_binar.iml
 .idea/modules.xml
+
+#Python Cache
+lib/__pycache__/
