@@ -1,118 +1,9 @@
-
-#include <windows.h>
-#include <algorithm>
-#include <memory>  // pentru allocator, __shared_ptr_access
-#include <cstdlib>// pentru EXIT_SUCCESS
-#include <string>  // pentru string, operator+ (supraincarcare), basic_string, to_string, char_traits
-#include <vector>  // pentru vector, __alloc_traits<>::value_type
-#include <stdio.h>
-
-#include "ftxui/component/captured_mouse.hpp"    // pentru ftxui
-#include "ftxui/component/component.hpp"         // pentru clasele Menu, Renderer, Horizontal, Vertical
-#include "ftxui/component/component_base.hpp"    // pentru clasa ComponentBase
-#include "ftxui/component/component_options.hpp" // pentru clasele InputOption, ButtonOption
-#include "ftxui/component/screen_interactive.hpp"// pentru clasele Component, ScreenInteractive
-#include "ftxui/dom/elements.hpp"                // pentru text, Element, operator| (supraincarcare), window, flex, vbox
-#include "ftxui/util/ref.hpp"                    // pentru clasa Ref
-#include <Python.h>
-#include "pybind11/embed.h"
+#include "utilitare.h"
 
 namespace py = pybind11;
 using namespace py::literals;
-
-#include "../lib/ArboreBinar.h"
-
 using namespace ftxui;
 using namespace std;
-
-
-template<typename T>
-vector<vector<T>> ImpartireVector(vector<T> el_parcurse, size_t nr_segmente)
-{
-    vector<vector<T>> vector_out;
-
-    int lungime = el_parcurse.size() / nr_segmente;
-    int rest = el_parcurse.size() % nr_segmente;
-
-    int inceput = 0;
-    int sfarsit = 0;
-
-    for (int i = 0; i < min<int>(nr_segmente, el_parcurse.size()); i++)
-    {
-        sfarsit += lungime + (rest-- > 0);
-        vector_out.push_back(vector<T>(el_parcurse.begin() + inceput, el_parcurse.begin() + sfarsit));
-        inceput = sfarsit;
-    }
-    return vector_out;
-}
-
-Elements AfisareElementeParcurseImpartite(vector<vector<Element>> vector)
-{
-    Elements vector_final;
-    vector_final.push_back(hbox(text(" ")));
-    vector_final.push_back(hbox({text("Ordine noduri parcurse: ")}) | center);
-
-    for (int i = 0; i < vector.size() - 1; i++)
-    {
-        vector_final.push_back(hbox(vector[i], text("→") | center) | center);
-    }
-    vector_final.push_back(hbox(vector.back()) | center);
-    return vector_final;
-}
-
-// Struct folosit pentru comutarea dintre optiunile de Parcurgere Subarbore Nod Curent si Parcurgere Arbore(intreg)
-struct CheckboxState
-{
-    bool marcat;
-};
-
-Elements ConversieStringMulti(string arbore, string delimiter)
-{
-    Elements stringuri;
-
-    std::string::size_type pos = 0;
-    std::string::size_type prev = 0;
-    while ((pos = arbore.find(delimiter, prev)) != std::string::npos)
-    {
-        stringuri.push_back(text(arbore.substr(prev, pos - prev)));
-        prev = pos + 1;
-    }
-
-    // To get the last substring (or only, if delimiter is not found)
-    stringuri.push_back(text(arbore.substr(prev)));
-
-    return stringuri;
-}
-
-string GetCaleCatrePyLib()
-{
-    auto os = py::module::import("os");
-    return os
-      .attr("path")
-      .attr("abspath")(os
-                         .attr("path")
-                         .attr("join")("..", "lib"))
-      .cast<string>();
-}
-
-py::module_ GetPySys()
-{
-    auto sys = py::module::import("sys");
-    sys
-      .attr("path")
-      .attr("append")(GetCaleCatrePyLib());
-    return sys;
-}
-
-string GetStringReprezentareGrafica()
-{
-    pybind11::scoped_interpreter guard{};
-    auto sys = GetPySys();
-    auto modul_test = py::module::import("afisare_arbore");
-    auto functie_convertita = modul_test.attr("get_string_reprezentare_grafica");
-    auto preluat = functie_convertita();
-    return preluat.cast<string>();
-}
 
 int main(int argc, const char *argv[])
 {
@@ -126,9 +17,6 @@ int main(int argc, const char *argv[])
 
     // Aici am creat componenta care stocheaza valoarea introdusa de la tastatura a nodului curent (in input)
     Component input_val_nod = Input(&val_nod, "editati valoarea nodului");
-
-    //    Component input_copil_stang = Input(&val_copil_stang, "introduceti valoarea");
-    //    Component input_copil_drept = Input(&val_copil_drept, "introduceti valoarea");
 
     // Sectiune in care se definesc proprietatile butonului de salvare din fereastra "Editare si Adaugare Nod Curent"
     auto optiune_buton_salv_nod = ButtonOption();
@@ -297,8 +185,8 @@ int main(int argc, const char *argv[])
     optiuni_meniu.style_focused = bgcolor(Color::CadetBlue);
     optiuni_meniu.style_selected_focused = bgcolor(Color::CadetBlue);
 
-    CheckboxState stare_1{};
-    CheckboxState stare_2{};
+    bool stare_1{};
+    bool stare_2{};
     bool schimbat = false;
     vector<string> elemente_meniu_parcurgeri = {"Preordine", "Inordine", "Postordine", "In Latime"};
 
@@ -318,8 +206,8 @@ int main(int argc, const char *argv[])
 
 
     auto container_checkboxuri = Container::Vertical({});
-    container_checkboxuri->Add(Checkbox("parcurgeti intreg arborele", &stare_1.marcat));
-    container_checkboxuri->Add(Checkbox("parcurgeti subarborele nodului curent", &stare_2.marcat));
+    container_checkboxuri->Add(Checkbox("parcurgeti intreg arborele", &stare_1));
+    container_checkboxuri->Add(Checkbox("parcurgeti subarborele nodului curent", &stare_2));
 
     auto meniu_checkboxuri = Renderer(container_checkboxuri, [&]
     {
@@ -337,23 +225,23 @@ int main(int argc, const char *argv[])
     Elements vector_linii_arbore = ConversieStringMulti(GetStringReprezentareGrafica(), "\n");
     auto reprezentare_grafica = Renderer(meniu_final_parcurgeri, [&]
     {
-        if (stare_1.marcat && !schimbat)
+        if (stare_1 && !schimbat)
         {
             schimbat = true;
             if (schimbat)
             {
-                stare_2.marcat = false;
+                stare_2 = false;
             }
-        } else if (stare_2.marcat && schimbat)
+        } else if (stare_2 && schimbat)
         {
             schimbat = false;
             if (!schimbat)
             {
-                stare_1.marcat = false;
+                stare_1 = false;
             }
-        } else if (!stare_1.marcat && !stare_2.marcat)
+        } else if (!stare_1 && !stare_2)
         {
-            stare_1.marcat = true;
+            stare_1 = true;
         }
 
         auto informatii_nod = arbore_binar.GetInformatiiNodCurent();
@@ -365,33 +253,33 @@ int main(int argc, const char *argv[])
             {
                 case 0:
                 {
-                    if (stare_1.marcat)
+                    if (stare_1)
                         vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
-                    else if (stare_2.marcat)
+                    else if (stare_2)
                         vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
                     break;
                 }
                 case 1:
                 {
-                    if (stare_1.marcat)
+                    if (stare_1)
                         vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
-                    else if (stare_2.marcat)
+                    else if (stare_2)
                         vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
                     break;
                 }
                 case 2:
                 {
-                    if (stare_1.marcat)
+                    if (stare_1)
                         vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
-                    else if (stare_2.marcat)
+                    else if (stare_2)
                         vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaNodulCurent();
                     break;
                 }
                 case 3:
                 {
-                    if (stare_1.marcat)
+                    if (stare_1)
                         vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();
-                    else if (stare_2.marcat)
+                    else if (stare_2)
                         vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaNodulCurent();
                     break;
                 }
@@ -400,34 +288,6 @@ int main(int argc, const char *argv[])
                     throw std::logic_error("Eroare fatala!");
                 }
             }
-
-//        if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[0].marcat)
-//        {
-//            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaRadacina();
-//        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[0].marcat)
-//        {
-//            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaRadacina();
-//        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[0].marcat)
-//        {
-//            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaRadacina();
-//        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[0].marcat)
-//        {
-//            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaRadacina();
-//        } else if (parcurgere_selectata == 0 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[1].marcat)
-//        {
-//            vector_noduri_parcurse = arbore_binar.ParcurgerePreordineDeLaNodulCurent();
-//
-//        } else if (parcurgere_selectata == 1 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[1].marcat)
-//        {
-//            vector_noduri_parcurse = arbore_binar.ParcurgereInordineDeLaNodulCurent();
-//        } else if (parcurgere_selectata == 2 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[1].marcat)
-//        {
-//            vector_noduri_parcurse = arbore_binar.ParcurgerePostordineDeLaNodulCurent();
-//        } else if (parcurgere_selectata == 3 && !informatii_nod._nod_curent._informatie_nod.empty() && stari[1].marcat)
-//        {
-//            vector_noduri_parcurse = arbore_binar.ParcurgereInLatimeDeLaNodulCurent();
-//        }
-
 
         Elements elemente_parcurse, vector_final;
         size_t parte_intreaga{};
@@ -464,7 +324,7 @@ int main(int argc, const char *argv[])
 
             if (parte_intreaga > 1)
             {
-                vector<vector<Element>> vector_out = ImpartireVector(elemente_parcurse, parte_intreaga);
+                auto vector_out = ImpartireVector(elemente_parcurse, parte_intreaga);
                 vector_final = AfisareElementeParcurseImpartite(vector_out);
             } else
             {
