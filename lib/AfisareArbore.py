@@ -1,26 +1,12 @@
 from functools import reduce
 from itertools import (chain, takewhile)
 
-'''
-               ┌ Epsilon
-               ├─── Zeta
-       ┌─ Beta ┼──── Eta
-       │       │         ┌───── Mu
-       │       └── Theta ┤
- Alpha ┤                 └───── Nu
-       ├ Gamma ────── Xi ─ Omicron
-       │       ┌─── Iota
-       └ Delta ┼── Kappa
-               └─ Lambda
-'''
-
 
 # Tree style and algorithm inspired by the Haskell snippet at:
 # https://doisinkidney.com/snippets/drawing-trees.html
 
-
-# drawTree2 :: Bool -> Bool -> Tree a -> String
-def drawTree2(blnCompact):
+# DrawTree :: Bool -> Bool -> Tree a -> String
+def DrawTree(blnCompact):
     '''Monospaced UTF8 left-to-right text tree in a
        compact or expanded format, with any lines
        containing no nodes optionally pruned out.
@@ -155,30 +141,6 @@ def drawTree2(blnCompact):
     )
 
 
-# DATE DE LA C++ ----------------------------------------------------
-def set_date():
-    pass
-
-
-# DATE PENTRU C++ ----------------------------------------------------
-def get_string_reprezentare_grafica():
-    tree2 = Node('Alpha')([
-        Node('Beta')([
-            Node('Epsilon')([]),
-            Node('Theta')([
-                Node('Mu')([]),
-                Node('Nu')([])
-            ])
-        ]),
-        Node('Delta')([
-            Node('Iota')([]),
-            Node('Lambda')([])
-        ])
-    ])
-
-    return '\n\n'.join([drawTree2(False)(False)(tree2)])
-
-
 # GENERIC -------------------------------------------------
 
 # Node :: a -> [Tree a] -> Tree a
@@ -299,9 +261,3 @@ def nest(t):
 def root(t):
     '''Accessor function for data of tree node.'''
     return t['root'] if 'root' in t else None
-
-
-# MAIN ---
-if __name__ == '__main__':
-    set_date()
-    get_string_reprezentare_grafica()

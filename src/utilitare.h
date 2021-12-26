@@ -16,11 +16,6 @@
 #include "ftxui/component/screen_interactive.hpp"// pentru clasele Component, ScreenInteractive
 #include "ftxui/dom/elements.hpp"                // pentru text, Element, operator| (supraincarcare), window, flex, vbox
 #include "ftxui/util/ref.hpp"                    // pentru clasa Ref
-#include <Python.h>
-#include "pybind11/embed.h"
-
-namespace py = pybind11;
-using namespace py::literals;
 
 #include "../lib/ArboreBinar.h"
 
@@ -36,14 +31,5 @@ AfisareElementeParcurseImpartite(vector<vector<Element>> vector);
 
 Elements
 ConversieStringMulti(string arbore, string delimiter);
-
-string
-GetCaleCatrePyLib();
-
-py::module_
-GetPySys();
-
-string
-GetStringReprezentareGrafica();
 
 #endif //APP_ARBORE_BINAR_UTILITARE_H

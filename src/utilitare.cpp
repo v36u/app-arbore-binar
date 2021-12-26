@@ -55,37 +55,3 @@ ConversieStringMulti(string arbore, string delimiter)
 
     return stringuri;
 }
-
-string
-GetCaleCatrePyLib()
-{
-    auto os = py::module::import("os");
-    return os
-      .attr("path")
-      .attr("abspath")(os
-                         .attr("path")
-                         .attr("join")("..", "lib"))
-      .cast<string>();
-}
-
-py::module_
-GetPySys()
-{
-    auto sys = py::module::import("sys");
-    sys
-      .attr("path")
-      .attr("append")(GetCaleCatrePyLib());
-    return sys;
-}
-
-string
-GetStringReprezentareGrafica()
-{
-    pybind11::scoped_interpreter guard{};
-    auto sys = GetPySys();
-    auto modul_test = py::module::import("afisare_arbore");
-    auto functie_convertita = modul_test.attr("get_string_reprezentare_grafica");
-    auto preluat = functie_convertita();
-    return preluat.cast<string>();
-}
-
