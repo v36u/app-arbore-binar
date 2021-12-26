@@ -398,7 +398,7 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
                 }
             }
 
-            parte_intreaga = elemente_parcurse.size() / 10;
+            parte_intreaga = elemente_parcurse.size() / 8;
 
             if (parte_intreaga > 1)
             {
@@ -458,7 +458,7 @@ GetTabAlteOptiuni(shared_ptr<ComponentBase> container_tab_alte_optiuni)
                                container_tab_alte_optiuni->Render(),
                                filler()
                              })
-                      }) | size(ftxui::WIDTH, ftxui::EQUAL, 40) | size(ftxui::HEIGHT, ftxui::GREATER_THAN, 15);
+                      }) | size(ftxui::WIDTH, ftxui::EQUAL, 40) | size(ftxui::HEIGHT, ftxui::GREATER_THAN, 10);
     });
 }
 
