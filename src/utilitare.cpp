@@ -1,6 +1,5 @@
 #include "utilitare.h"
 
-
 vector<Elements>
 ImpartireVector(Elements el_parcurse,
                 size_t nr_segmente)

@@ -377,8 +377,7 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
                 vector_final = elemente_parcurse;
             }
         }
-
-        // TODO: @VictorS, verifică dacă e ok aici - altfel, mută tu unde trebuie
+        
         auto vector_linii_arbore = ConversieStringMulti(arbore_binar.GetReprezentareGrafica(), "\n");
         return window(text("Arbore Binar - Reprezentare Grafica"),
                       vbox({
