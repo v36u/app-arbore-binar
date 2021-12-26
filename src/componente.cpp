@@ -291,7 +291,7 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
 
         auto informatii_nod = arbore_binar.GetInformatiiNodCurent();
 
-        auto vector_noduri_parcurse = arbore_binar.GetNodDtoInitVect();
+        auto vector_noduri_parcurse = ArboreBinar::GetNodDtoInitVect();
 
         if (!informatii_nod._nod_curent._informatie_nod.empty())
             switch (parcurgere_selectata)
