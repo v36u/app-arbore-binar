@@ -73,6 +73,30 @@ private:
     unsigned short _numar_frunze;
     unsigned short _numar_niveluri;
 
+    static bool
+    NoduriCuInformatiiEgale(Nod, Nod);
+
+    static void
+    DezalocareArbore(Nod);
+
+    static vector<NodDto>
+    RSD(Nod); //=> Rădăcină, Stânga, Dreapta
+
+    static vector<NodDto>
+    SRD(Nod); //=> Stânga, Rădăcină, Dreapta
+
+    static vector<NodDto>
+    SDR(Nod); //=> Stânga, Dreapta, Rădăcină
+
+    static vector<NodDto>
+    ParcurgereInLatime(Nod);
+
+    static string
+    GetCaleCatrePyLib();
+
+    static py::module
+    GetPySys();
+
     Nod
     CreareNod(string, unsigned short);
 
@@ -85,9 +109,6 @@ private:
     Nod
     RouterCreareNod(string, unsigned short, string *, string *, E_Directie *);
 
-    bool
-    EsteFrunza(Nod);
-
     void
     DeplasareNodCurentSus(Nod);
 
@@ -98,45 +119,24 @@ private:
     DeplasareNodCurentUndeEstePosibil();
 
     void
-    DezalocareArbore(Nod);
-
-    void
     EditareNodCurentExistent(Nod);
 
-    bool
-    NoduriCuInformatiiEgale(Nod, Nod);
-
     void
-    InitializareCazRadacinaGoala(Nod);
+    InitializareArboreCazRadacinaGoala(Nod);
 
     void
     SalvareNod(string, string *, string *, E_Directie *);
 
-    vector<NodDto>
-    RSD(Nod); //=> Rădăcină, Stânga, Dreapta
-
-    vector<NodDto>
-    SRD(Nod); //=> Stânga, Rădăcină, Dreapta
-
-    vector<NodDto>
-    SDR(Nod); //=> Stânga, Dreapta, Rădăcină
-
-    vector<NodDto>
-    ParcurgereInLatime(Nod);
-
     void
     StergereRadacina();
-
-    string
-    GetCaleCatrePyLib();
-
-    py::module_
-    GetPySys();
 
     py::object
     ConstruireArboreAfisare(Nod, py::function);
 
 public:
+    static vector<NodDto>
+    GetNodDtoInitVect();
+
     ArboreBinar();
 
     ~ArboreBinar();
@@ -173,9 +173,6 @@ public:
 
     vector<NodDto>
     ParcurgereInLatimeDeLaNodulCurent();
-
-    vector<NodDto>
-    GetNodDtoInitVect();
 
     void
     StergereSubArboreAlNoduluiCurent();
