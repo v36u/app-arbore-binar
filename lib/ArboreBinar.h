@@ -18,10 +18,6 @@ using std::vector;
 class ArboreBinar
 {
 private:
-    static string PREFIX_NOD_CURENT;
-
-    unsigned int _id_curent;
-
     enum E_Directie
     {
         Stanga,
@@ -65,6 +61,10 @@ private:
         string _numar_frunze;
         string _numar_niveluri;
     };
+
+    static string _PREFIX_NOD_CURENT;
+
+    unsigned int _id_curent;
 
     Nod _radacina;
     Nod _nod_curent;
