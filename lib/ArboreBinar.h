@@ -18,8 +18,7 @@ using std::vector;
 class ArboreBinar
 {
 private:
-    py::module_ _py_sys;
-    py::module_ _py_nod;
+    static string PREFIX_NOD_CURENT;
 
     unsigned int _id_curent;
 
@@ -135,7 +134,7 @@ private:
     GetPySys();
 
     py::object
-    ConstruireArboreAfisare(Nod);
+    ConstruireArboreAfisare(Nod, py::function);
 
 public:
     ArboreBinar();
@@ -185,7 +184,7 @@ public:
     ResetareArbore();
 
     string
-    GetStringReprezentareGrafica();
+    GetReprezentareGrafica();
 };
 
 #endif

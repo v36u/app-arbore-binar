@@ -5,8 +5,8 @@ from itertools import (chain, takewhile)
 # Tree style and algorithm inspired by the Haskell snippet at:
 # https://doisinkidney.com/snippets/drawing-trees.html
 
-# drawTree :: Bool -> Bool -> Tree a -> String
-def drawTree(blnCompact):
+# DrawTree :: Bool -> Bool -> Tree a -> String
+def DrawTree(blnCompact):
     '''Monospaced UTF8 left-to-right text tree in a
        compact or expanded format, with any lines
        containing no nodes optionally pruned out.

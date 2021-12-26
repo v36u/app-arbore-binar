@@ -2,12 +2,10 @@
 
 // --- Private ---
 
+string ArboreBinar::PREFIX_NOD_CURENT = "\u1D9C";
+
 ArboreBinar::ArboreBinar()
 {
-    py::scoped_interpreter guard{};
-    this->_py_sys = this->GetPySys();
-    this->_py_nod = py::module::import("AfisareArbore");
-
     this->_id_curent = 0;
 
     this->_radacina = nullptr;
@@ -495,26 +493,32 @@ ArboreBinar::GetPySys()
 }
 
 py::object
-ArboreBinar::ConstruireArboreAfisare(Nod p_nod)
+ArboreBinar::ConstruireArboreAfisare(Nod p_nod, py::function p_py_nod)
 {
     if (p_nod != nullptr)
     {
         auto descendenti = vector<py::object>();
-        if (p_nod->_stanga != nullptr)
-        {
-            descendenti.push_back(this->ConstruireArboreAfisare(p_nod->_stanga));
-        }
         if (p_nod->_dreapta != nullptr)
         {
-            descendenti.push_back(this->ConstruireArboreAfisare(p_nod->_dreapta));
+            descendenti.push_back(this->ConstruireArboreAfisare(p_nod->_dreapta, p_py_nod));
         }
+        if (p_nod->_stanga != nullptr)
+        {
+            descendenti.push_back(this->ConstruireArboreAfisare(p_nod->_stanga, p_py_nod));
+        }
+
         py::list py_descendenti = py::cast(descendenti);
+        string informatie = p_nod->_informatie;
+        if (p_nod == this->_nod_curent)
+        {
+            informatie = ArboreBinar::PREFIX_NOD_CURENT + informatie;
+        }
         return
-          this->_py_nod
-            (p_nod->_informatie)
+          p_py_nod
+            (informatie)
             (py_descendenti);
     }
-    return this->_py_nod();
+    return p_py_nod();
 }
 
 // --- Public ---
@@ -679,13 +683,26 @@ ArboreBinar::ResetareArbore()
 }
 
 string
-ArboreBinar::GetStringReprezentareGrafica()
+ArboreBinar::GetReprezentareGrafica()
 {
-    auto modul_drawTree = py::module::import("drawTree");
-    auto arbore_construit = this->ConstruireArboreAfisare(this->_radacina);
-    return modul_drawTree
-      (py::bool_(false))
-      (py::bool_(false))
-      (arbore_construit)
-      .cast<string>();
+    if (this->_radacina == nullptr)
+    {
+        return string();
+    }
+
+    py::scoped_interpreter interpreter{};
+
+    auto sys = GetPySys();
+    auto modul_afisare = sys.import("AfisareArbore");
+    auto py_nod = modul_afisare.attr("Node");
+    auto arbore_construit = this->ConstruireArboreAfisare(this->_radacina, py_nod);
+
+    string reprezentare_grafica =
+      modul_afisare.attr("DrawTree")
+          (py::bool_(false))
+          (py::bool_(false))
+          (arbore_construit)
+        .cast<string>();
+
+    return reprezentare_grafica;
 }

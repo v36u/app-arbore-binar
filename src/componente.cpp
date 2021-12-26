@@ -378,9 +378,10 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
             }
         }
 
+        // TODO: @VictorS, verifică dacă e ok aici - altfel, mută tu unde trebuie
+        auto vector_linii_arbore = ConversieStringMulti(arbore_binar.GetReprezentareGrafica(), "\n");
         return window(text("Arbore Binar - Reprezentare Grafica"),
                       vbox({
-
                              filler(),
                              vbox(vector_linii_arbore) | center,
                              filler(),
@@ -458,12 +459,3 @@ RandareLayere(shared_ptr<ComponentBase> container_principal,
         return document;
     });
 }
-
-
-
-
-
-
-
-
-

@@ -3,6 +3,7 @@
 #include "globale.h"
 
 ArboreBinar arbore_binar;
+
 string val_nod{};
 string val_copil_stang{};
 string val_copil_drept{};
@@ -11,9 +12,6 @@ bool stare_1{};
 bool stare_2{};
 bool schimbat = false;
 int parcurgere_selectata{};
-
-// TODO: asta trebuie mutat de aici
-Elements vector_linii_arbore{}; // ConversieStringMulti(GetStringReprezentareGrafica(), "\n");
 
 int main()
 {
