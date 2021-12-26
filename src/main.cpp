@@ -13,7 +13,7 @@ bool schimbat = false;
 int parcurgere_selectata{};
 
 // TODO: asta trebuie mutat de aici
-Elements vector_linii_arbore = ConversieStringMulti(GetStringReprezentareGrafica(), "\n");
+Elements vector_linii_arbore{}; // ConversieStringMulti(GetStringReprezentareGrafica(), "\n");
 
 int main()
 {

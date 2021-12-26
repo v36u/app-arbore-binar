@@ -1,11 +1,17 @@
 #include "ArboreBinar.h"
 
+// --- Private ---
+
 ArboreBinar::ArboreBinar()
 {
-    this->_radacina = nullptr;
-    this->_nod_curent = nullptr;
+    py::scoped_interpreter guard{};
+    this->_py_sys = this->GetPySys();
+    this->_py_nod = py::module::import("AfisareArbore");
 
     this->_id_curent = 0;
+
+    this->_radacina = nullptr;
+    this->_nod_curent = nullptr;
 
     this->_numar_noduri = 0;
     this->_numar_frunze = 0;
@@ -466,6 +472,53 @@ ArboreBinar::StergereRadacina()
     this->_nod_curent = this->_radacina = nullptr;
 }
 
+string
+ArboreBinar::GetCaleCatrePyLib()
+{
+    auto os = py::module::import("os");
+    return os
+      .attr("path")
+      .attr("abspath")(os
+                         .attr("path")
+                         .attr("join")("..", "lib"))
+      .cast<string>();
+}
+
+py::module_
+ArboreBinar::GetPySys()
+{
+    auto sys = py::module::import("sys");
+    sys
+      .attr("path")
+      .attr("append")(this->GetCaleCatrePyLib());
+    return sys;
+}
+
+py::object
+ArboreBinar::ConstruireArboreAfisare(Nod p_nod)
+{
+    if (p_nod != nullptr)
+    {
+        auto descendenti = vector<py::object>();
+        if (p_nod->_stanga != nullptr)
+        {
+            descendenti.push_back(this->ConstruireArboreAfisare(p_nod->_stanga));
+        }
+        if (p_nod->_dreapta != nullptr)
+        {
+            descendenti.push_back(this->ConstruireArboreAfisare(p_nod->_dreapta));
+        }
+        py::list py_descendenti = py::cast(descendenti);
+        return
+          this->_py_nod
+            (p_nod->_informatie)
+            (py_descendenti);
+    }
+    return this->_py_nod();
+}
+
+// --- Public ---
+
 ArboreBinar::InformatiiNodDto
 ArboreBinar::GetInformatiiNodCurent()
 {
@@ -623,4 +676,16 @@ void
 ArboreBinar::ResetareArbore()
 {
     this->StergereRadacina();
+}
+
+string
+ArboreBinar::GetStringReprezentareGrafica()
+{
+    auto modul_drawTree = py::module::import("drawTree");
+    auto arbore_construit = this->ConstruireArboreAfisare(this->_radacina);
+    return modul_drawTree
+      (py::bool_(false))
+      (py::bool_(false))
+      (arbore_construit)
+      .cast<string>();
 }

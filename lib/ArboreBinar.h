@@ -4,6 +4,13 @@
 #include <string>
 #include <vector>
 
+#include <Python.h>
+#include "pybind11/embed.h"
+#include "pybind11/stl.h"
+
+namespace py = pybind11;
+using namespace py::literals;
+
 using std::string;
 using std::to_string;
 using std::vector;
@@ -11,6 +18,11 @@ using std::vector;
 class ArboreBinar
 {
 private:
+    py::module_ _py_sys;
+    py::module_ _py_nod;
+
+    unsigned int _id_curent;
+
     enum E_Directie
     {
         Stanga,
@@ -57,8 +69,6 @@ private:
 
     Nod _radacina;
     Nod _nod_curent;
-
-    unsigned int _id_curent;
 
     unsigned short _numar_noduri;
     unsigned short _numar_frunze;
@@ -118,6 +128,15 @@ private:
     void
     StergereRadacina();
 
+    string
+    GetCaleCatrePyLib();
+
+    py::module_
+    GetPySys();
+
+    py::object
+    ConstruireArboreAfisare(Nod);
+
 public:
     ArboreBinar();
 
@@ -164,6 +183,9 @@ public:
 
     void
     ResetareArbore();
+
+    string
+    GetStringReprezentareGrafica();
 };
 
 #endif
