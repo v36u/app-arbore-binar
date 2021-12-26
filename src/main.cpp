@@ -71,7 +71,7 @@ int main()
                                                       input_val_nod,
                                                       buton_salvare_nod,
                                                       butoane_salvare_copii_tab_nod);
-
+    
     //Constructia meniului de parcurgeri
     MenuOption optiuni_meniu;
     optiuni_meniu.style_selected = color(Color::CadetBlue);

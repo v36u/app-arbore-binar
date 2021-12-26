@@ -14,7 +14,7 @@ GetButonSalvareNod(string &nod_curent,
                    ButtonOption &optiune_buton_salvare)
 {
     return Container::Horizontal({
-                                   Button("[Salveaza si adauga nod]", [&]
+                                   Button("[Urmatorul Nod]", [&]
                                           {
                                               arbore_binar.SalvareNod(nod_curent, copil_stang, copil_drept);
                                               auto informatii_nod_crt = arbore_binar.GetInformatiiNodCurent();
