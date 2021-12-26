@@ -2,7 +2,7 @@
 
 // --- Private ---
 
-string ArboreBinar::PREFIX_NOD_CURENT = "\u1D9C";
+string ArboreBinar::_PREFIX_NOD_CURENT = "\u1D9C";
 
 bool
 ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod p_nod_2)
@@ -303,13 +303,7 @@ ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
 
     if (p_directie == E_Directie::Dreapta)
     {
-        if (this->_nod_curent != this->_radacina)
-        {
-            this->_nod_curent->_directie = E_Directie::Sus;
-        } else
-        {
-            this->_nod_curent->_directie = E_Directie::Stanga;
-        }
+        this->_nod_curent->_directie = E_Directie::Sus;
         if (this->_nod_curent->_dreapta != nullptr)
         {
             this->_nod_curent = this->_nod_curent->_dreapta;
@@ -320,8 +314,17 @@ ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
 
     if (p_directie == E_Directie::Sus)
     {
-        this->_nod_curent->_directie = E_Directie::Stanga;
-        this->DeplasareNodCurentSus(this->_radacina);
+        if (this->_nod_curent == this->_radacina)
+        {
+            if (!this->DeplasareNodCurent(E_Directie::Stanga))
+            {
+                this->DeplasareNodCurent(E_Directie::Dreapta);
+            }
+        } else
+        {
+            this->_nod_curent->_directie = E_Directie::Stanga;
+            this->DeplasareNodCurentSus(this->_radacina);
+        }
         return true;
     }
 
@@ -331,7 +334,7 @@ ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
 void
 ArboreBinar::DeplasareNodCurentUndeEstePosibil()
 {
-    while (!this->DeplasareNodCurent(this->_nod_curent->_directie) && this->_nod_curent->_directie != E_Directie::Stanga)
+    while (!this->DeplasareNodCurent(this->_nod_curent->_directie))
     { /* Maxim 3 iterații, deoarece DeplasareNodCurent(E_Directie::Sus) va fi mereu true. */}
 }
 
@@ -468,7 +471,7 @@ ArboreBinar::ConstruireArboreAfisare(Nod p_nod, py::function p_py_nod)
         string informatie = p_nod->_informatie;
         if (p_nod == this->_nod_curent)
         {
-            informatie = ArboreBinar::PREFIX_NOD_CURENT + informatie;
+            informatie = ArboreBinar::_PREFIX_NOD_CURENT + informatie;
         }
         return
           p_py_nod
