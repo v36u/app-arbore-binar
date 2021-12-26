@@ -70,15 +70,11 @@ private:
     Nod _radacina;
     Nod _nod_curent;
 
-    unsigned short _numar_noduri;
+    vector<unsigned int> _noduri_per_nivel;
     unsigned short _numar_frunze;
-    unsigned short _numar_niveluri;
 
     static bool
     NoduriCuInformatiiEgale(Nod, Nod);
-
-    static void
-    DezalocareArbore(Nod);
 
     static vector<NodDto>
     RSD(Nod); //=> Rădăcină, Stânga, Dreapta
@@ -133,6 +129,9 @@ private:
 
     py::object
     ConstruireArboreAfisare(Nod, py::function);
+
+    void
+    DezalocareArbore(Nod);
 
 public:
     static vector<NodDto>
