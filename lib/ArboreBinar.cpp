@@ -51,26 +51,6 @@ ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod 
     return true;
 }
 
-void
-ArboreBinar::DezalocareArbore(Nod p_nod)
-{
-    if (p_nod == nullptr)
-    {
-        return;
-    }
-
-    if (p_nod->_stanga != nullptr)
-    {
-        ArboreBinar::DezalocareArbore(p_nod->_stanga);
-    }
-    if (p_nod->_dreapta != nullptr)
-    {
-        ArboreBinar::DezalocareArbore(p_nod->_dreapta);
-    }
-
-    delete p_nod;
-}
-
 vector<ArboreBinar::NodDto>
 ArboreBinar::RSD(ArboreBinar::Nod p_nod)
 {
@@ -350,14 +330,17 @@ ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
         if (this->_nod_curent->_stanga == nullptr)
         {
             this->_nod_curent->_stanga = p_nod->_stanga;
-            this->_numar_noduri++;
+
+            if (this->_nod_curent->_stanga->_nivel >= this->_noduri_per_nivel.size())
+            {
+                this->_noduri_per_nivel.push_back(1);
+            } else
+            {
+                this->_noduri_per_nivel[this->_nod_curent->_stanga->_nivel]++;
+            }
             if (this->_nod_curent->_dreapta != nullptr)
             {
                 this->_numar_frunze++;
-            }
-            if (this->_nod_curent->_stanga->_nivel > this->_numar_niveluri)
-            {
-                this->_numar_niveluri = this->_nod_curent->_stanga->_nivel;
             }
         } else
         {
@@ -370,14 +353,17 @@ ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
         if (this->_nod_curent->_dreapta == nullptr)
         {
             this->_nod_curent->_dreapta = p_nod->_dreapta;
-            this->_numar_noduri++;
+
+            if (this->_nod_curent->_dreapta->_nivel >= this->_noduri_per_nivel.size())
+            {
+                this->_noduri_per_nivel.push_back(1);
+            } else
+            {
+                this->_noduri_per_nivel[this->_nod_curent->_dreapta->_nivel]++;
+            }
             if (this->_nod_curent->_stanga != nullptr)
             {
                 this->_numar_frunze++;
-            }
-            if (this->_nod_curent->_dreapta->_nivel > this->_numar_niveluri)
-            {
-                this->_numar_niveluri = this->_nod_curent->_dreapta->_nivel;
             }
         } else
         {
@@ -392,18 +378,15 @@ void
 ArboreBinar::InitializareArboreCazRadacinaGoala(Nod p_nod)
 {
     this->_nod_curent = this->_radacina = p_nod;
-    this->_numar_noduri = 1;
+    this->_noduri_per_nivel = vector<unsigned int>({1});
     this->_numar_frunze = 1;
-    this->_numar_niveluri = 1;
 
     if (this->_nod_curent->_stanga != nullptr || this->_nod_curent->_dreapta != nullptr)
     {
-        this->_numar_noduri = 2;
-        this->_numar_niveluri = 2;
+        this->_noduri_per_nivel.push_back(1);
         if (this->_nod_curent->_stanga != nullptr && this->_nod_curent->_dreapta != nullptr)
         {
-            this->_numar_noduri = 3;
-            this->_numar_frunze = 2;
+            this->_noduri_per_nivel[1] = this->_numar_frunze = 2;
         }
     }
 }
@@ -421,7 +404,7 @@ ArboreBinar::SalvareNod
 
          this->_nod_curent != nullptr
          ? this->_nod_curent->_nivel
-         : 1,
+         : 0,
 
          p_informatie_descendent_1,
 
@@ -450,7 +433,7 @@ ArboreBinar::SalvareNod
 void
 ArboreBinar::StergereRadacina()
 {
-    ArboreBinar::DezalocareArbore(this->_radacina);
+    this->DezalocareArbore(this->_radacina);
     this->_nod_curent = this->_radacina = nullptr;
 }
 
@@ -483,6 +466,37 @@ ArboreBinar::ConstruireArboreAfisare(Nod p_nod, py::function p_py_nod)
     return p_py_nod();
 }
 
+void
+ArboreBinar::DezalocareArbore(Nod p_nod)
+{
+    if (p_nod == nullptr)
+    {
+        return;
+    }
+
+    if (p_nod->_stanga == nullptr && p_nod->_dreapta == nullptr)
+    {
+        this->_numar_frunze--;
+    } else
+    {
+        if (p_nod->_stanga != nullptr)
+        {
+            this->DezalocareArbore(p_nod->_stanga);
+        }
+        if (p_nod->_dreapta != nullptr)
+        {
+            this->DezalocareArbore(p_nod->_dreapta);
+        }
+    }
+
+    this->_noduri_per_nivel[p_nod->_nivel]--;
+    if (this->_noduri_per_nivel.back() == 0)
+    {
+        this->_noduri_per_nivel.pop_back();
+    }
+    delete p_nod;
+}
+
 // --- Public ---
 
 vector<ArboreBinar::NodDto>
@@ -498,14 +512,13 @@ ArboreBinar::ArboreBinar()
     this->_radacina = nullptr;
     this->_nod_curent = nullptr;
 
-    this->_numar_noduri = 0;
+    this->_noduri_per_nivel = vector<unsigned int>();
     this->_numar_frunze = 0;
-    this->_numar_niveluri = 0;
 }
 
 ArboreBinar::~ArboreBinar()
 {
-    ArboreBinar::DezalocareArbore(this->_radacina);
+    this->DezalocareArbore(this->_radacina);
 }
 
 ArboreBinar::Celula::Celula(string p_informatie, unsigned int p_id, unsigned short p_nivel)
@@ -563,10 +576,16 @@ ArboreBinar::GetInformatiiNodCurent()
 ArboreBinar::StatisticiDto
 ArboreBinar::GetStatisticiArbore()
 {
+    auto numar_noduri = 0;
+    for (auto nivel: this->_noduri_per_nivel)
+    {
+        numar_noduri += nivel;
+    }
+
     return {
-      ._numar_noduri = to_string(this->_numar_noduri),
+      ._numar_noduri = to_string(numar_noduri),
       ._numar_frunze = to_string(this->_numar_frunze),
-      ._numar_niveluri = to_string(this->_numar_niveluri)
+      ._numar_niveluri = to_string(this->_noduri_per_nivel.size())
     };
 }
 
@@ -665,7 +684,7 @@ ArboreBinar::StergereSubArboreAlNoduluiCurent()
         directie_aux = E_Directie::Dreapta;
     }
 
-    ArboreBinar::DezalocareArbore(aux);
+    this->DezalocareArbore(aux);
     if (directie_aux == E_Directie::Stanga)
     {
         this->_nod_curent->_stanga = nullptr;
