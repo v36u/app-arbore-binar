@@ -685,6 +685,7 @@ ArboreBinar::StergereSubArboreAlNoduluiCurent()
     }
 
     this->DezalocareArbore(aux);
+    this->_numar_frunze++;
     if (directie_aux == E_Directie::Stanga)
     {
         this->_nod_curent->_stanga = nullptr;
