@@ -331,12 +331,12 @@ ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
         {
             this->_nod_curent->_stanga = p_nod->_stanga;
 
-            if (p_nod->_stanga->_nivel < this->_noduri_per_nivel.size())
+            if (this->_nod_curent->_stanga->_nivel >= this->_noduri_per_nivel.size())
             {
                 this->_noduri_per_nivel.push_back(1);
             } else
             {
-                this->_noduri_per_nivel[p_nod->_stanga->_nivel]++;
+                this->_noduri_per_nivel[this->_nod_curent->_stanga->_nivel]++;
             }
             if (this->_nod_curent->_dreapta != nullptr)
             {
@@ -354,12 +354,12 @@ ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
         {
             this->_nod_curent->_dreapta = p_nod->_dreapta;
 
-            if (p_nod->_dreapta->_nivel < this->_noduri_per_nivel.size())
+            if (this->_nod_curent->_dreapta->_nivel >= this->_noduri_per_nivel.size())
             {
                 this->_noduri_per_nivel.push_back(1);
             } else
             {
-                this->_noduri_per_nivel[p_nod->_dreapta->_nivel]++;
+                this->_noduri_per_nivel[this->_nod_curent->_dreapta->_nivel]++;
             }
             if (this->_nod_curent->_stanga != nullptr)
             {
