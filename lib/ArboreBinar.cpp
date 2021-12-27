@@ -371,6 +371,7 @@ ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
         }
     }
 
+    this->_nod_curent->_directie = E_Directie::Stanga;
     this->DeplasareNodCurentUndeEstePosibil();
 }
 
@@ -691,6 +692,11 @@ ArboreBinar::StergereSubArboreAlNoduluiCurent()
     } else if (directie_aux == E_Directie::Dreapta)
     {
         this->_nod_curent->_dreapta = nullptr;
+    }
+
+    if (this->_nod_curent->_stanga == nullptr && this->_nod_curent->_dreapta == nullptr)
+    {
+        this->_numar_frunze++;
     }
 }
 
