@@ -17,8 +17,6 @@
 #include "ftxui/dom/elements.hpp"                // pentru text, Element, operator| (supraincarcare), window, flex, vbox
 #include "ftxui/util/ref.hpp"                    // pentru clasa Ref
 
-#include "../lib/ArboreBinar.h"
-
 using namespace ftxui;
 using namespace std;
 
@@ -31,5 +29,11 @@ AfisareElementeParcurseImpartite(vector<vector<Element>> vector);
 
 Elements
 ConversieStringMulti(string arbore, string delimiter);
+
+void
+TrimString(string &);
+
+void
+TrimStrings(initializer_list<string *>);
 
 #endif //APP_ARBORE_BINAR_UTILITARE_H

@@ -1,6 +1,7 @@
 #ifndef APP_ARBORE_BINAR_COMPONENTE_H
 #define APP_ARBORE_BINAR_COMPONENTE_H
 
+#include "globale.h"
 #include "utilitare.h"
 
 Component

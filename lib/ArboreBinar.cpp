@@ -443,6 +443,11 @@ ArboreBinar::ConstruireArboreAfisare(Nod p_nod, py::function p_py_nod)
 {
     if (p_nod != nullptr)
     {
+        if (p_nod->_informatie.empty())
+        {
+            return p_py_nod;
+        }
+
         auto descendenti = vector<py::object>();
         if (p_nod->_dreapta != nullptr)
         {
@@ -596,6 +601,17 @@ ArboreBinar::SalvareNod
    string p_informatie_descendent_stang,
    string p_informatie_descendent_drept)
 {
+    TrimStrings({
+                  &p_informatie_nod,
+                  &p_informatie_descendent_stang,
+                  &p_informatie_descendent_drept
+                });
+
+    if (p_informatie_nod.empty())
+    {
+        return;
+    }
+
     auto descendent_stang_fara_informatie = p_informatie_descendent_stang.empty();
     auto descendent_drept_fara_informatie = p_informatie_descendent_drept.empty();
 
