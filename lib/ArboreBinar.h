@@ -1,6 +1,8 @@
 #ifndef PROIECT_FINAL_ARBOREBINAR_H
 #define PROIECT_FINAL_ARBOREBINAR_H
 
+#include "utilitare.h"
+
 #include <string>
 #include <vector>
 

@@ -1,5 +1,7 @@
 #include "utilitare.h"
 
+const string WHITESPACE = " \t\n\v\f\r";
+
 vector<Elements>
 ImpartireVector(Elements el_parcurse,
                 size_t nr_segmente)
@@ -53,4 +55,35 @@ ConversieStringMulti(string arbore, string delimiter)
     stringuri.push_back(text(arbore.substr(prev)));
 
     return stringuri;
+}
+
+void
+TrimString(string &param)
+{
+    auto inceput = param.find_first_not_of(WHITESPACE);
+    auto sfarsit = param.find_last_not_of(WHITESPACE);
+
+    if (inceput == string::npos && sfarsit == string::npos)
+    {
+        param = string();
+    } else
+    {
+        if (inceput != string::npos)
+        {
+            param = param.substr(inceput);
+        }
+        if (sfarsit != string::npos)
+        {
+            param = param.substr(0, sfarsit - inceput + 1);
+        }
+    }
+}
+
+void
+TrimStrings(initializer_list<string *> params)
+{
+    for (auto param: params)
+    {
+        TrimString(*param);
+    }
 }

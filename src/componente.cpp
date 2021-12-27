@@ -1,5 +1,4 @@
 #include "componente.h"
-#include "globale.h"
 
 Component
 GetInputNodCrt(string &nod_curent)
@@ -508,9 +507,3 @@ RandareLayere(shared_ptr<ComponentBase> container_principal,
         return document;
     });
 }
-
-
-
-
-
-
