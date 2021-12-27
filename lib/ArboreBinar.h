@@ -63,6 +63,7 @@ private:
     };
 
     static string _PREFIX_NOD_CURENT;
+    static string _POSTFIX_NOD_CURENT;
 
     unsigned int _id_curent;
 

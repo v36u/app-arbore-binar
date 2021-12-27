@@ -14,7 +14,7 @@ GetButonSalvareNod(string &nod_curent,
                    ButtonOption &optiune_buton_salvare)
 {
     return Container::Horizontal({
-                                   Button("[Salveaza si adauga nod]", [&]
+                                   Button("[Urmatorul Nod]", [&]
                                           {
                                               arbore_binar.SalvareNod(nod_curent, copil_stang, copil_drept);
                                               auto informatii_nod_crt = arbore_binar.GetInformatiiNodCurent();
@@ -242,6 +242,38 @@ GetTabEditareNodCurent(shared_ptr<ComponentBase> container_tab_nod,
 }
 
 shared_ptr<ComponentBase>
+GetButonStergereSubarbore(ButtonOption &optiune_buton_stergere_subarbore)
+{
+    return Container::Horizontal({
+                                   Button("1. Stergeti Subarbore Nod Crt.", [&]
+                                   {
+                                       arbore_binar.StergereSubArboreAlNoduluiCurent();
+                                       auto informatii_nod_crt = arbore_binar.GetInformatiiNodCurent();
+                                       val_nod = informatii_nod_crt._nod_curent._informatie_nod;
+                                       val_copil_stang = informatii_nod_crt._informatie_descendent_stang;
+                                       val_copil_drept = informatii_nod_crt._informatie_descendent_drept;
+
+                                   }, &optiune_buton_stergere_subarbore)
+                                 });
+}
+
+shared_ptr<ComponentBase>
+GetButonResetareArbore(ButtonOption &optiune_buton_resetare)
+{
+    return Container::Horizontal({
+                                   Button("2. Resetati Arborele Binar", [&]
+                                   {
+                                       arbore_binar.ResetareArbore();
+                                       auto informatii_nod_crt = arbore_binar.GetInformatiiNodCurent();
+                                       val_nod = informatii_nod_crt._nod_curent._informatie_nod;
+                                       val_copil_stang = informatii_nod_crt._informatie_descendent_stang;
+                                       val_copil_drept = informatii_nod_crt._informatie_descendent_drept;
+
+                                   }, &optiune_buton_resetare)
+                                 });
+}
+
+shared_ptr<ComponentBase>
 GetTabOptiuniParcurgeri(shared_ptr<ComponentBase> container_meniu_parcurgeri)
 {
     return Renderer(container_meniu_parcurgeri, [&]
@@ -366,7 +398,7 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
                 }
             }
 
-            parte_intreaga = elemente_parcurse.size() / 10;
+            parte_intreaga = elemente_parcurse.size() / 8;
 
             if (parte_intreaga > 1)
             {
@@ -377,7 +409,7 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
                 vector_final = elemente_parcurse;
             }
         }
-        
+
         auto vector_linii_arbore = ConversieStringMulti(arbore_binar.GetReprezentareGrafica(), "\n");
         return window(text("Arbore Binar - Reprezentare Grafica"),
                       vbox({
@@ -415,10 +447,27 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
 }
 
 shared_ptr<ComponentBase>
+GetTabAlteOptiuni(shared_ptr<ComponentBase> container_tab_alte_optiuni)
+{
+    return Renderer(container_tab_alte_optiuni, [&]
+    {
+        return window(text("Alte Optiuni"),
+                      {
+                        vbox({
+                               text(""),
+                               container_tab_alte_optiuni->Render(),
+                               filler()
+                             })
+                      }) | size(ftxui::WIDTH, ftxui::EQUAL, 40) | size(ftxui::HEIGHT, ftxui::GREATER_THAN, 10);
+    });
+}
+
+shared_ptr<ComponentBase>
 RandareAdancime0(shared_ptr<ComponentBase> container_adancime_0,
                  shared_ptr<ComponentBase> tab_detalii_arbore,
                  shared_ptr<ComponentBase> tab_detalii_nod,
                  shared_ptr<ComponentBase> tab_editare_nod_crt,
+                 shared_ptr<ComponentBase> tab_alte_optiuni,
                  shared_ptr<ComponentBase> tab_reprezentare_grafica)
 {
     return Renderer(container_adancime_0, [&]
@@ -427,6 +476,7 @@ RandareAdancime0(shared_ptr<ComponentBase> container_adancime_0,
                                   tab_detalii_arbore->Render(),
                                   tab_detalii_nod->Render(),
                                   tab_editare_nod_crt->Render(),
+                                  tab_alte_optiuni->Render(),
                                 })
                           }),
                      hbox({tab_reprezentare_grafica->Render()}) | flex
@@ -458,3 +508,9 @@ RandareLayere(shared_ptr<ComponentBase> container_principal,
         return document;
     });
 }
+
+
+
+
+
+

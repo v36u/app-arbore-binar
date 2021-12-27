@@ -1,8 +1,10 @@
 #include "ArboreBinar.h"
+#include <windows.h>
 
 // --- Private ---
 
-string ArboreBinar::_PREFIX_NOD_CURENT = "\u1D9C";
+string ArboreBinar::_PREFIX_NOD_CURENT = "\u00bb";
+string ArboreBinar::_POSTFIX_NOD_CURENT = "\u00ab";
 
 bool
 ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod p_nod_2)
@@ -471,7 +473,7 @@ ArboreBinar::ConstruireArboreAfisare(Nod p_nod, py::function p_py_nod)
         string informatie = p_nod->_informatie;
         if (p_nod == this->_nod_curent)
         {
-            informatie = ArboreBinar::_PREFIX_NOD_CURENT + informatie;
+            informatie = ArboreBinar::_PREFIX_NOD_CURENT + informatie + ArboreBinar::_POSTFIX_NOD_CURENT;
         }
         return
           p_py_nod

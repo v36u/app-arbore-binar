@@ -71,6 +71,22 @@ int main()
                                                       input_val_nod,
                                                       buton_salvare_nod,
                                                       butoane_salvare_copii_tab_nod);
+    //Constructia tabului care contine Alte Optiuni (stergere subarbore nod curent, resetare arbore, iesire din program
+    auto optiune_buton_stergere_subarbore = ButtonOption();
+    optiune_buton_stergere_subarbore.border = false;
+    auto optiune_buton_resetare_arbore = ButtonOption();
+    optiune_buton_resetare_arbore.border = false;
+
+
+    auto buton_stergere_subarbore = GetButonStergereSubarbore(optiune_buton_stergere_subarbore);
+    auto buton_resetare_arbore = GetButonResetareArbore(optiune_buton_resetare_arbore);
+
+    auto container_tab_alte_optiuni = Container::Vertical({
+                                                            buton_stergere_subarbore,
+                                                            buton_resetare_arbore,
+                                                          });
+    auto tab_alte_optiuni = GetTabAlteOptiuni(container_tab_alte_optiuni);
+
 
     //Constructia meniului de parcurgeri
     MenuOption optiuni_meniu;
@@ -104,6 +120,7 @@ int main()
                                                       tab_detalii_arbore,
                                                       tab_detalii_nod,
                                                       tab_editare_nod_crt,
+                                                      tab_alte_optiuni,
                                                       tab_reprezentare_grafica
                                                     });
 
@@ -111,6 +128,7 @@ int main()
                                                tab_detalii_arbore,
                                                tab_detalii_nod,
                                                tab_editare_nod_crt,
+                                               tab_alte_optiuni,
                                                tab_reprezentare_grafica);
 
     auto container_principal = Container::Tab({randare_adancime_0,
