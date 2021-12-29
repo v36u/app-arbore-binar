@@ -419,12 +419,12 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
                              hbox({
                                     window(text("Meniu Parcurgere"),
                                            hbox({meniu_final_parcurgeri->Render()
-                                                 | size(ftxui::WIDTH, ftxui::GREATER_THAN, 70),
+                                                 | size(ftxui::WIDTH, ftxui::GREATER_THAN, 60),
                                                  separator(),
                                                  hbox({
                                                         hbox({hbox(parte_intreaga > 1 ?
                                                                    vbox(vector_final)
-                                                                   | size(ftxui::WIDTH, ftxui::GREATER_THAN, 115)
+                                                                   | size(ftxui::WIDTH, ftxui::GREATER_THAN, 130) | flex
                                                                                       :
                                                                    vbox({hbox(text(" ")),
                                                                          hbox({text(
@@ -434,14 +434,14 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
                                                                          center
 
                                                                         })
-                                                                   | size(ftxui::WIDTH, ftxui::GREATER_THAN, 135))
+                                                                   | size(ftxui::WIDTH, ftxui::GREATER_THAN, 130) | flex)
                                                              })
                                                       })
                                                 })
                                     )}
                              )
                                                                                  : hbox({})}
-                      )) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 185);
+                      )) | flex;
     });
 }
 
@@ -457,7 +457,7 @@ GetTabAlteOptiuni(shared_ptr<ComponentBase> container_tab_alte_optiuni)
                                container_tab_alte_optiuni->Render(),
                                filler()
                              })
-                      }) | size(ftxui::WIDTH, ftxui::EQUAL, 40) | size(ftxui::HEIGHT, ftxui::GREATER_THAN, 10);
+                      }) | size(ftxui::WIDTH, ftxui::EQUAL, 40) | flex;
     });
 }
 

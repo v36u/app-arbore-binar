@@ -51,7 +51,6 @@ ConversieStringMulti(string arbore, string delimiter)
         prev = pos + 1;
     }
 
-    // To get the last substring (or only, if delimiter is not found)
     stringuri.push_back(text(arbore.substr(prev)));
 
     return stringuri;
