@@ -15,8 +15,6 @@ int parcurgere_selectata{};
 
 int main()
 {
-    SetConsoleOutputCP(65001);
-
     auto screen = ScreenInteractive::Fullscreen();
 
     //Constructia modalului de pe adancimea 1 (Copil Stang)

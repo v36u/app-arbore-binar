@@ -1,6 +1,4 @@
 #include "ArboreBinar.h"
-#include <windows.h>
-
 // --- Private ---
 
 string ArboreBinar::_PREFIX_NOD_CURENT = "\u00bb";

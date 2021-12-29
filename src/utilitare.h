@@ -1,7 +1,7 @@
 #ifndef APP_ARBORE_BINAR_UTILITARE_H
 #define APP_ARBORE_BINAR_UTILITARE_H
 
-#include <windows.h>
+
 #include <algorithm>
 #include <memory>  // pentru allocator, __shared_ptr_access
 #include <cstdlib>// pentru EXIT_SUCCESS
