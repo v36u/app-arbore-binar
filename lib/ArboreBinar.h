@@ -67,6 +67,9 @@ private:
     static string _PREFIX_NOD_CURENT;
     static string _POSTFIX_NOD_CURENT;
 
+    static string _PREFIX_DESCENDENT_STANG;
+    static string _PREFIX_DESCENDENT_DREPT;
+
     unsigned int _id_curent;
 
     Nod _radacina;

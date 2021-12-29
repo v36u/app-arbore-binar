@@ -1,8 +1,11 @@
 #include "ArboreBinar.h"
 // --- Private ---
 
-string ArboreBinar::_PREFIX_NOD_CURENT = "\u00bb";
-string ArboreBinar::_POSTFIX_NOD_CURENT = "\u00ab";
+string ArboreBinar::_PREFIX_NOD_CURENT = "\u00BB";
+string ArboreBinar::_POSTFIX_NOD_CURENT = "\u00AB";
+
+string ArboreBinar::_PREFIX_DESCENDENT_STANG = "\u02E2";
+string ArboreBinar::_PREFIX_DESCENDENT_DREPT = "\u1D48";
 
 bool
 ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod p_nod_2)
@@ -456,12 +459,21 @@ ArboreBinar::ConstruireArboreAfisare(Nod p_nod, py::function p_py_nod)
             descendenti.push_back(this->ConstruireArboreAfisare(p_nod->_stanga, p_py_nod));
         }
 
-        py::list py_descendenti = py::cast(descendenti);
         string informatie = p_nod->_informatie;
         if (p_nod == this->_nod_curent)
         {
             informatie = ArboreBinar::_PREFIX_NOD_CURENT + informatie + ArboreBinar::_POSTFIX_NOD_CURENT;
+        } else if ((this->_nod_curent->_stanga == nullptr) != (this->_nod_curent->_dreapta == nullptr))
+        {
+            if (p_nod == this->_nod_curent->_stanga)
+            {
+                informatie = ArboreBinar::_PREFIX_DESCENDENT_STANG + informatie;
+            } else if (p_nod == this->_nod_curent->_dreapta)
+            {
+                informatie = ArboreBinar::_PREFIX_DESCENDENT_DREPT + informatie;
+            }
         }
+        py::list py_descendenti = py::cast(descendenti);
         return
           p_py_nod
             (informatie)
