@@ -1,4 +1,5 @@
 #include "ArboreBinar.h"
+
 // --- Private ---
 
 string ArboreBinar::_PREFIX_NOD_CURENT = "\u00BB";
@@ -8,7 +9,8 @@ string ArboreBinar::_PREFIX_DESCENDENT_STANG = "\u02E2";
 string ArboreBinar::_PREFIX_DESCENDENT_DREPT = "\u1D48";
 
 bool
-ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1, ArboreBinar::Nod p_nod_2)
+ArboreBinar::NoduriCuInformatiiEgale(ArboreBinar::Nod p_nod_1,
+                                     ArboreBinar::Nod p_nod_2)
 {
     if ((p_nod_1 == nullptr) != (p_nod_2 == nullptr))
     {
@@ -157,7 +159,8 @@ ArboreBinar::GetPySys()
 }
 
 ArboreBinar::Nod
-ArboreBinar::CreareNod(string p_informatie_nod, unsigned short p_nivel)
+ArboreBinar::CreareNod(string p_informatie_nod,
+                       unsigned short p_nivel)
 {
     return new Celula(p_informatie_nod, this->_id_curent++, p_nivel);
 }
@@ -440,7 +443,8 @@ ArboreBinar::StergereRadacina()
 }
 
 py::object
-ArboreBinar::ConstruireArboreAfisare(Nod p_nod, py::function p_py_nod)
+ArboreBinar::ConstruireArboreAfisare(Nod p_nod,
+                                     py::function p_py_nod)
 {
     if (p_nod != nullptr)
     {
@@ -537,8 +541,15 @@ ArboreBinar::~ArboreBinar()
     this->DezalocareArbore(this->_radacina);
 }
 
-ArboreBinar::Celula::Celula(string p_informatie, unsigned int p_id, unsigned short p_nivel)
-  : Celula(p_informatie, p_id, p_nivel, nullptr, nullptr, E_Directie::Stanga)
+ArboreBinar::Celula::Celula(string p_informatie,
+                            unsigned int p_id,
+                            unsigned short p_nivel)
+  : Celula(p_informatie,
+           p_id,
+           p_nivel,
+           nullptr,
+           nullptr,
+           E_Directie::Stanga)
 {}
 
 ArboreBinar::Celula::Celula

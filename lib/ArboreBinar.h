@@ -37,9 +37,16 @@ private:
         Celula *_dreapta;
         E_Directie _directie;
 
-        Celula(string, unsigned int, unsigned short);
+        Celula(string,
+               unsigned int,
+               unsigned short);
 
-        Celula(string, unsigned int, unsigned short, Celula *, Celula *, E_Directie);
+        Celula(string,
+               unsigned int,
+               unsigned short,
+               Celula *,
+               Celula *,
+               E_Directie);
     };
 
     typedef Celula *Nod;
@@ -79,7 +86,8 @@ private:
     unsigned short _numar_frunze;
 
     static bool
-    NoduriCuInformatiiEgale(Nod, Nod);
+    NoduriCuInformatiiEgale(Nod,
+                            Nod);
 
     static vector<NodDto>
     RSD(Nod); //=> Rădăcină, Stânga, Dreapta
@@ -100,16 +108,27 @@ private:
     GetPySys();
 
     Nod
-    CreareNod(string, unsigned short);
+    CreareNod(string,
+              unsigned short);
 
     Nod
-    CreareNod(string, unsigned short, string, E_Directie);
+    CreareNod(string,
+              unsigned short,
+              string,
+              E_Directie);
 
     Nod
-    CreareNod(string, unsigned short, string, string);
+    CreareNod(string,
+              unsigned short,
+              string,
+              string);
 
     Nod
-    RouterCreareNod(string, unsigned short, string *, string *, E_Directie *);
+    RouterCreareNod(string,
+                    unsigned short,
+                    string *,
+                    string *,
+                    E_Directie *);
 
     void
     DeplasareNodCurentSus(Nod);
@@ -127,13 +146,17 @@ private:
     InitializareArboreCazRadacinaGoala(Nod);
 
     void
-    SalvareNod(string, string *, string *, E_Directie *);
+    SalvareNod(string,
+               string *,
+               string *,
+               E_Directie *);
 
     void
     StergereRadacina();
 
     py::object
-    ConstruireArboreAfisare(Nod, py::function);
+    ConstruireArboreAfisare(Nod,
+                            py::function);
 
     void
     DezalocareArbore(Nod);
@@ -153,7 +176,9 @@ public:
     GetStatisticiArbore();
 
     void
-    SalvareNod(string, string, string);
+    SalvareNod(string,
+               string,
+               string);
 
     vector<NodDto>
     ParcurgerePreordineDeLaRadacina();
