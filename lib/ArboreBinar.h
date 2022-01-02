@@ -20,18 +20,18 @@ using std::vector;
 class ArboreBinar
 {
 private:
-    enum E_Directie
-    {
-        Stanga,
-        Dreapta,
-        Sus,
-    };
-
     class Celula
     {
     public:
-        unsigned int _id;
+        enum E_Directie
+        {
+            Stanga,
+            Dreapta,
+            Sus,
+        };
+
         string _informatie;
+        unsigned int _id;
         unsigned short _nivel;
         Celula *_stanga;
         Celula *_dreapta;
@@ -115,7 +115,7 @@ private:
     CreareNod(string,
               unsigned short,
               string,
-              E_Directie);
+              Celula::E_Directie);
 
     Nod
     CreareNod(string,
@@ -128,13 +128,13 @@ private:
                     unsigned short,
                     string *,
                     string *,
-                    E_Directie *);
+                    Celula::E_Directie *);
 
     void
     DeplasareNodCurentSus(Nod);
 
     bool
-    DeplasareNodCurent(E_Directie);
+    DeplasareNodCurent(Celula::E_Directie);
 
     void
     DeplasareNodCurentUndeEstePosibil();
@@ -149,7 +149,7 @@ private:
     SalvareNod(string,
                string *,
                string *,
-               E_Directie *);
+               Celula::E_Directie *);
 
     void
     StergereRadacina();

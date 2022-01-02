@@ -170,7 +170,7 @@ ArboreBinar::CreareNod
   (string p_informatie_nod,
    unsigned short p_nivel,
    string p_informatie_descendent,
-   E_Directie p_directie)
+   Celula::E_Directie p_directie)
 {
     return
       new Celula(p_informatie_nod,
@@ -179,17 +179,17 @@ ArboreBinar::CreareNod
 
                  p_nivel,
 
-                 p_directie == E_Directie::Stanga
+                 p_directie == Celula::E_Directie::Stanga
                  ? this->CreareNod(p_informatie_descendent, p_nivel + 1)
                  : nullptr,
 
-                 p_directie == E_Directie::Dreapta
+                 p_directie == Celula::E_Directie::Dreapta
                  ? this->CreareNod(p_informatie_descendent, p_nivel + 1)
                  : nullptr,
 
                  this->_nod_curent != nullptr
                  ? this->_nod_curent->_directie
-                 : E_Directie::Stanga
+                 : Celula::E_Directie::Stanga
       );
 }
 
@@ -213,7 +213,7 @@ ArboreBinar::CreareNod
 
                  this->_nod_curent != nullptr
                  ? this->_nod_curent->_directie
-                 : E_Directie::Stanga
+                 : Celula::E_Directie::Stanga
       );
 }
 
@@ -223,7 +223,7 @@ ArboreBinar::RouterCreareNod
    unsigned short p_nivel,
    string *p_informatie_descendent_1,
    string *p_informatie_descendent_2,
-   E_Directie *p_directie)
+   Celula::E_Directie *p_directie)
 {
     if (p_informatie_descendent_1 != nullptr && p_informatie_descendent_2 != nullptr)
     {
@@ -274,11 +274,11 @@ ArboreBinar::DeplasareNodCurentSus(Nod p_nod)
 }
 
 bool
-ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
+ArboreBinar::DeplasareNodCurent(Celula::E_Directie p_directie)
 {
-    if (p_directie == E_Directie::Stanga)
+    if (p_directie == Celula::E_Directie::Stanga)
     {
-        this->_nod_curent->_directie = E_Directie::Dreapta;
+        this->_nod_curent->_directie = Celula::E_Directie::Dreapta;
         if (this->_nod_curent->_stanga != nullptr)
         {
             this->_nod_curent = this->_nod_curent->_stanga;
@@ -287,9 +287,9 @@ ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
         return false;
     }
 
-    if (p_directie == E_Directie::Dreapta)
+    if (p_directie == Celula::E_Directie::Dreapta)
     {
-        this->_nod_curent->_directie = E_Directie::Sus;
+        this->_nod_curent->_directie = Celula::E_Directie::Sus;
         if (this->_nod_curent->_dreapta != nullptr)
         {
             this->_nod_curent = this->_nod_curent->_dreapta;
@@ -298,17 +298,17 @@ ArboreBinar::DeplasareNodCurent(E_Directie p_directie)
         return false;
     }
 
-    if (p_directie == E_Directie::Sus)
+    if (p_directie == Celula::E_Directie::Sus)
     {
         if (this->_nod_curent == this->_radacina)
         {
-            if (!this->DeplasareNodCurent(E_Directie::Stanga))
+            if (!this->DeplasareNodCurent(Celula::E_Directie::Stanga))
             {
-                this->DeplasareNodCurent(E_Directie::Dreapta);
+                this->DeplasareNodCurent(Celula::E_Directie::Dreapta);
             }
         } else
         {
-            this->_nod_curent->_directie = E_Directie::Stanga;
+            this->_nod_curent->_directie = Celula::E_Directie::Stanga;
             this->DeplasareNodCurentSus(this->_radacina);
         }
         return true;
@@ -321,7 +321,7 @@ void
 ArboreBinar::DeplasareNodCurentUndeEstePosibil()
 {
     while (!this->DeplasareNodCurent(this->_nod_curent->_directie))
-    { /* Maxim 3 iterații, deoarece DeplasareNodCurent(E_Directie::Sus) va fi mereu true. */}
+    { /* Maxim 3 iterații, deoarece DeplasareNodCurent(Celula::E_Directie::Sus) va fi mereu true. */}
 }
 
 void
@@ -375,7 +375,7 @@ ArboreBinar::EditareNodCurentExistent(ArboreBinar::Nod p_nod)
         }
     }
 
-    this->_nod_curent->_directie = E_Directie::Stanga;
+    this->_nod_curent->_directie = Celula::E_Directie::Stanga;
     this->DeplasareNodCurentUndeEstePosibil();
 }
 
@@ -401,7 +401,7 @@ ArboreBinar::SalvareNod
   (string p_informatie_nod,
    string *p_informatie_descendent_1,
    string *p_informatie_descendent_2,
-   E_Directie *p_directie)
+   Celula::E_Directie *p_directie)
 {
     auto nod_nou =
       this->RouterCreareNod
@@ -549,7 +549,7 @@ ArboreBinar::Celula::Celula(string p_informatie,
            p_nivel,
            nullptr,
            nullptr,
-           E_Directie::Stanga)
+           Celula::E_Directie::Stanga)
 {}
 
 ArboreBinar::Celula::Celula
@@ -558,7 +558,7 @@ ArboreBinar::Celula::Celula
    unsigned short p_nivel,
    Celula *p_descendent_stang,
    Celula *p_descendent_drept,
-   E_Directie p_directie)
+   Celula::E_Directie p_directie)
 {
     this->_id = p_id;
     this->_informatie = p_informatie;
@@ -638,23 +638,35 @@ ArboreBinar::SalvareNod
 
     if (descendent_stang_fara_informatie && descendent_drept_fara_informatie)
     {
-        this->SalvareNod(p_informatie_nod, nullptr, nullptr, nullptr);
+        this->SalvareNod(p_informatie_nod,
+                         nullptr,
+                         nullptr,
+                         nullptr);
         return;
     }
 
     if (descendent_stang_fara_informatie)
     {
-        this->SalvareNod(p_informatie_nod, nullptr, new string{p_informatie_descendent_drept}, new E_Directie{this->Dreapta});
+        this->SalvareNod(p_informatie_nod,
+                         nullptr,
+                         new string{p_informatie_descendent_drept},
+                         new Celula::E_Directie{Celula::E_Directie::Dreapta});
         return;
     }
 
     if (descendent_drept_fara_informatie)
     {
-        this->SalvareNod(p_informatie_nod, new string{p_informatie_descendent_stang}, nullptr, new E_Directie{this->Stanga});
+        this->SalvareNod(p_informatie_nod,
+                         new string{p_informatie_descendent_stang},
+                         nullptr,
+                         new Celula::E_Directie{Celula::E_Directie::Stanga});
         return;
     }
 
-    this->SalvareNod(p_informatie_nod, new string{p_informatie_descendent_stang}, new string{p_informatie_descendent_drept}, nullptr);
+    this->SalvareNod(p_informatie_nod,
+                     new string{p_informatie_descendent_stang},
+                     new string{p_informatie_descendent_drept},
+                     nullptr);
 }
 
 vector<ArboreBinar::NodDto>
@@ -715,18 +727,18 @@ ArboreBinar::StergereSubArboreAlNoduluiCurent()
     }
 
     auto aux = this->_nod_curent;
-    this->DeplasareNodCurent(E_Directie::Sus);
-    auto directie_aux = E_Directie::Stanga;
+    this->DeplasareNodCurent(Celula::E_Directie::Sus);
+    auto directie_aux = Celula::E_Directie::Stanga;
     if (this->_nod_curent->_dreapta == aux)
     {
-        directie_aux = E_Directie::Dreapta;
+        directie_aux = Celula::E_Directie::Dreapta;
     }
 
     this->DezalocareArbore(aux);
-    if (directie_aux == E_Directie::Stanga)
+    if (directie_aux == Celula::E_Directie::Stanga)
     {
         this->_nod_curent->_stanga = nullptr;
-    } else if (directie_aux == E_Directie::Dreapta)
+    } else if (directie_aux == Celula::E_Directie::Dreapta)
     {
         this->_nod_curent->_dreapta = nullptr;
     }
