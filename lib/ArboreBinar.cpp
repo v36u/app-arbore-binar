@@ -144,7 +144,7 @@ ArboreBinar::GetCaleCatrePyLib()
       .attr("path")
       .attr("abspath")(os
                          .attr("path")
-                         .attr("join")("..", "lib"))
+                         .attr("join")(string(), "lib"))
       .cast<string>();
 }
 
