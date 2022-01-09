@@ -1,17 +1,17 @@
 #include "utilitare.h"
 #include "componente.h"
-#include "globale.h"
 
-ArboreBinar arbore_binar;
 
+ArboreBinar arbore_binar{};
 string val_nod{};
 string val_copil_stang{};
 string val_copil_drept{};
 int adancime{};
+int parcurgere_selectata{};
 bool stare_1{};
 bool stare_2{};
-bool schimbat = false;
-int parcurgere_selectata{};
+bool schimbat{};
+
 
 int main()
 {
@@ -21,10 +21,10 @@ int main()
     auto optiune_buton_salv_copil_stang = ButtonOption();
     optiune_buton_salv_copil_stang.border = false;
 
-    auto buton_salvare_copil_stang = GetButonSalvareCopilStang(optiune_buton_salv_copil_stang);
+    auto buton_salvare_copil_stang = GetButonSalvareCopilStang(optiune_buton_salv_copil_stang, adancime);
     auto container_input_adancime_1_st = Container::Vertical({});
     container_input_adancime_1_st->Add(Input(&val_copil_stang, "introduceti valoarea copilului stang"));
-    auto randare_input_adancime_1_st = RandareInputAdancime1(container_input_adancime_1_st);
+    auto randare_input_adancime_1_st = RandareInputAdancime1(container_input_adancime_1_st, val_nod);
     auto randare_buton_adancime1_st = RandareButonAdancime1(buton_salvare_copil_stang);
     auto container_adancime_1_st = GetContainerAdancime1(randare_input_adancime_1_st,
                                                          randare_buton_adancime1_st);
@@ -34,20 +34,20 @@ int main()
     auto optiune_buton_salv_copil_drept = ButtonOption();
     optiune_buton_salv_copil_drept.border = false;
 
-    auto buton_salvare_copil_drept = GetButonSalvareCopilDrept(optiune_buton_salv_copil_drept);
+    auto buton_salvare_copil_drept = GetButonSalvareCopilDrept(optiune_buton_salv_copil_drept, adancime);
     auto container_input_adancime_2_dr = Container::Vertical({});
     container_input_adancime_2_dr->Add(Input(&val_copil_drept, "introduceti valoarea copilului drept"));
-    auto randare_input_adancime_2_dr = RandareInputAdancime2(container_input_adancime_2_dr);
+    auto randare_input_adancime_2_dr = RandareInputAdancime2(container_input_adancime_2_dr, val_nod);
     auto randare_buton_adancime_2_dr = RandareButonAdancime2(buton_salvare_copil_drept);
     auto container_adancime_2_dr = GetContainerAdancime2(randare_input_adancime_2_dr,
                                                          randare_buton_adancime_2_dr);
     auto randare_adancime_2_dr = GetModalCopilDrept(container_adancime_2_dr);
 
     //Constructia tabului in care se regasesc detaliile arborelui (nr. frunze, nr. noduri, nr. niveluri)
-    auto tab_detalii_arbore = GetTabDetaliiArbore();
+    auto tab_detalii_arbore = GetTabDetaliiArbore(arbore_binar);
 
     //Constructia tabului in care se regasesc detaliile nodului curent selectat
-    auto tab_detalii_nod = GetTabDetaliiNodCrt();
+    auto tab_detalii_nod = GetTabDetaliiNodCrt(val_nod, val_copil_stang, val_copil_drept);
 
     //Constructia tabului de editare a detaliilor nodului curent selectat
     auto input_val_nod = GetInputNodCrt(val_nod);
@@ -58,9 +58,11 @@ int main()
     auto buton_salvare_nod = GetButonSalvareNod(val_nod,
                                                 val_copil_stang,
                                                 val_copil_drept,
-                                                optiune_buton_salv_nod);
+                                                optiune_buton_salv_nod,
+                                                arbore_binar);
     auto butoane_salvare_copii_tab_nod = GetButoaneCopiiTabNod(optiune_buton_salv_copil_stang,
-                                                               optiune_buton_salv_copil_drept);
+                                                               optiune_buton_salv_copil_drept,
+                                                               adancime);
     auto container_tab_nod_crt = GetContainerTabNod(input_val_nod,
                                                     buton_salvare_nod,
                                                     butoane_salvare_copii_tab_nod);
@@ -68,7 +70,10 @@ int main()
     auto tab_editare_nod_crt = GetTabEditareNodCurent(container_tab_nod_crt,
                                                       input_val_nod,
                                                       buton_salvare_nod,
-                                                      butoane_salvare_copii_tab_nod);
+                                                      butoane_salvare_copii_tab_nod,
+                                                      val_nod,
+                                                      val_copil_stang,
+                                                      val_copil_drept);
     //Constructia tabului care contine Alte Optiuni (stergere subarbore nod curent, resetare arbore, iesire din program
     auto optiune_buton_stergere_subarbore = ButtonOption();
     optiune_buton_stergere_subarbore.border = false;
@@ -76,8 +81,16 @@ int main()
     optiune_buton_resetare_arbore.border = false;
 
 
-    auto buton_stergere_subarbore = GetButonStergereSubarbore(optiune_buton_stergere_subarbore);
-    auto buton_resetare_arbore = GetButonResetareArbore(optiune_buton_resetare_arbore);
+    auto buton_stergere_subarbore = GetButonStergereSubarbore(optiune_buton_stergere_subarbore,
+                                                              arbore_binar,
+                                                              val_nod,
+                                                              val_copil_stang,
+                                                              val_copil_drept);
+    auto buton_resetare_arbore = GetButonResetareArbore(optiune_buton_resetare_arbore,
+                                                        arbore_binar,
+                                                        val_nod,
+                                                        val_copil_stang,
+                                                        val_copil_drept);
 
     auto container_tab_alte_optiuni = Container::Vertical({
                                                             buton_stergere_subarbore,
@@ -112,7 +125,15 @@ int main()
                                                       });
 
     //Constructia tabului care cuprinde reprezentarea grafica a arborelui + meniuri de parcurgeri
-    auto tab_reprezentare_grafica = GetTabReprezentareGrafica(meniu_final_parcurgeri);
+    auto tab_reprezentare_grafica = GetTabReprezentareGrafica(meniu_final_parcurgeri,
+                                                              arbore_binar,
+                                                              val_nod,
+                                                              val_copil_stang,
+                                                              val_copil_drept,
+                                                              schimbat,
+                                                              stare_1,
+                                                              stare_2,
+                                                              parcurgere_selectata);
 
     auto container_adancime_0 = Container::Vertical({
                                                       tab_detalii_arbore,
@@ -137,7 +158,9 @@ int main()
     auto randare_principala = RandareLayere(container_principal,
                                             randare_adancime_0,
                                             randare_adancime_1_st,
-                                            randare_adancime_2_dr);
+                                            randare_adancime_2_dr,
+                                            adancime,
+                                            val_nod);
     screen.Loop(randare_principala);
     return EXIT_SUCCESS;
 }

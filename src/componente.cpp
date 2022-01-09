@@ -1,5 +1,5 @@
 #include "componente.h"
-
+Elements vector_linii_arbore{};
 Component
 GetInputNodCrt(string &nod_curent)
 {
@@ -10,7 +10,8 @@ shared_ptr<ComponentBase>
 GetButonSalvareNod(string &nod_curent,
                    string &copil_stang,
                    string &copil_drept,
-                   ButtonOption &optiune_buton_salvare)
+                   ButtonOption &optiune_buton_salvare,
+                   ArboreBinar &arbore_binar)
 {
     return Container::Horizontal({
                                    Button("[Urmatorul Nod]", [&]
@@ -27,7 +28,7 @@ GetButonSalvareNod(string &nod_curent,
 }
 
 shared_ptr<ComponentBase>
-GetButonSalvareCopilStang(ButtonOption &optiune_buton_salvare)
+GetButonSalvareCopilStang(ButtonOption &optiune_buton_salvare, int &adancime)
 {
     return Container::Horizontal({
                                    Button("[Salveaza copil stang]", [&]
@@ -37,7 +38,7 @@ GetButonSalvareCopilStang(ButtonOption &optiune_buton_salvare)
 }
 
 shared_ptr<ComponentBase>
-GetButonSalvareCopilDrept(ButtonOption &optiune_buton_salvare)
+GetButonSalvareCopilDrept(ButtonOption &optiune_buton_salvare, int &adancime)
 {
     return Container::Horizontal({
                                    Button("[Salveaza copil drept]", [&]
@@ -47,7 +48,7 @@ GetButonSalvareCopilDrept(ButtonOption &optiune_buton_salvare)
 }
 
 shared_ptr<ComponentBase>
-RandareInputAdancime1(shared_ptr<ComponentBase> container_input_adancime_1)
+RandareInputAdancime1(shared_ptr<ComponentBase> &container_input_adancime_1, string &val_nod)
 {
     return Renderer(container_input_adancime_1, [&]
     {
@@ -62,7 +63,7 @@ RandareInputAdancime1(shared_ptr<ComponentBase> container_input_adancime_1)
 }
 
 shared_ptr<ComponentBase>
-RandareButonAdancime1(shared_ptr<ComponentBase> buton_copil_stang)
+RandareButonAdancime1(shared_ptr<ComponentBase> &buton_copil_stang)
 {
     return Renderer(buton_copil_stang, [&]
     {
@@ -72,8 +73,8 @@ RandareButonAdancime1(shared_ptr<ComponentBase> buton_copil_stang)
 }
 
 shared_ptr<ComponentBase>
-GetContainerAdancime1(shared_ptr<ComponentBase> randare_input,
-                      shared_ptr<ComponentBase> randare_buton)
+GetContainerAdancime1(shared_ptr<ComponentBase> &randare_input,
+                      shared_ptr<ComponentBase> &randare_buton)
 {
     return Container::Vertical({
                                  randare_input,
@@ -92,7 +93,7 @@ GetModalCopilStang(shared_ptr<ComponentBase> &container_adancime_1)
 }
 
 shared_ptr<ComponentBase>
-RandareInputAdancime2(shared_ptr<ComponentBase> container_input_adancime_2)
+RandareInputAdancime2(shared_ptr<ComponentBase> &container_input_adancime_2, string &val_nod)
 {
     return Renderer(container_input_adancime_2, [&]
     {
@@ -107,7 +108,7 @@ RandareInputAdancime2(shared_ptr<ComponentBase> container_input_adancime_2)
 }
 
 shared_ptr<ComponentBase>
-RandareButonAdancime2(shared_ptr<ComponentBase> buton_copil_drept)
+RandareButonAdancime2(shared_ptr<ComponentBase> &buton_copil_drept)
 {
     return Renderer(buton_copil_drept, [&]
     {
@@ -117,8 +118,8 @@ RandareButonAdancime2(shared_ptr<ComponentBase> buton_copil_drept)
 }
 
 shared_ptr<ComponentBase>
-GetContainerAdancime2(shared_ptr<ComponentBase> randare_input,
-                      shared_ptr<ComponentBase> randare_buton)
+GetContainerAdancime2(shared_ptr<ComponentBase> &randare_input,
+                      shared_ptr<ComponentBase> &randare_buton)
 {
     return Container::Vertical({
                                  randare_input,
@@ -136,7 +137,7 @@ shared_ptr<ComponentBase> GetModalCopilDrept(shared_ptr<ComponentBase> &containe
 }
 
 shared_ptr<ComponentBase>
-GetTabDetaliiArbore()
+GetTabDetaliiArbore(ArboreBinar &arbore_binar)
 {
     return Renderer([&]
                     {
@@ -153,7 +154,7 @@ GetTabDetaliiArbore()
 }
 
 shared_ptr<ComponentBase>
-GetTabDetaliiNodCrt()
+GetTabDetaliiNodCrt(string &val_nod, string &val_copil_stang, string &val_copil_drept)
 {
     return Renderer([&]
                     {
@@ -177,7 +178,8 @@ GetTabDetaliiNodCrt()
 
 shared_ptr<ComponentBase>
 GetButoaneCopiiTabNod(ButtonOption &optiune_buton_copil_stang,
-                      ButtonOption &optiune_buton_copil_drept)
+                      ButtonOption &optiune_buton_copil_drept,
+                      int &adancime)
 {
     return Container::Horizontal({
                                    Button(
@@ -192,9 +194,9 @@ GetButoaneCopiiTabNod(ButtonOption &optiune_buton_copil_stang,
 }
 
 shared_ptr<ComponentBase>
-GetContainerTabNod(shared_ptr<ComponentBase> input_val_nod,
-                   shared_ptr<ComponentBase> buton_salvare_nod,
-                   shared_ptr<ComponentBase> butoane_salvare_copii_tab_nod)
+GetContainerTabNod(shared_ptr<ComponentBase> &input_val_nod,
+                   shared_ptr<ComponentBase> &buton_salvare_nod,
+                   shared_ptr<ComponentBase> &butoane_salvare_copii_tab_nod)
 {
     return Container::Vertical({
                                  input_val_nod,
@@ -204,10 +206,13 @@ GetContainerTabNod(shared_ptr<ComponentBase> input_val_nod,
 }
 
 shared_ptr<ComponentBase>
-GetTabEditareNodCurent(shared_ptr<ComponentBase> container_tab_nod,
-                       shared_ptr<ComponentBase> input_val_nod,
-                       shared_ptr<ComponentBase> buton_salvare_nod,
-                       shared_ptr<ComponentBase> butoane_salvare_copii_tab_nod)
+GetTabEditareNodCurent(shared_ptr<ComponentBase> &container_tab_nod,
+                       shared_ptr<ComponentBase> &input_val_nod,
+                       shared_ptr<ComponentBase> &buton_salvare_nod,
+                       shared_ptr<ComponentBase> &butoane_salvare_copii_tab_nod,
+                       string &val_nod,
+                       string &val_copil_stang,
+                       string &val_copil_drept)
 {
     return Renderer(container_tab_nod, [&]
     {
@@ -241,7 +246,11 @@ GetTabEditareNodCurent(shared_ptr<ComponentBase> container_tab_nod,
 }
 
 shared_ptr<ComponentBase>
-GetButonStergereSubarbore(ButtonOption &optiune_buton_stergere_subarbore)
+GetButonStergereSubarbore(ButtonOption &optiune_buton_stergere_subarbore,
+                          ArboreBinar &arbore_binar,
+                          string &val_nod,
+                          string &val_copil_stang,
+                          string &val_copil_drept)
 {
     return Container::Horizontal({
                                    Button("1. Stergeti Subarbore Nod Crt.", [&]
@@ -257,7 +266,11 @@ GetButonStergereSubarbore(ButtonOption &optiune_buton_stergere_subarbore)
 }
 
 shared_ptr<ComponentBase>
-GetButonResetareArbore(ButtonOption &optiune_buton_resetare)
+GetButonResetareArbore(ButtonOption &optiune_buton_resetare,
+                       ArboreBinar &arbore_binar,
+                       string &val_nod,
+                       string &val_copil_stang,
+                       string &val_copil_drept)
 {
     return Container::Horizontal({
                                    Button("2. Resetati Arborele Binar", [&]
@@ -273,7 +286,7 @@ GetButonResetareArbore(ButtonOption &optiune_buton_resetare)
 }
 
 shared_ptr<ComponentBase>
-GetTabOptiuniParcurgeri(shared_ptr<ComponentBase> container_meniu_parcurgeri)
+GetTabOptiuniParcurgeri(shared_ptr<ComponentBase> &container_meniu_parcurgeri)
 {
     return Renderer(container_meniu_parcurgeri, [&]
     {
@@ -287,7 +300,7 @@ GetTabOptiuniParcurgeri(shared_ptr<ComponentBase> container_meniu_parcurgeri)
 }
 
 shared_ptr<ComponentBase>
-GetTabCheckboxuri(shared_ptr<ComponentBase> container_checkboxuri)
+GetTabCheckboxuri(shared_ptr<ComponentBase> &container_checkboxuri)
 {
     return Renderer(container_checkboxuri, [&]
     {
@@ -297,7 +310,16 @@ GetTabCheckboxuri(shared_ptr<ComponentBase> container_checkboxuri)
 }
 
 shared_ptr<ComponentBase>
-GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
+GetTabReprezentareGrafica(shared_ptr<ComponentBase> &meniu_final_parcurgeri,
+                          ArboreBinar &arbore_binar,
+                          string &val_nod,
+                          string &val_copil_stang,
+                          string &val_copil_drept,
+                          bool &schimbat,
+                          bool &stare_1,
+                          bool &stare_2,
+                          int &parcurgere_selectata)
+
 {
     return Renderer(meniu_final_parcurgeri, [&]
     {
@@ -409,7 +431,7 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
             }
         }
 
-        auto vector_linii_arbore = ConversieStringMulti(arbore_binar.GetReprezentareGrafica(), "\n");
+         vector_linii_arbore = ConversieStringMulti(arbore_binar.GetReprezentareGrafica(), "\n");
         return window(text("Arbore Binar - Reprezentare Grafica"),
                       vbox({
                              filler(),
@@ -446,7 +468,7 @@ GetTabReprezentareGrafica(shared_ptr<ComponentBase> meniu_final_parcurgeri)
 }
 
 shared_ptr<ComponentBase>
-GetTabAlteOptiuni(shared_ptr<ComponentBase> container_tab_alte_optiuni)
+GetTabAlteOptiuni(shared_ptr<ComponentBase> &container_tab_alte_optiuni)
 {
     return Renderer(container_tab_alte_optiuni, [&]
     {
@@ -462,12 +484,12 @@ GetTabAlteOptiuni(shared_ptr<ComponentBase> container_tab_alte_optiuni)
 }
 
 shared_ptr<ComponentBase>
-RandareAdancime0(shared_ptr<ComponentBase> container_adancime_0,
-                 shared_ptr<ComponentBase> tab_detalii_arbore,
-                 shared_ptr<ComponentBase> tab_detalii_nod,
-                 shared_ptr<ComponentBase> tab_editare_nod_crt,
-                 shared_ptr<ComponentBase> tab_alte_optiuni,
-                 shared_ptr<ComponentBase> tab_reprezentare_grafica)
+RandareAdancime0(shared_ptr<ComponentBase> &container_adancime_0,
+                 shared_ptr<ComponentBase> &tab_detalii_arbore,
+                 shared_ptr<ComponentBase> &tab_detalii_nod,
+                 shared_ptr<ComponentBase> &tab_editare_nod_crt,
+                 shared_ptr<ComponentBase> &tab_alte_optiuni,
+                 shared_ptr<ComponentBase> &tab_reprezentare_grafica)
 {
     return Renderer(container_adancime_0, [&]
     {
@@ -484,10 +506,12 @@ RandareAdancime0(shared_ptr<ComponentBase> container_adancime_0,
 }
 
 shared_ptr<ComponentBase>
-RandareLayere(shared_ptr<ComponentBase> container_principal,
-              shared_ptr<ComponentBase> randare_adancime_0,
-              shared_ptr<ComponentBase> randare_adancime_1_st,
-              shared_ptr<ComponentBase> randare_adancime_2_dr)
+RandareLayere(shared_ptr<ComponentBase> &container_principal,
+              shared_ptr<ComponentBase> &randare_adancime_0,
+              shared_ptr<ComponentBase> &randare_adancime_1_st,
+              shared_ptr<ComponentBase> &randare_adancime_2_dr,
+              int &adancime,
+              string &val_nod)
 {
     return Renderer(container_principal, [&]
     {
