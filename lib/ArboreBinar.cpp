@@ -137,24 +137,25 @@ ArboreBinar::ParcurgereInLatime(ArboreBinar::Nod p_nod)
 }
 
 string
-ArboreBinar::GetCaleCatrePyLib()
+ArboreBinar::GetCaleCatreLib()
 {
-    auto os = py::module::import("os");
-    return os
-      .attr("path")
-      .attr("abspath")(os
-                         .attr("path")
-                         .attr("join")(string(), "lib"))
-      .cast<string>();
+    auto cale = filesystem::current_path().string();
+#ifdef _WIN32
+    cale += "\\";
+#else
+    cale += "/";
+#endif
+    return cale + "lib";
 }
 
 py::module
 ArboreBinar::GetPySys()
 {
     auto sys = py::module::import("sys");
+    auto cale_catre_lib = ArboreBinar::GetCaleCatreLib();
     sys
       .attr("path")
-      .attr("append")(ArboreBinar::GetCaleCatrePyLib());
+      .attr("append")(cale_catre_lib);
     return sys;
 }
 

@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include <Python.h>
 #include "pybind11/embed.h"
@@ -102,7 +103,7 @@ private:
     ParcurgereInLatime(Nod);
 
     static string
-    GetCaleCatrePyLib();
+    GetCaleCatreLib();
 
     static py::module
     GetPySys();

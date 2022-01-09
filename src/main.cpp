@@ -1,7 +1,6 @@
 #include "utilitare.h"
 #include "componente.h"
 
-
 ArboreBinar arbore_binar{};
 string val_nod{};
 string val_copil_stang{};
@@ -12,8 +11,7 @@ bool stare_1{};
 bool stare_2{};
 bool schimbat{};
 
-
-int main()
+int main(void)
 {
     auto screen = ScreenInteractive::Fullscreen();
 
