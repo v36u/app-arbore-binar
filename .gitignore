@@ -34,6 +34,15 @@
 # CMake
 cmake/
 cmake-build-debug/
+_deps/
+CMakeCache.txt
+CMakeDoxyfile.in
+CMakeDoxygenDefaults.cmake
+CMakeFiles/
+CPackConfig.cmake
+CPackSourceConfig.cmake
+cmake_install.cmake
+Makefile
 
 # Other configs
 .idea/app_arbore_binar.iml
