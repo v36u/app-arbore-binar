@@ -11,8 +11,105 @@ bool stare_1{};
 bool stare_2{};
 bool schimbat{};
 
-int main(void)
+void AfisareDetaliiNodCurent(ArboreBinar *p_arbore_test) // Testing purposes
 {
+    auto informatii_nod_curent = p_arbore_test->GetInformatiiNodCurent();
+
+    auto informatie_nod = informatii_nod_curent._nod_curent._informatie_nod;
+    if (informatie_nod.empty())
+    {
+        // Dacă a ajuns aici:
+        // a) Afișarea a fost făcută când nu există niciun nod, nici măcar rădăcina
+        // b) Programul nu funcționează cum trebuie!
+        cout << "\nNodul este gol.\n";
+        return;
+    }
+
+    auto informatie_stanga = informatii_nod_curent._informatie_descendent_stang;
+    if (informatie_stanga.empty())
+    {
+        informatie_stanga = "nod_stanga_inexistent";
+    }
+
+    auto informatie_dreapta = informatii_nod_curent._informatie_descendent_drept;
+    if (informatie_dreapta.empty())
+    {
+        informatie_dreapta = "nod_dreapta_inexistent";
+    }
+
+    cout << '\n' << informatie_nod << ' ' << informatie_stanga << ' ' << informatie_dreapta << '\n';
+}
+
+void ShowStats(ArboreBinar *p_arbore_test)
+{
+    auto stats = p_arbore_test->GetStatisticiArbore();
+    cout << "\nNumar noduri: " << stats._numar_noduri;
+    cout << "\nNumar frunze: " << stats._numar_frunze;
+    cout << "\nNumar niveluri: " << stats._numar_niveluri;
+    cout << endl;
+}
+
+int main(int argc, const char *argv[])
+{
+    auto arbore_testare = new ArboreBinar();
+
+    arbore_testare->SalvareNod("  A", "B  ", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod(" B", "C", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("C", "D", "E");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("D", "", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("C", "D  ", "E");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("E", "", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("    C", "D", "E");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("B", "   C", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("A", "B", "F   ");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("B", "C", "       ");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("C", "D", "E");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("D", "", "      ");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("C", "D", "E     ");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("E", "", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("C", "    D", "E");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("B", "C", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("A", "B    ", "   F    ");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("     F", "    ", "");
+    AfisareDetaliiNodCurent(arbore_testare);
+    arbore_testare->SalvareNod("A", "C", "F");
+    AfisareDetaliiNodCurent(arbore_testare);
+
+    auto latime_de_la_radacina = arbore_testare->ParcurgereInLatimeDeLaRadacina();
+    cout << endl << "Latime de la radacina: ";
+    for (auto elem: latime_de_la_radacina)
+    {
+        cout << elem._informatie_nod << ' ';
+    }
+    cout << endl;
+
+    auto latime_de_la_nodul_curent = arbore_testare->ParcurgereInLatimeDeLaNodulCurent();
+    cout << endl << "Latime de la nodul curent: ";
+    for (auto elem: latime_de_la_nodul_curent)
+    {
+        cout << elem._informatie_nod << ' ';
+    }
+    cout << endl;
+
+    return EXIT_SUCCESS;
+
     auto screen = ScreenInteractive::Fullscreen();
 
     //Constructia modalului de pe adancimea 1 (Copil Stang)
